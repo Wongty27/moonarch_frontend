@@ -16,8 +16,8 @@ import { createVuetify, ThemeDefinition } from 'vuetify'
 const customDarkTheme: ThemeDefinition = {
   dark: true,
   colors: {
-    background: '#000001',
-    surface: '#000001', // footer
+    background: '#001655',
+    surface: '#000001', // header/footer
     primary: '#6200EE',
     'primary-darken-1': '#3700B3',
     secondary: '#03DAC6',
