@@ -8,14 +8,18 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    BillForm: typeof import('./components/BillForm.vue')['default']
     BillingForm: typeof import('./components/BillingForm.vue')['default']
+    BillingForm2: typeof import('./components/BillingForm2.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
-    OrderItem: typeof import('./components/OrderItem.vue')['default']
+    OrderSum: typeof import('./components/OrderSum.vue')['default']
+    OrderSum2: typeof import('./components/OrderSum2.vue')['default']
     OrderSummary: typeof import('./components/OrderSummary.vue')['default']
     PaymentMethod: typeof import('./components/PaymentMethod.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ShopItem: typeof import('./components/ShopItem.vue')['default']
+    Summary: typeof import('./components/summary.vue')['default']
     'Terms&Conditions': typeof import('./components/Terms&Conditions.vue')['default']
   }
 }

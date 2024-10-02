@@ -32,7 +32,5 @@ export default {
   @import url('../assets/BitStreamFont/stylesheet.css');
   @import url('../assets/BPdotsFont/stylesheet.css');
 
-  .parallax-dimmer {
-    filter: brightness(0.5);
-  }
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <v-card style="background-color:#001655" class="ma-5">
+    <v-card style="background-color:#001655" class="ma-5 bitstream">
       <v-divider thickness="4"></v-divider>
       <v-form>
         <v-row class="ma-auto pa-2">
