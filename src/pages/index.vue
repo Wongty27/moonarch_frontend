@@ -1,15 +1,8 @@
 <template>
-  <div>
-    <ThreeCanvas />
-  </div>
+    <PCModel />
 </template>
 
-<script lang="ts">
-import ThreeCanvas from '../components/ThreeCanvas.vue';
+<script setup lang="ts">
+import PCModel from '@/components/PCModel.vue';
 
-export default {
-  components: {
-    ThreeCanvas,
-  },
-};
 </script>
