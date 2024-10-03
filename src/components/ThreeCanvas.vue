@@ -1,88 +1,83 @@
 <template>
-  <div
-    ref="SceneContainer"
-    class="scene-container"
-    style="width:200 px; height:200 px">
-  </div>
-  <TresCanvas clear-color="#ffffff">
-    
-  </TresCanvas>
+  <!-- <v-container> -->
+    <div ref="SceneContainer" class="scene-container"/>
+  <!-- </v-container> -->
+  
 </template>
 
-<script setup type="module" lang="ts">
-// import * as THREE from 'three';
-// import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-// import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { TresCanvas, useRenderer, TresCamera } from '@tresjs/core';
-import { CameraControls, useGLTF } from '@tresjs/cientos';
+<script type="module" lang="ts">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const { scene: model } = await useGLTF(
-    '../models/scene.gltf',
-    { draco: true }
-)
-// export default {
-//   name: 'ThreeCanvas',
-//   mounted() {
-//     this.init();
-//     window.addEventListener('resize', this.onWindowResize);
-//   },
+export default {
+  name: 'ThreeCanvas',
+  mounted() {
+    this.init();
+  },
 
-//   beforeUnmount() {
-//     window.removeEventListener('resize', this.onWindowResize);
-//   },
+  methods: {
+    init() {
+      const scene = new THREE.Scene();
 
-//   methods: {
-//     init() {
-//       this.scene = new THREE.Scene();
-//       this.camera = new THREE.PerspectiveCamera( 75, this.$refs.SceneContainer.clientWidth / this.$refs.SceneContainer.clientHeight, 0.1, 1000 );
-//       this.camera.position.set(-10, 5, 2);
-//       this.camera.lookAt(0, 0, 0);
+      const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+      camera.position.set(-10, 3, 5);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+        
+      const axesHelper = new THREE.AxesHelper( 5 );
+      scene.add( axesHelper );
+      const renderer = new THREE.WebGLRenderer({
+        powerPreference: 'low-power',
+        precision: 'lowp',
+        antialias: false,
+        renderMode: 'on-demand',
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setClearColor('#ffffff'); // 001655
+      renderer.setPixelRatio( window.devicePixelRatio );
+      const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+      sceneContainer.appendChild(renderer.domElement);
 
-//       this.renderer = new THREE.WebGLRenderer({
-//         antialias: true
-//       });
-//       this.renderer.setSize(this.$refs.SceneContainer.clientWidth, this.$refs.SceneContainer.clientHeight);
-//       this.renderer.setClearColor('#ffffff');
-//       this.renderer.setPixelRatio( this.$refs.SceneContainer.devicePixelRatio );
-//       this.$refs.SceneContainer.appendChild(this.renderer.domElement);
+      const ambientLight = new THREE.AmbientLight('#ffffff', 2);
+      scene.add(ambientLight);
 
-//       const ambientLight = new THREE.AmbientLight('#ffffff', 0.5);
-//       this.scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
+      directionalLight.position.set(-1, 1, 0);
+      scene.add(directionalLight);
 
-//       const directionalLight = new THREE.DirectionalLight('#ffffff', 1);
-//       directionalLight.position.set(-1, 1, 0);
-//       this.scene.add(directionalLight);
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.minDistance = 2;
+      controls.maxDistance = 10;
+      controls.target.set(0, 0, -0.2);
+      controls.update();
 
-//       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-//       this.controls.minDistance = 2;
-//       this.controls.maxDistance = 10;
-//       this.controls.target.set(0, 0, -0.2);
-//       this.controls.update();
+      const loader = new GLTFLoader();
+      let model;
+      loader.load(
+        '../models/scene.gltf',
+        (gltf) => {
+          model = gltf.scene;
+          model.position.set(-4.5, 1.5, -0.5);
+          model.scale.set(0.5, 0.5, 0.5);
+          scene.add(model);
+        }
+      );
 
-//       const loader = new GLTFLoader();
-//       try {
-//         loader.load('../public/models/scene.gltf', (gltf) => {
-//           console.log("Gltf loaded,", gltf);
-//           gltf.scene.position.set(0, 0, 0);
-//           this.scene.add(gltf.scene);
-//           this.animate();
-//         })
-      
-//       } catch(err) {
-//           console.error(err.message);
-//         }
-//     },
+      const animate  = () => {
+        requestAnimationFrame(animate);
+        // model.rotation.y += 0.002;
+        renderer.render(scene, camera);
+      };
 
-//     onWindowResize() {
-//         this.camera.aspect = this.$refs.SceneContainer.clientWidth / this.$refs.SceneContainer.clientHeight;
-//         this.camera.updateProjectionMatrix();
-//         this.renderer.setSize(this.$refs.sceneContainer.clientWidth, this.$refs.sceneContainer.clientHeight);
-//     },
+      animate();
 
-//     animate() {
-//       requestAnimationFrame(this.animate);
-//       this.renderer.render(this.scene, this.camera);
-//     },
-//   },
-// };
+    //   window.addEventListener('resize', () => {
+    //     camera.aspect = window.innerWidth / window.innerHeight;
+    //     camera.updateProjectionMatrix();
+    //     renderer.setSize(window.innerWidth, window.innerHeight);
+    //   });
+    }
+  }
+};
 </script>

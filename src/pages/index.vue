@@ -1,8 +1,8 @@
 <template>
-    <PCModel />
+    <ThreeCanvas />
 </template>
 
 <script setup lang="ts">
-import PCModel from '@/components/PCModel.vue';
+import ThreeCanvas from '../components/ThreeCanvas.vue';
 
 </script>
