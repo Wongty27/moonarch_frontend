@@ -1,8 +1,9 @@
 <template>
-    <v-parallax src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif">
+    <div class="container">
     <v-container fluid class="pa-0">
-        <v-row class="text-h2 ml-10 bpdots" :style="{ textShadow: '1px 1px 1px #E324BD' }">
+        <v-row class="text-h2 ml-10 bpdots saturation text-shadow" :style="{ textShadow: '1px 1px 1px #E324BD' }">
           <div>BILLING DETAILS</div>
+          <v-divider class="border-opacity-50 mr-12" :thickness="3"></v-divider>
         </v-row>
       <v-row class="ma-0">
         <v-col cols="12" md="6" class="pa-4">
@@ -20,7 +21,7 @@
         </v-col>
       </v-row>
     </v-container>
-    </v-parallax>
+  </div>
   </template>
   
   <script>
@@ -59,4 +60,11 @@
 @import url('../assets/BitStreamFont/stylesheet.css');
 @import url('../assets/BPdotsFont/stylesheet.css');
 
+.container {
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
+}
+
+.saturation{
+  filter:saturate(10);
+}
 </style>
