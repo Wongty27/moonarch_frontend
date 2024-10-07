@@ -9,10 +9,3 @@
 <script lang="ts" setup>
   //
 </script>
-
-<style>
-@font-face {
-  font-family: 'vera-sans-mono';
-  src: url("../src/assets/Bitstream-Vera-Sans-Mono/VeraMono.ttf");
-}
-</style>
