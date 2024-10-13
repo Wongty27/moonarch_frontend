@@ -1,0 +1,52 @@
+/*// Glow Border Animation //*/
+
+.animated-border-box, .animated-border-box-glow{
+    position: relative;
+    overflow: hidden; 
+    z-index: 1;
+  }
+  
+  .animated-border-box:before, .animated-border-box-glow:before {
+    content: '';
+    z-index: -2;
+    text-align: center;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(0deg);
+    position: absolute;
+      width: 99999px;
+      height: 99999px;
+      background-repeat: no-repeat;
+      background-position: 0 0;
+    /*border color, change middle color*/
+      background-image: conic-gradient(rgba(0,0,0,0), #1976ed, rgba(0,0,0,0) 25%);
+    /* change speed here */
+      animation: rotate 8s linear infinite;
+  }
+  
+  .animated-border-box:after {
+      content: '';
+      position: absolute;
+      z-index: -1;
+    /* border width */
+      left: 1px;
+      top: 1px;
+    /* double the px from the border width left */
+      width: calc(100% - 2px);
+      height: calc(100% - 2px);
+    /*bg color*/
+      /* From https://css.glass */
+    background: rgba(18, 18, 18, 1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    /*box border radius*/
+    border-radius: 6px;
+  }
+  
+  @keyframes rotate {
+      100% {
+          transform: translate(-50%, -50%) rotate(1turn);
+      }
+  }
+  
+  /*// Border Animation END//*/
