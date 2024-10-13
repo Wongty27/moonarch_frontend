@@ -8,11 +8,14 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AmendButton: typeof import('./components/AmendButton.vue')['default']
+    AppFooter: typeof import('./components/AppFooter.vue')['default']
+    AppHeader: typeof import('./components/AppHeader.vue')['default']
     Border: typeof import('./components/Border.vue')['default']
     ChooseParts: typeof import('./components/ChooseParts.vue')['default']
     QuotationItem: typeof import('./components/QuotationItem.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ThreeCanvas: typeof import('./components/ThreeCanvas.vue')['default']
     ThreeDDisplay: typeof import('./components/ThreeDDisplay.vue')['default']
   }
 }
