@@ -1,7 +1,8 @@
 <template>
-  <HelloWorld />
+    <ThreeCanvas />
 </template>
 
-<script lang="ts" setup>
-  //
+<script setup lang="ts">
+import ThreeCanvas from '../components/ThreeCanvas.vue';
+
 </script>
