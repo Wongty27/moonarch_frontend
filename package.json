@@ -12,6 +12,7 @@
     "@formkit/themes": "^1.6.7",
     "@formkit/vue": "^1.6.7",
     "@mdi/font": "7.4.47",
+    "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "core-js": "^3.37.1",
     "d3": "^7.9.0",

@@ -114,6 +114,7 @@ export default {
 
 .formkit-form{
   width: 100%;
+  margin 
 }
 
 .centered-div {

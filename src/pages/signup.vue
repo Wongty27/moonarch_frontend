@@ -30,7 +30,7 @@
       <v-row class="mb-2">
         <v-col cols="6">
           <v-text-field v-model="Phone" label="Last Name"></v-text-field>
-        </v-col>
+        </v-col>  
 
         <v-col cols="6"> 
           <v-text-field v-model="City" label="City"></v-text-field>
