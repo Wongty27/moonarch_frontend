@@ -17,10 +17,7 @@ export default {
   },
 
   methods: {
-    init() {
-      const raycaster = new THREE.Raycaster();
-      const pointer = new THREE.Vector2;
-        
+    init() {        
       const scene = new THREE.Scene();
 
       const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -69,17 +66,7 @@ export default {
 
       const animate  = () => {
         requestAnimationFrame(animate);
-        // model.rotation.y += 0.002;
-
-        // update the picking ray with the camera and pointer position
-        raycaster.setFromCamera( pointer, camera );
-        
-        // calculate objects intersecting the picking ray
-        const intersects = raycaster.intersectObjects( scene.children );
-
-        for ( let i = 0; i < intersects.length; i++ ) {
-          intersects[ i ].object.material.color.set(0xff0000)l
-        }
+        // model.rotation.y += 0.002;        
         renderer.render(scene, camera);
       };
 
