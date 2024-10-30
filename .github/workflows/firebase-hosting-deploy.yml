@@ -18,8 +18,8 @@ jobs:
       - name: Build Vuetify App
         run: npm run build
 
-      - name:  Deploy to Firebase
-        uses: FirebaseExtend/action-hosting-deploy@v0
+      - name: Deploy to Firebase
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
