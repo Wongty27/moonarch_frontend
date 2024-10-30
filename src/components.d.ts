@@ -7,22 +7,15 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-
-    BillForm: typeof import('./components/BillForm.vue')['default']
-    BillingForm: typeof import('./components/BillingForm.vue')['default']
-    BillingForm2: typeof import('./components/BillingForm2.vue')['default']
-    OrderSum: typeof import('./components/OrderSum.vue')['default']
-    OrderSum2: typeof import('./components/OrderSum2.vue')['default']
-    OrderSummary: typeof import('./components/OrderSummary.vue')['default']
-    PaymentMethod: typeof import('./components/PaymentMethod.vue')['default']
-    ShopItem: typeof import('./components/ShopItem.vue')['default']
-    Summary: typeof import('./components/summary.vue')['default']
-    'Terms&Conditions': typeof import('./components/Terms&Conditions.vue')['default']
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
+    BillingForm: typeof import('./components/BillingForm.vue')['default']
+    OrderSummary: typeof import('./components/OrderSummary.vue')['default']
+    PaymentMethod: typeof import('./components/PaymentMethod.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShopItem: typeof import('./components/ShopItem.vue')['default']
+    'Terms&Conditions': typeof import('./components/Terms&Conditions.vue')['default']
     ThreeCanvas: typeof import('./components/ThreeCanvas.vue')['default']
-
   }
 }
