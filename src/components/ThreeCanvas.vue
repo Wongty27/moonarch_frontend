@@ -17,7 +17,7 @@ export default {
   },
 
   methods: {
-    init() {
+    init() {        
       const scene = new THREE.Scene();
 
       const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -66,7 +66,7 @@ export default {
 
       const animate  = () => {
         requestAnimationFrame(animate);
-        // model.rotation.y += 0.002;
+        // model.rotation.y += 0.002;        
         renderer.render(scene, camera);
       };
 
