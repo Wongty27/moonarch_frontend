@@ -1,13 +1,27 @@
 <template>
   <v-app>
+    <AppHeader />
+    
+    <!-- Main Content -->
     <v-main>
       <router-view />
     </v-main>
+
+    <AppFooter />
   </v-app>
 </template>
 
-<script lang="ts" setup>
-  //
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import AppHeader from '@/components/AppHeader.vue'
+import AppFooter from '@/components/AppFooter.vue'
+
+const authStore = useAuthStore()
+
+onMounted(() => {
+  authStore.checkAuth()
+})
 </script>
 
 <style>

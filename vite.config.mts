@@ -15,6 +15,7 @@ import { fileURLToPath, URL } from 'node:url'
 export default defineConfig({
   plugins: [
     VueRouter({
+      routesFolder: 'src/pages', //this is the only change I made in this file
       dts: 'src/typed-router.d.ts',
     }),
     Layouts(),
@@ -56,7 +57,8 @@ export default defineConfig({
   define: { 'process.env': {} },
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+      
     },
     extensions: [
       '.js',

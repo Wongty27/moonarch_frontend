@@ -401,3 +401,8 @@
     width: 100%
     }
 </style>
+
+<route lang="yaml">
+    meta:
+      requiresMaster: true
+</route>

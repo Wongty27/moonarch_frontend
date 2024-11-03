@@ -8,20 +8,18 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
+    AppHeader: typeof import('./components/AppHeader.vue')['default']
     BarChart: typeof import('./components/BarChart.vue')['default']
-    ChartComponent: typeof import('./components/ChartComponent.vue')['default']
     HelloWorld: typeof import('./components/HelloWorld.vue')['default']
     LineChart: typeof import('./components/LineChart.vue')['default']
-    MultipleLineChart: typeof import('./components/MultipleLineChart.vue')['default']
+    LogoutButton: typeof import('./components/LogoutButton.vue')['default']
+    OrderItemsTable: typeof import('./components/OrderItemsTable.vue')['default']
     PieChart: typeof import('./components/PieChart.vue')['default']
-    Plotlychart: typeof import('./components/plotlychart.vue')['default']
-    Plotlygauge: typeof import('./components/PlotlyGauge.vue')['default']
     PlotlyGauge: typeof import('./components/PlotlyGauge.vue')['default']
     Plotlysb: typeof import('./components/Plotlysb.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SunburstChart: typeof import('./components/SunburstChart.vue')['default']
-    Test: typeof import('./components/test.vue')['default']
     VueGauge: typeof import('./components/VueGauge.vue')['default']
   }
 }

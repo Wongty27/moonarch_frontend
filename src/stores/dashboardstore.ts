@@ -83,60 +83,28 @@ export const useDashboardStore = defineStore("dashboardstore", {
 
       // Individual fetch functions (optional, if you want to fetch separately)
       async fetchProfits() {
-        this.profits = await this.fetchData<Profits>('/profits');
+        this.profits = await this.fetchData<Profits>('/dashboard/profits');
       },
       async fetchOrders() {
-        this.orders = await this.fetchData<Orders>('/orders');
+        this.orders = await this.fetchData<Orders>('/dashboard/orders');
       },
       async fetchConversions() {
-        this.conversions = await this.fetchData<Conversions>('/conversions');
+        this.conversions = await this.fetchData<Conversions>('/dashboard/conversions');
       },
       async fetchRatings() {
-        this.ratings = await this.fetchData<Ratings>('/ratings');
+        this.ratings = await this.fetchData<Ratings>('/dashboard/ratings');
       },
       async fetchBrands() {
-        this.brands = await this.fetchData<Brands>('/brands');
+        this.brands = await this.fetchData<Brands>('/dashboard/brands');
       },
       async fetchStocks() {
-        this.stocks = await this.fetchData<Stocks>('/stocks');
+        this.stocks = await this.fetchData<Stocks>('/dashboard/stocks');
       },
       async fetchTraffics() {
-        this.traffics = await this.fetchData<Traffics>('/traffics');
+        this.traffics = await this.fetchData<Traffics>('/dashboard/traffics');
       },
       async fetchSources() {
-        this.sources = await this.fetchData<Sources>('/sources');
+        this.sources = await this.fetchData<Sources>('/dashboard/sources');
       },
     },
   });
-
-// export default useDashboardStore
-
-
-          // Fetch all data and update state
-      // async fetchAllData() {
-      //   try {
-      //     // Run all fetches in parallel
-      //     const [profits, orders, conversions, ratings, brands, stocks, traffics, sources] = await Promise.all([
-      //       this.fetchData<Profits>('/profits'),
-      //       this.fetchData<Orders>('/orders'),
-      //       this.fetchData<Conversions>('/conversions'),
-      //       this.fetchData<Ratings>('/ratings'),
-      //       this.fetchData<Brands>('/brands'),
-      //       this.fetchData<Stocks>('/stocks'),
-      //       this.fetchData<Traffics>('/traffics'),
-      //       this.fetchData<Sources>('/sources'),
-      //     ]);
-
-      //     // Update the state with fetched data
-      //     this.profits = profits;
-      //     this.orders = orders;
-      //     this.conversions = conversions;
-      //     this.ratings = ratings;
-      //     this.brands = brands;
-      //     this.stocks = stocks;
-      //     this.traffics = traffics;
-      //     this.sources = sources;
-      //   } catch (err) {
-      //     console.error("Error fetching all data:", err);
-      //   }
-      // },
