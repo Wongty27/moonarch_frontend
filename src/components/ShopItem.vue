@@ -1,31 +1,93 @@
 <template>
-    <v-col cols="12" md="4">
-      <v-card style="background-color: #001655;" class="bitstream">
-        <v-card-title>{{ item.name }}</v-card-title>
-        <v-card-text>
-          <img :src="item.imageUrl" alt="Item Image" width="100%">
-          <p>{{ item.description }}</p>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn>Add to Cart</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </template>
-  
-  <script>
-  export default {
-    name: 'ShopItem',
-    props: {
-      item: {
-        type: Object,
-        required: true,
-      },
+  <v-container class="card-container" fluid>
+    <v-row class="shop-items-row">
+      <v-col cols="12" sm="4" md="3" v-for="item in items" :key="item.id">
+        <v-card style="background-color: #001655;" class="bitstream card-content">
+          <v-card-title class="centered-text">{{ item.name }}</v-card-title>
+          <v-card-text class="centered-content">
+            <img :src="item.imageUrl" alt="Item Image" class="fixed-size-image">
+            <br><br>
+            <p>{{ item.description }}</p>
+            <p>RM{{ item.price }}</p>
+          </v-card-text>
+          <v-card-actions class="centered-content">
+            <v-btn @click="addToCart(item)">Add to Cart</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+import { useCart } from '@/composables/useCart';
+
+export default {
+  name: 'ShopItem',
+  props: {
+    items: {
+      type: Array,
+      required: true,
     },
-  };
-  </script>
+  },
+  setup(_, { emit }) {
+    const { addToCart } = useCart();
+
+    const addToCartHandler = (item) => {
+      addToCart(item);
+      emit('showSnackbar', `Added ${item.name} to cart`);
+    };
+
+    return {
+      addToCart: addToCartHandler,
+    };
+  },
+};
+</script>
 
 <style>
 @import url('../assets/BitStreamFont/stylesheet.css');
 @import url('../assets/BPdotsFont/stylesheet.css');
+
+.card-container {
+  padding: 20px;
+}
+
+.fixed-size-image {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 10px auto;
+}
+
+.centered-text {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.centered-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.shop-items-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
 </style>

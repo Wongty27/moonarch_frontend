@@ -31,7 +31,6 @@ export default {
         powerPreference: 'low-power',
         precision: 'lowp',
         antialias: false,
-        renderMode: 'on-demand',
       });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setClearColor('#ffffff'); // 001655

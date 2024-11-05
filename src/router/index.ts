@@ -5,13 +5,42 @@
  */
 
 // Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
-import { setupLayouts } from 'virtual:generated-layouts'
-import { routes } from 'vue-router/auto-routes'
+import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: setupLayouts(routes),
+  routes: [
+    {
+      path: '/',
+      name: 'home',
+      component: () => import('@/pages/index.vue')
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: () => import('@/pages/index.vue')
+    },
+    {
+      path: '/shop',
+      name: 'shop',
+      component: () => import('@/pages/shop.vue')
+    },
+    {
+      path: '/cart',
+      name: 'cart',
+      component: () => import('@/pages/cart.vue')
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: () => import('@/pages/payment.vue')
+    },
+    {
+      path: '/customise',
+      name: 'customise',
+      component: () => import('@/pages/customise.vue')
+    }
+  ]
 })
 
 // Workaround for https://github.com/vitejs/vite/issues/11804

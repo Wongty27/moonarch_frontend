@@ -1,10 +1,11 @@
 <template>
     <v-card style="background-color:#001655" class="ma-5 bitstream">
-      <v-divider thickness="4"></v-divider>
+      <v-divider class="border-opacity-75" :thickness="4" color="#E324BD"></v-divider>
       <v-form>
         <v-row class="ma-auto pa-2">
           <v-text-field label="Email address*" v-model="email" type="email" placeholder="user_id@domain.com" clearable required></v-text-field>
         </v-row>
+        <v-divider class="border-opacity-25 mb-3 mx-2"></v-divider>
         <v-row>
           <v-col cols="6" class="ma-auto pa-5">
             <v-text-field label="First Name*" v-model="firstName" placeholder="John" clearable required></v-text-field>
@@ -46,6 +47,7 @@
           </v-col>
         </v-row>
       </v-form>
+      <v-divider class="border-opacity-75" :thickness="4" color="#E324BD"></v-divider>
     </v-card>
   </template>
   

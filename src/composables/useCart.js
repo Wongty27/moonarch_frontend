@@ -26,11 +26,18 @@ export const useCart = () => {
     cartItems.value = cartItems.value.filter(item => item.id !== itemId);
   };
 
-  const updateQuantity = (itemId, quantity) => {
+  const updateQuantity = (itemId, change) => {
     const item = cartItems.value.find(item => item.id === itemId);
     if (item) {
-      item.quantity = quantity;
+      item.quantity += change;
+      if (item.quantity <= 0) {
+        removeItem(itemId);
+      }
     }
+  };
+
+  const clearCart = () => {
+    cartItems.value = [];
   };
 
   return {
@@ -38,5 +45,6 @@ export const useCart = () => {
     addToCart,
     removeItem,
     updateQuantity,
+    clearCart,
   };
 };

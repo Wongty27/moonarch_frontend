@@ -1,8 +1,8 @@
 <template>
     <v-card style="background-color:#001655" class="ma-5">
-        <v-divider thickness="4"></v-divider>
+        <v-divider class="border-opacity-75" :thickness="4" color="#E324BD"></v-divider>
       <v-card-title class="text-center text-h5"> ORDER LIST</v-card-title>
-      <v-divider></v-divider>
+      <v-divider class="border-opacity-50"></v-divider>
       <v-list variant="tonal" style="background-color:#001655">
         <v-list-item
           v-for="(item, index) in cartItems"
@@ -16,7 +16,7 @@
           </v-list-item-subtitle>
           </v-list-item>
       </v-list>
-      <v-divider></v-divider>
+      <v-divider class="border-opacity-75"></v-divider>
       
           
       <v-row>
@@ -29,7 +29,7 @@
         </v-col>
       </v-row>
         
-        <v-divider></v-divider>
+        <v-divider class="border-opacity-75"></v-divider>
         <PaymentMethod
           :selectedPaymentMethod="selectedPaymentMethod"
           @update:selectedPaymentMethod="$emit('update:selectedPaymentMethod', $event)"
@@ -45,11 +45,14 @@
               :disabled="!isAgreed || !selectedPaymentMethod"
               @click="submitOrder"
               elevated="12"
+              prepend-icon="mdi-check-circle-outline"
+              rounded="100"
             >
               Pay Now
             </v-btn>
         </v-col>
         </v-row>
+        <v-divider class="border-opacity-75" :thickness="4" color="#E324BD"></v-divider>
     </v-card>
   </template>
   

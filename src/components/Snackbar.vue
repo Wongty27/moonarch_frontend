@@ -6,7 +6,17 @@
     color="#E324BD"
     style="opacity: 0.85;"
   >
-    {{ message }}
+  <v-row>
+    <span class="pa-2">{{ message }}</span>
+    <v-btn
+      @click="closeSnackbar"
+      small
+      text
+      class="close-btn"
+    >
+      close
+    </v-btn>
+  </v-row>
   </v-snackbar>
 </template>
 
@@ -28,8 +38,12 @@ export default {
   setup(props, { emit }) {
     const visible = ref(props.show);
 
+    const closeSnackbar = () => {
+      visible.value = false;
+      emit('update:show', false);
+    };
+
     watch(() => props.show, (newVal) => {
-      console.log('Show prop changed:', newVal);
       visible.value = newVal;
     });
 
@@ -39,13 +53,21 @@ export default {
       }
     });
 
-    watch(() => props.message, (newVal) => {
-      console.log('Message prop changed:', newVal);
-    });
-
     return {
       visible,
+      closeSnackbar,
     };
   },
 };
 </script>
+
+<style>
+
+.close-btn {
+  margin-left:80%;
+  color: white;
+  text-transform: none;
+  background-color: transparent;
+  box-shadow: none;
+}
+</style>
