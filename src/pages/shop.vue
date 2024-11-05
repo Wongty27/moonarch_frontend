@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import { ref } from 'vue';
 import ShopItem from '@/components/ShopItem.vue';
 import { useShopItems } from '@/composables/useShopItem.js';
 
