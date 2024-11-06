@@ -12,7 +12,7 @@
             :disabled="cartItems.length === 0"
             style="margin-left: auto;"
           >
-            Clear Cart
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-card-title>
         
