@@ -1,7 +1,7 @@
 <template>
     <v-card style="background-color:#001655" class="ma-5 bitstream">
       <v-divider class="border-opacity-75" :thickness="4" color="#E324BD"></v-divider>
-      <v-form ref="form" @input="validateForm">
+      <v-form ref="form">
         <v-row class="ma-auto pa-2">
           <v-text-field label="Email address*" v-model="email" type="email" placeholder="user_id@domain.com" clearable required></v-text-field>
         </v-row>
