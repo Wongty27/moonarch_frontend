@@ -1,5 +1,5 @@
 <template>
-  <v-main class="container parallax-background" style="min-height: 90vh;">
+  <v-main class="container parallax-background" style="min-height: 100%;">
     <div class="overlay"></div>
     <v-container>
       <v-card style="background-color: rgba(62, 0, 84, 0.9); padding: 16px; min-height: 50vh;">
@@ -17,70 +17,29 @@
         </v-card-title>
         
         <!-- Debug info -->
-        <div class="debug-info text-center">
+        <div class="debug-info text-center bitstream">
           Cart Items Count: {{ cartItems.length }}
         </div>
 
-        <div class="scrollable-list" style="overflow-y: auto; max-height: 60vh;">
+        <div class="scrollable-list bitstream" style="overflow-y: auto; max-height: 40vh;">
           <v-row>
             <v-col cols="12">
-              <div v-if="cartItems.length > 0">
-                <v-list bg-color="transparent">
-                  <template v-for="item in cartItems" :key="item.id">
-                    <v-list-item>
-                      <v-row align="center" no-gutters>
-                        <!-- Item Image -->
-                        <v-col cols="3">
-                          <v-img
-                            :src="item.imageUrl"
-                            height="100"
-                            width="100"
-                            cover
-                          ></v-img>
-                        </v-col>
-                        
-                        <!-- Item Details -->
-                        <v-col cols="6">
-                          <v-list-item-title class="text-h6 mb-1">
-                            {{ item.name }}
-                          </v-list-item-title>
-                          <v-list-item-subtitle class="mb-1">
-                            Price: ${{ item.price.toFixed(2) }}
-                          </v-list-item-subtitle>
-                          <v-list-item-subtitle>
-                            Quantity: {{ item.quantity }}
-                          </v-list-item-subtitle>
-                        </v-col>
-
-                        <!-- Quantity Controls -->
-                        <v-col cols="3" class="text-right">
-                          <v-btn icon @click="decreaseQuantity(item.id)">
-                            <v-icon>mdi-minus</v-icon>
-                          </v-btn>
-                          <v-btn icon @click="increaseQuantity(item.id)">
-                            <v-icon>mdi-plus</v-icon>
-                          </v-btn>
-                        </v-col>
-                      </v-row>
-                    </v-list-item>
-                    <v-divider class="my-2"></v-divider>
-                  </template>
-                </v-list>
-              </div>
-              <div v-else>
-                <p class="text-center pa-4">Your cart is empty.</p>
-              </div>
+              <CartList
+                :cartItems="cartItems"
+                :increaseQuantity="increaseQuantity"
+                :decreaseQuantity="decreaseQuantity"
+              />
             </v-col>
           </v-row>
         </div>
 
         <v-row class="mt-4">
-          <v-col cols="12" class="text-right bitstream">
-            <div v-if="cartItems.length > 0" class="text-h5">
-              Total: ${{ totalPrice }}
+          <v-col cols="12" class="text-right">
+            <div v-if="cartItems.length > 0" class="text-h5 bitstream mr-5">
+              Total: RM{{ totalPrice }}
             </div>
           </v-col>
-          <v-col cols="12" class="text-right">
+          <v-col cols="12" class="text-right bitstream">
             <v-btn 
               color="#E324BD" 
               @click="checkout" 
@@ -103,12 +62,16 @@
 import { computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCart } from '@/composables/useCart';
+import CartList from '@/components/CartList.vue';
 
 export default {
   name: 'CartPage',
+  components: {
+    CartList,
+  },
   setup() {
     const router = useRouter();
-    const { cartItems, removeItem, updateQuantity, clearCart } = useCart();
+    const { cartItems, updateQuantity, clearCart } = useCart();
 
     const totalPrice = computed(() => {
       return cartItems.value
@@ -162,7 +125,7 @@ export default {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity for dimming */
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 0;
 }
 
@@ -170,6 +133,8 @@ export default {
   overflow-y: auto;
   max-height: 300px; /* Adjust the height as needed */
   overflow-x: hidden; /* Remove horizontal scrollbar */
+  padding: 16px; /* Optional: Add padding to match card */
+  border-radius: 8px; /* Optional: Add border-radius to match card */
 }
 
 .scrollable-list::-webkit-scrollbar {
@@ -183,5 +148,9 @@ export default {
 
 .scrollable-list::-webkit-scrollbar-track {
   background: transparent;
+}
+
+.scrollable-list .v-list {
+  background-color: #3e0054 !important;
 }
 </style>

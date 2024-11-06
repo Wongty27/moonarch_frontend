@@ -1,9 +1,10 @@
 <template>
     <v-app-bar
-      class="d-flex flex-column"
-      height="85"
+      class="d-flex flex-column bpdots"
+      height="100"
       scroll-behavior="hide"
       scroll-threshold="90"
+      :style="{ textShadow: '2px 2px 5px #FF66FF'}"
     >
       <div>
         <v-img
@@ -21,6 +22,8 @@
         <v-btn
           to="/"
           size="large"
+          class="nav-button"
+          rounded="lg"
         >
           About
         </v-btn>
@@ -28,6 +31,8 @@
         <v-btn
           to="/shop"
           size="large"
+          class="nav-button"
+          rounded="lg"
         >
           Shop Now
         </v-btn>
@@ -35,6 +40,8 @@
         <v-btn
           to="/customise"
           size="large"
+          class="nav-button"
+          rounded="lg"
         >
           Customise
         </v-btn>
@@ -100,3 +107,16 @@
       },
     }
   </script>
+
+  <style>
+.v-btn.nav-button {
+  font-size: 2rem !important; /* Force font size */
+  margin: 0px 30px;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-button:hover {
+  background-color: #5e0054; /* Optional: Change color on hover */
+}
+</style>

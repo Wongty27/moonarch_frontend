@@ -1,6 +1,6 @@
 import { computed } from 'vue';
 
-export function useCartTotals(cartItems, shippingCost) {
+export function useCartTotals(cartItems) {
   const subtotal = computed(() => {
     return cartItems.reduce(
       (total, item) => total + item.quantity * item.price,
@@ -8,12 +8,7 @@ export function useCartTotals(cartItems, shippingCost) {
     );
   });
 
-  const total = computed(() => {
-    return subtotal.value + shippingCost;
-  });
-
   return {
     subtotal,
-    total,
   };
 }

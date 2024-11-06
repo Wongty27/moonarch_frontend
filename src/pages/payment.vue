@@ -7,16 +7,16 @@
         </v-row>
       <v-row class="ma-0">
         <v-col cols="12" md="6" class="pa-4">
-          <BillingForm @submit="handleBillingSubmit" />
+          <BillingForm @submit="handleBillingSubmit" @update:isFormValid="isFormValid = $event" />
         </v-col>
         <v-col cols="12" md="6" class="pa-4 bitstream">
           <OrderSummary
             :cartItems="cartItems"
-            :shippingCost="shippingCost"
             :selectedPaymentMethod="selectedPaymentMethod"
             :isAgreed="isAgreed"
             @update:selectedPaymentMethod="selectedPaymentMethod = $event"
             @update:isAgreed="isAgreed = $event"
+            class="bitstream"
           />
         </v-col>
       </v-row>
@@ -28,6 +28,7 @@
   import { ref } from 'vue';
   import BillingForm from '@/components/BillingForm.vue';
   import OrderSummary from '@/components/OrderSummary.vue';
+  import { useCart } from '@/composables/useCart';
   
   export default {
     name: 'PaymentPage',
@@ -35,16 +36,17 @@
       BillingForm,
       OrderSummary,
     },
-    data() {
+    setup() {
+      const { cartItems } = useCart();
+      const selectedPaymentMethod = ref(null);
+      const isAgreed = ref(false);
+      const isFormValid = ref(false);
+
       return {
-        cartItems: [
-          // Your cart items data
-          { name: 'Item 1', quantity: 2, price: 10 },
-          { name: 'Item 2', quantity: 1, price: 20 },
-        ],
-        shippingCost: 5, // Example shipping cost
-        selectedPaymentMethod: null,
-        isAgreed: false,
+        cartItems,
+        selectedPaymentMethod,
+        isAgreed,
+        isFormValid,
       };
     },
     methods: {

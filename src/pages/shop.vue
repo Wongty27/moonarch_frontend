@@ -1,7 +1,7 @@
 <template>
     <v-parallax src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif" class="dimmed-background">
         <v-container>
-            <v-container-title class="text-h2 bpdots shop-title" :style="{ textShadow: '2px 2px 5px #FF66FF'}">SHOP LISTING</v-container-title>
+            <span class="text-h2 bpdots shop-title" :style="{ textShadow: '2px 2px 5px #FF66FF'}">SHOP LISTING</span>
             <v-row class="shop-items-row">
                 <ShopItem :items="shopItems" @showSnackbar="showSnackbar" />
             </v-row>
