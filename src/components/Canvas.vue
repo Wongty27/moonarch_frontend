@@ -1,0 +1,647 @@
+<template>
+  <div ref="SceneContainer" class="scene-container">
+    <!-- Loading animation with transition -->
+    <transition name="fade">
+      <div v-if="isLoading" class="loading-container">
+        <div class="loading-circle"></div>
+        <span class="loading-text">Loading Model...</span>
+      </div>
+    </transition>
+
+    <!-- Model content with transition -->
+    <transition name="fade">
+      <div class="points-container" v-show="!isLoading">
+        <div v-for="(point, index) in data" 
+             :key="index" 
+             :class="['point', ...point.title.toLowerCase().split(' '), { 'active': activePoint === index }]"
+             :ref="'point-' + index"
+             @click="handlePointClick(point, index)">
+        </div>
+      </div>
+    </transition>
+  </div>
+</template>
+
+<script lang="ts">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { defineComponent } from 'vue';
+
+interface PartData {
+  title: string;
+  image: string;
+  description: string;
+  website: string;
+  position: THREE.Vector3;
+  stockList: { stockName: string; stockPrice: string }[];
+}
+
+export default defineComponent({
+  name: 'ThreeCanvas',
+  props: {
+    drawer: {
+      type: Boolean,
+      required: true
+    }
+  },
+  data() {
+    return {
+      isLoading: true,
+      mouseDownTime: 0,
+      activePoint: null as number | null,
+      camera: null as THREE.PerspectiveCamera | null,
+      controls: null as OrbitControls | null,
+      renderer: null as THREE.WebGLRenderer | null,
+      scene: null as THREE.Scene | null,
+      data: [
+        //pc case
+        {
+            title:'PC Case',
+            image:'https://images-eu.ssl-images-amazon.com/images/I/712giHWFxxL._AC_UL330_SR330,330_.jpg',
+            description:'cacsccsacscascas',
+            website:'https://www.google.com/search?sca_esv=2ec8c8d8f804ae0b&q=pc+case&udm=2&fbs=AEQNm0AeMNWKf4PpcKMI-eSa16lJoRPMIuyspCxWO6iZW9F1Nu5UXlEfGU2YX1CrW9Nmm9Q3JIJZUqyMsLxos5tPU_UnqJ9Yac9VVJRGWfC4j5Vo8m7Mlt4ff7AZsgxj4YvbRt-9Wl-zNhUK7E5vq_dODPLADalc4lefWVXSdtkHoC0OmEl41dgSIVaSM1LxArG3o7H3C3lSBG5yaKvA2zgbZVjlLUSEnA&sa=X&sqi=2&ved=2ahUKEwiqwauXwrWJAxVxTWwGHdpSI98QtKgLegQIFxAB&biw=1280&bih=712&dpr=2',
+            position: new THREE.Vector3(8.538, 2.040, 2.722),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //cooling fan
+        {
+            title:'Cooling Fan',
+            image:'https://cdn.sznbone.com/snowfan/20210610/1-210610140321422.jpg',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(8.509, -0.554, 2.764),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //cpu
+        {
+            title:'Cpu',
+            image:'https://cdn.prod.website-files.com/60a3c1fc44c5715c395770e7/649edc7c4e62aa0c0f6c34c2_A%20CPU%20made%20with%20silicon%20wafers..jpg',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(9.292, 0.580, -0.116),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //cpu_cooler_pipe
+        {
+            title:'Cpu Cooler Pipe',
+            image:'https://i.pcmag.com/imagery/roundups/03bpUEwnbhKiurbBNLVrbtp-1..v1648267897.jpg',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(8.656, 0.494, 0.262),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //internal_hard_drive
+        {
+            title:'Internal Hard Drive',
+            image:'https://snpi.dell.com/snp/images/products/large/my-en~400-APYM/400-APYM.jpg',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(8.598, -1.958, 1.938),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //video_card
+        {
+            title:'Video/Graphic Card',
+            image:'https://www.lifewire.com/thmb/3oV9WLv8CMhKlSDyKeNEEQRe338=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/xfx-amd-radeon-hd-5450-video-card-57c764225f9b5829f4b1d609.jpg',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(8.694, -0.546, -0.282),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //motherboard
+        {
+            title:'Motherboard',
+            image:'https://dlcdnwebimgs.asus.com/files/media/53D30A49-0B79-48F2-AD43-DEB7F954AE2B/v1/img/kv/ROG-Strix-B760-F-Gaming.png',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(9.303, -1.162, 0.777),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //power_supply
+        {
+            title:'Power Supply',
+            image:'https://media.rs-online.com/image/upload/bo_1.5px_solid_white,b_auto,c_pad,dpr_2,f_auto,h_399,q_auto,w_710/c_pad,h_399,w_710/Y2083898-01?pgw=1',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(8.605, -2.155, -0.667),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        },
+        //memory
+        {
+            title:'Memory card',
+            image:'https://www.sweetwater.com/sweetcare/media/2023/08/Installed-RAM-How-To-Install-RAM-In-a-Windows-PC.jpg',
+            description:'cacsccsacscascas',
+            website:'https://www.mcba.ch/en/',
+            position: new THREE.Vector3(8.605, -2.155, -0.667),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" },
+              { stockName: "Apple", stockPrice: "100" },
+              { stockName: "Huawei", stockPrice: "120" }
+            ],
+        }
+      ] as PartData[]
+    }
+  },
+  emits: ['point-clicked'],
+  methods: {
+    handlePointClick(point: PartData, index: number) {
+      this.activePoint = this.activePoint === index ? null : index;
+      this.$emit('point-clicked', this.activePoint === null ? null : {
+        title: point.title,
+        image: point.image,
+        description: point.description,
+        website: point.website,
+        stockList: point.stockList
+      });
+    },
+    //Detect Panning and prevent closing while clicking after panning
+    handleClickOutside(event: MouseEvent) {
+      const clickDuration = Date.now() - this.mouseDownTime;
+      if (clickDuration < 200) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.point') && !target.closest('.tooltip')) {
+          this.activePoint = null;
+        }
+      }
+    },
+    getTooltipPositionClass(index: number) {
+      const pointRef = this.$refs[`point-${index}`] as HTMLElement[];
+      if (!pointRef || !pointRef[0]) return '';
+      
+      const point = pointRef[0];
+      const rect = point.getBoundingClientRect();
+      const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+      const containerRect = sceneContainer.getBoundingClientRect();
+      
+      const TOOLTIP_WIDTH = 200;  // Match your CSS width
+      const TOOLTIP_HEIGHT = 160; // Approximate height based on content
+      
+      // Calculate tooltip edges for each possible position
+      const positions = {
+        top: {
+          left: rect.left - (TOOLTIP_WIDTH / 2),
+          right: rect.left + (TOOLTIP_WIDTH / 2),
+          top: rect.top - TOOLTIP_HEIGHT - 10,
+          bottom: rect.top - 10
+        },
+        bottom: {
+          left: rect.left - (TOOLTIP_WIDTH / 2),
+          right: rect.left + (TOOLTIP_WIDTH / 2),
+          top: rect.bottom + 10,
+          bottom: rect.bottom + TOOLTIP_HEIGHT + 10
+        },
+        left: {
+          left: rect.left - TOOLTIP_WIDTH - 10,
+          right: rect.left - 10,
+          top: rect.top - (TOOLTIP_HEIGHT / 2),
+          bottom: rect.top + (TOOLTIP_HEIGHT / 2)
+        },
+        right: {
+          left: rect.right + 10,
+          right: rect.right + TOOLTIP_WIDTH + 10,
+          top: rect.top - (TOOLTIP_HEIGHT / 2),
+          bottom: rect.top + (TOOLTIP_HEIGHT / 2)
+        }
+      };
+
+      // Check if each position fits within container
+      const fits = {
+        top: positions.top.left >= 0 && 
+             positions.top.right <= containerRect.width && 
+             positions.top.top >= 0,
+        bottom: positions.bottom.left >= 0 && 
+                positions.bottom.right <= containerRect.width && 
+                positions.bottom.bottom <= containerRect.height,
+        left: positions.left.left >= 0 && 
+              positions.left.top >= 0 && 
+              positions.left.bottom <= containerRect.height,
+        right: positions.right.right <= containerRect.width && 
+               positions.right.top >= 0 && 
+               positions.right.bottom <= containerRect.height
+      };
+
+      // Choose best position
+      if (fits.top) return [];           // Default top position
+      if (fits.bottom) return ['tooltip-bottom'];
+      if (fits.left) return ['tooltip-left'];
+      if (fits.right) return ['tooltip-right'];
+      
+      // If no position fits perfectly, choose the one that's most visible
+      return ['tooltip-bottom']; // Fallback to bottom
+    },
+    init() {
+      const scene = new THREE.Scene();
+      const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+      const containerRect = sceneContainer.getBoundingClientRect();
+
+      this.camera = new THREE.PerspectiveCamera(50, containerRect.width / containerRect.height, 0.1, 40);
+      this.camera.position.set(5, 0, 10);
+      this.camera.updateProjectionMatrix();
+
+      // Renderer setup
+      const renderer = new THREE.WebGLRenderer({
+        powerPreference: 'low-power',
+        precision: 'lowp',
+        antialias: false,
+      });
+      this.renderer = renderer;
+      renderer.setSize(containerRect.width, containerRect.height);
+      renderer.setClearColor('#ffffff');
+      renderer.setPixelRatio(window.devicePixelRatio);
+      sceneContainer.appendChild(renderer.domElement);
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight('#ffffff', 2);
+      scene.add(ambientLight);
+      const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
+      directionalLight.position.set(-1, 1, 0);
+      scene.add(directionalLight);
+
+      // Controls
+      this.controls = new OrbitControls(this.camera, renderer.domElement);
+      this.controls.minDistance = 2;
+      this.controls.maxDistance = 10;
+      this.controls.enableDamping = true;
+      this.controls.maxPolarAngle = Math.PI / 2;
+      this.controls.target.set(8.485, -0.68, -0.31);
+
+      // Add change event listener to controls
+      this.controls.addEventListener('change', this.updatePointPositions);
+
+      // Modify the controls event listeners
+      this.controls.addEventListener('start', () => {
+        // Remove temporary to prevent conflicts during drag
+        document.removeEventListener('click', this.handleClickOutside);
+      });
+
+      this.controls.addEventListener('end', () => {
+        // Reattach immediately after control operation ends
+        document.addEventListener('click', this.handleClickOutside);
+      });
+
+      // Load 3D Model
+      const loader = new GLTFLoader();
+      loader.load(
+        '../models/scene.gltf',
+        (gltf) => {
+          const model = gltf.scene;
+          model.position.set(0, 0, 0);
+          model.scale.set(1, 1, 1);
+          scene.add(model);
+          this.updatePointPositions();
+          this.isLoading = false; // Hide loading animation
+        },
+        (xhr) => {
+          console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        (error) => {
+          console.error('Error loading model:', error);
+          this.isLoading = false; // Hide loading on error
+        }
+      );
+
+      // Animation loop without point updates
+      const animate = () => {
+        requestAnimationFrame(animate);
+        if (this.camera) {
+          renderer.render(scene, this.camera);
+          this.controls?.update();
+        }
+      };
+
+      animate();
+
+      // Add this helper method
+      const calculateCameraDistance = (width: number, height: number) => {
+        // Base distance for a reference size (e.g., 1000px width)
+        const baseDistance = 10;
+        const referenceWidth = 1000;
+        // Scale factor based on container width
+        const scale = Math.max(referenceWidth / width, 1);
+        return baseDistance * scale;
+      };
+
+      // Store the resize handler as a class property so we can remove it later
+      this.resizeHandler = () => {
+        if (!this.camera || !this.controls || !this.$refs.SceneContainer) return;
+        
+        const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+        if (!sceneContainer) return;
+
+        const newRect = sceneContainer.getBoundingClientRect();
+        
+        // Update camera
+        this.camera.aspect = newRect.width / newRect.height;
+        this.camera.updateProjectionMatrix();
+        
+        // Calculate new distance based on container size
+        const newDistance = calculateCameraDistance(newRect.width, newRect.height);
+        
+        // Update controls distance limits
+        this.controls.minDistance = newDistance * 0.5;
+        this.controls.maxDistance = newDistance * 1.5;
+        
+        // Update camera position while maintaining current viewing angle
+        const spherical = new THREE.Spherical().setFromVector3(
+          this.camera.position.clone().sub(this.controls.target)
+        );
+        spherical.radius = newDistance;
+        
+        this.camera.position.setFromSpherical(spherical).add(this.controls.target);
+        
+        renderer.setSize(newRect.width, newRect.height);
+        this.controls.update();
+        this.updatePointPositions();
+      };
+
+      // Add resize event listener
+      window.addEventListener('resize', this.resizeHandler);
+
+      // Add mousedown listener to track click start time
+      document.addEventListener('mousedown', () => {
+        this.mouseDownTime = Date.now();
+      });
+    },
+    updatePointPositions() {
+      if (!this.camera) return;
+      const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+      const containerRect = sceneContainer.getBoundingClientRect();
+      
+      this.data.forEach((item, index) => {
+        const pointRef = this.$refs[`point-${index}`];
+        const point = pointRef ? (pointRef as HTMLElement[])[0] : null;
+        
+        if (point) {
+          const vector = item.position.clone();
+          vector.project(this.camera as THREE.Camera);
+          
+          const x = (vector.x * 0.5 + 0.5) * containerRect.width;
+          const y = (-vector.y * 0.5 + 0.5) * containerRect.height;
+
+          point.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+          point.style.display = vector.z < 1 ? 'block' : 'none';
+        }
+      });
+    },
+    updateLayout() {
+      if (this.camera && this.controls) {
+        const container = this.$refs.SceneContainer as HTMLElement;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        
+        // Update camera
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        
+        // Update renderer size
+        if (this.renderer) {
+          this.renderer.setSize(width, height, true);
+        }
+        
+        // Recalculate camera position to maintain view
+        const distance = this.calculateCameraDistance();
+        if (this.camera.position.z !== distance) {
+          this.camera.position.z = distance;
+        }
+        
+        // Update point positions
+        this.updatePointPositions();
+        this.controls.update();
+      }
+    },
+    calculateCameraDistance() {
+      // Adjust this calculation based on your model size
+      const container = this.$refs.SceneContainer as HTMLElement;
+      const width = container.clientWidth;
+      return 15 * (800 / width); // Adjust multiplier based on your needs
+    },
+    setupControls() {
+      if (this.camera && this.scene) {
+        this.controls = new OrbitControls(this.camera, this.$refs.SceneContainer as HTMLElement);
+        this.controls.addEventListener('change', () => {
+          this.updatePointPositions();
+        });
+        // Add end event listener
+        this.controls.addEventListener('end', () => {
+          this.updateLayout();
+        });
+      }
+    },
+    // Add cleanup in beforeUnmount
+    beforeUnmount() {
+      // Remove resize event listener
+      if (this.resizeHandler) {
+        window.removeEventListener('resize', this.resizeHandler);
+      }
+
+      // Remove click listener
+      document.removeEventListener('click', this.handleClickOutside);
+
+      // Cleanup Three.js resources
+      if (this.renderer) {
+        this.renderer.dispose();
+      }
+      if (this.controls) {
+        this.controls.dispose();
+      }
+    }
+  },
+  watch: {
+  drawer: {
+    handler() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          this.updateLayout();
+        }, 0); // Match transition duration
+      });
+    }
+    }
+  },
+  mounted() {
+    this.init();
+    // Add click listener to close tooltip when clicking outside
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  unmounted() {
+    // Clean up listener
+    document.removeEventListener('click', this.handleClickOutside);
+  }
+});
+</script>
+
+<style scoped>
+.scene-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.points-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.point {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #e324bd;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 1000;
+  transition: all 0s ease;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.point:hover, .point.active {
+  background-color: #e324bd;
+  transform: scale(1.2);
+  box-shadow: 0 0 15px rgba(227, 36, 189, 0.5);
+}
+
+.point:hover .tooltip {
+  display: none;
+}
+
+.point.active .tooltip {
+  display: block;
+}
+
+.point.active {
+  background-color: #e324bd;
+  transform: scale(1.2);
+  box-shadow: 0 0 15px rgba(227, 36, 189, 0.5);
+}
+
+/* Position variations */
+.tooltip-bottom {
+  top: 35px;
+  transform: translate(-50%, 0);
+}
+
+.tooltip-left {
+  left: auto;
+  right: 35px;
+  transform: translate(0, -50%);
+  top: 50%; /* Center vertically */
+}
+
+.tooltip-right {
+  left: 35px;
+  transform: translate(0, -50%);
+  top: 50%; /* Center vertically */
+}
+
+.tooltip-bottom.tooltip-left {
+  transform: translate(0, 0);
+}
+
+.tooltip-bottom.tooltip-right {
+  transform: translate(0, 0);
+}
+
+/* Multi-step fade in animation */
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  20% { opacity: 0.2; }
+  40% { opacity: 0.4; }
+  60% { opacity: 0.6; }
+  80% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+/* Multi-step fade out animation */
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  20% { opacity: 0.8; }
+  40% { opacity: 0.6; }
+  60% { opacity: 0.4; }
+  80% { opacity: 0.2; }
+  100% { opacity: 0; }
+}
+
+.fade-enter-active {
+  animation: fadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.fade-leave-active {
+  animation: fadeOut 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.loading-circle {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #e324bd;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.loading-text {
+  color: #e324bd;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
