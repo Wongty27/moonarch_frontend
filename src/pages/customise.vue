@@ -444,12 +444,13 @@ position: relative;
 overflow: hidden;
 padding-top: 85px;
 min-height: 100vh;
-overflow-y: auto;
+margin-left: 50px;
+transition: all 0.3s ease;
 }
 
 .drawer-open .fill-height {
-width: calc(100vw - 300px);
-margin-left: 300px;
+width: calc(100vw - 350px);
+margin-left: 350px;
 }
 
 .v-navigation-drawer {
@@ -481,6 +482,7 @@ left: 0;
 width: 100% !important;
 height: 100% !important;
 display: block;
+margin: 0 !important;
 }
 
 .info-drawer {
@@ -494,6 +496,7 @@ padding-top: 85px;
 
 .drawer-open.info-drawer-open .fill-height {
 width: calc(100vw - 650px);
+margin-left: 350px;
 margin-right: 300px;
 }
 
@@ -557,5 +560,15 @@ canvas {
   .v-field__outline {
     --v-field-border-width: 1px !important;
   }
+}
+
+/* Scene container should exactly match parent size */
+.scene-container {
+  position: relative;
+  width: 100% !important; /* Force full width */
+  height: 100%;
+  overflow: hidden;
+  left: 0 !important; /* Prevent any automatic margins */
+  margin: 0 !important; /* Remove any margins */
 }
 </style>
