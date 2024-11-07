@@ -41,7 +41,19 @@
     <!-- Info Panel -->
     <div v-if="!showProducts">
       <v-card color="#3e0054" flat class="pa-4">
-        <p class="text-subtitle-1 text-white text-center">Part Information</p>
+        <v-row no-gutters align="center">
+          <v-col cols="10">
+            <p class="text-subtitle-1 text-white text-center">Part Information</p>
+          </v-col>
+          <v-col cols="2" class="text-right">
+            <v-btn
+              icon="mdi-chevron-right"
+              variant="text"
+              color="white"
+              @click="infoDrawer = false"
+            ></v-btn>
+          </v-col>
+        </v-row>
       </v-card>
 
       <div v-if="selectedPart" class="pa-4">
@@ -52,7 +64,7 @@
           cover
           class="rounded-lg mb-4"
         ></v-img>
-        <p class="text-body-1 mb-4">{{ selectedPart.description }}</p>
+        <p class="text-body-1 mb-4 description-text">{{ selectedPart.description }}</p>
         
         <v-btn
           color="#e324bd"
@@ -88,6 +100,14 @@
           </v-col>
           <v-col cols="8">
             <p class="text-subtitle-1 text-white text-center">Choose Products</p>
+          </v-col>
+          <v-col cols="2" class="text-right">
+            <v-btn
+              icon="mdi-chevron-right"
+              variant="text"
+              color="white"
+              @click="infoDrawer = false"
+            ></v-btn>
           </v-col>
         </v-row>
       </v-card>
@@ -210,32 +230,25 @@
         <v-divider class="mt-4"></v-divider>
       </v-list-item>
 
-      <v-card color="#001655">
-        <template v-slot:title>
-          <v-row>
-            <v-col align="right">
-              <h1>Total:</h1>
-            </v-col>
-            <v-col align="center">
-              <h1>{{calculateTotal().toFixed(2)}}</h1>
-            </v-col>
-          </v-row>
-        </template>
+      <v-card color="#001655" class="pa-4">
+        <v-row no-gutters align="center" class="mb-2">
+          <v-col cols="6">
+            <span class="text-subtitle-1 text-grey">Sub-Total</span>
+            <div class="text-caption text-grey">{{ items.length }} items</div>
+          </v-col>
+          <v-col cols="6" class="text-right">
+            <span class="text-h5">${{ calculateTotal().toFixed(2) }}</span>
+          </v-col>
+        </v-row>
         
-        <template v-slot:subtitle>
-          <v-row>
-            <v-col col="7" md="7" align="right">
-              <v-btn color="#001655" @click="navigateToCheckout">
-                Buy Now
-              </v-btn>
-            </v-col>
-            <v-col align="left">
-              <v-btn color="#001655" @click="navigateToCart">
-                Add to cart
-              </v-btn>
-            </v-col>
-          </v-row>
-        </template>
+        <v-btn 
+          color="#e324bd" 
+          block 
+          class="mt-2"
+          @click="navigateToCart"
+        >
+          Save Build to Cart
+        </v-btn>
       </v-card>
     </v-list>
   </v-navigation-drawer>
@@ -255,7 +268,7 @@
 
 <script>
 import Canvas from '../components/Canvas.vue';
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 
 export default {
 name: 'Customise2',
@@ -339,9 +352,6 @@ methods: {
     const key = `${this.items[index].name}-${this.items[index].model}`;
     this.savedQuantities[key] = this.items[index].quantity;
   },
-  navigateToCheckout() {
-    console.log("Navigating to checkout with items:", this.items);
-  },
   navigateToCart() {
     // Add cart navigation logic
   },
@@ -412,6 +422,27 @@ methods: {
       this.updateQuantity(index);
     }
   }
+},
+watch: {
+  drawer(newVal) {
+    // Queue multiple resize events to ensure proper updating
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('resize'));
+      // Queue additional resize checks
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    });
+  },
+  infoDrawer(newVal) {
+    requestAnimationFrame(() => {
+      window.dispatchEvent(new Event('resize'));
+      // Queue additional resize checks
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+      }, 100);
+    });
+  }
 }
 };
 </script>
@@ -445,12 +476,13 @@ overflow: hidden;
 padding-top: 85px;
 min-height: 100vh;
 margin-left: 50px;
-transition: all 0.3s ease;
+transition: none; /* Remove transition */
 }
 
-.drawer-open .fill-height {
-width: calc(100vw - 350px);
-margin-left: 350px;
+.drawer-open .fill-height,
+.info-drawer-open .fill-height,
+.drawer-open.info-drawer-open .fill-height {
+transition: none; /* Remove transition */
 }
 
 .v-navigation-drawer {
@@ -570,5 +602,28 @@ canvas {
   overflow: hidden;
   left: 0 !important; /* Prevent any automatic margins */
   margin: 0 !important; /* Remove any margins */
+}
+
+.description-text {
+  white-space: pre-line;
+}
+
+/* Update transition duration to match the setTimeout delay */
+.fill-height {
+  height: 100vh;
+  width: calc(100vw - 50px);
+  position: relative;
+  overflow: hidden;
+  padding-top: 85px;
+  min-height: 100vh;
+  margin-left: 50px;
+  transition: none; /* Remove transition */
+}
+
+/* Make sure all drawer-related transitions use the same duration */
+.drawer-open .fill-height,
+.info-drawer-open .fill-height,
+.drawer-open.info-drawer-open .fill-height {
+  transition: none; /* Remove transition */
 }
 </style>
