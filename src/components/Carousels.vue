@@ -1,5 +1,5 @@
 <template>
-    <v-carousel class="image-size">
+    <v-carousel class="carousel-size" hide-delimiters show-arrows="hover">
   <v-carousel-item
     src="https://ik.imagekit.io/yz1n0vis7/14.png?updatedAt=1730642531693"
     cover
@@ -39,8 +39,11 @@ export default {
 </script>
 
 <style>
-.image-size{
-    height: 1144px;
-    width: 912px;
+.carousel-size{
+  height: 607px !important;
+  width: 500px !important;
+  margin-left: auto;
+  border-radius: 5%;
+  box-shadow: 0 0 20px rgba(255, 75, 183, 0.7);
 }
 </style>

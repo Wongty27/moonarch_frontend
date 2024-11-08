@@ -1,7 +1,7 @@
 <template>
   <v-footer class="d-flex">
-    Moonarch Dream Builders for Your Desires
+    MoonArch -- Dream Builders for Your Desires
     <v-spacer />
-    @{{ new Date().getFullYear() }} Moonarch Tech PC SDN. BHD. All Rights Reserved.
+    @{{ new Date().getFullYear() }} MoonArch Tech PC SDN. BHD. All Rights Reserved.
   </v-footer>
 </template>

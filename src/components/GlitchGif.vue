@@ -2,7 +2,7 @@
     <div>
       <div class="container" :style="{height: wrapperHeight}">
         <h1 class="glitch bpdots ml-4 text-h1" data-text="STRING">STRING</h1>
-        <v-btn to="/customise" v-if="showButton" color="#E324BD" class="bitstream">Build My PC Now</v-btn>
+        <v-btn to="/customise" v-if="showButton" color="#E324BD" class="bitstream" size="x-large">Build My PC Now</v-btn>
       </div>
     </div>
   </template>

@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <AppHeader />
+    <AppHeader class="bpdots"/>
     <v-main>
       <router-view></router-view>
-    <AppFooter />
+    <AppFooter class="bpdots"/>
     </v-main>
   </v-app>
 </template>
@@ -22,5 +22,6 @@ export default {
 </script>
 
 <style>
-/* Add any global styles here */
+@import url('@/assets/BitStreamFont/stylesheet.css');
+@import url('@/assets/BPdotsFont/stylesheet.css');
 </style>
