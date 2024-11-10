@@ -62,7 +62,7 @@
         </v-badge>
       </v-btn>
   
-      <v-menu>
+      <!-- <v-menu>
         <template #activator="{ props }">
           <v-btn icon="mdi-account" size="x-large" v-bind="props" />
         </template>
@@ -80,7 +80,7 @@
   
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-menu> -->
     </v-app-bar>
   </template>
   
