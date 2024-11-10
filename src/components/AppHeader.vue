@@ -3,14 +3,15 @@
       class="d-flex flex-column bpdots"
       height="100"
       scroll-behavior="hide"
-      scroll-threshold="90"
+      scroll-threshold="100"
       :style="{ textShadow: '2px 2px 5px #FF66FF'}"
     >
-      <div>
+      <div class="logo-container">
         <v-img
           aspect-ratio="1"
           src="../assets/moonarch.png"
           width="100"
+          class="pixel-logo"
         />
       </div>
   
@@ -18,6 +19,7 @@
       <v-btn-toggle
         v-model="toggle"
         color="#3e0054"
+        class="button-container"
       >
         <v-btn
           to="/"
@@ -54,7 +56,7 @@
         icon="mdi-cart"
         size="x-large"
       >
-        <v-icon>mdi-cart</v-icon>
+        <v-icon class="cart-container">mdi-cart</v-icon>
         <v-badge v-if="cartItems.length > 0" color="red" dot>
           <template #badge>
             <span>{{ cartItems.length }}</span>
@@ -110,13 +112,41 @@
 
   <style>
 .v-btn.nav-button {
-  font-size: 2rem !important; /* Force font size */
-  margin: 0px 30px;
-  padding: 10px 20px;
+  font-size: 2rem !important;
+  margin: 0px 50px;
+  padding: 5px 20px !important;
   transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
 
 .nav-button:hover {
-  background-color: #5e0054; /* Optional: Change color on hover */
+  background-color: #5e0054;
+}
+
+.button-container {
+  position: absolute;
+  left: 52%;
+  transform: translateX(-50%);
+}
+
+.pixel-logo {
+  image-rendering: pixelated;
+  filter: drop-shadow(0 0 8px #00ffff);
+  transition: filter 0.3s ease;
+}
+
+.pixel-logo:hover {
+  filter: drop-shadow(0 0 12px #ff00ff);
+}
+
+.logo-container {
+  margin-left: 30px;
+}
+
+.cart-container{
+  margin-right: 30px;
 }
 </style>

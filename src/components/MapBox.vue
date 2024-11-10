@@ -1,48 +1,45 @@
 <!-- MapBox.vue -->
 <template>
-    <v-card class="map-box" min-width="50vw" max-width="50vw" color="#001655">
-      <v-divider class="border-opacity-100" color="#e324bd" />
-      <v-row no-gutters>
-        <v-col cols="12" sm="6">
+    <v-card 
+      class="map-box" 
+      min-width="50vw" 
+      max-width="50vw" 
+      color="#001655"
+      rounded="xl"
+    >
+      <v-divider class="border-opacity-100" color="#e324bd" thickness="3" />
+      <v-row no-gutters style="height: 300px;">
+        <!-- Left side content -->
+        <v-col cols="6">
           <div class="text-content">
-            <h1 align="right" class="headline">@{{ headline1 }}</h1>
-            <h4 align="right" class="subtitle-1">{{ add1 }}</h4>
-            <h4 align="right" class="subtitle-1">{{ add2 }}</h4>
-            <h4 align="right" class="subtitle-1">{{ add3 }}</h4>
-            <h4 align="right" class="subtitle-1">HP: +60{{ hp1 }}</h4>
-            <h4 align="right" class="subtitle-1">Email: {{ email1 }}</h4>
+            <h1 class="headline text-right">{{ headline1 }}</h1>
+            <h4 class="subtitle-1 text-right">{{ add1 }}</h4>
+            <h4 class="subtitle-1 text-right">{{ add2 }}</h4>
+            <h4 class="subtitle-1 text-right">{{ add3 }}</h4>
+            <h4 class="subtitle-1 text-right">HP: +60{{ hp1 }}</h4>
+            <h4 class="subtitle-1 text-right">Email: {{ email1 }}</h4>
           </div>
         </v-col>
-        <v-col cols="12" sm="6" md="6" lg="6">
-          <div class="map-container">
-            <MapDisplay :mapId="'map-' + index" :latitude="latitude" :longitude="longitude"/>
-          </div>
+        <!-- Right side map -->
+        <v-col cols="6" class="map-col">
+          <GMap :mapId="'map-' + index" :address="address"/>
         </v-col>
       </v-row>
-      <v-row no-gutters>
-        <v-col cols="12" sm="6">
-          
-        </v-col>
-      </v-row>
-      <v-divider class="border-opacity-100" color="#e324bd" />
+      <v-divider class="border-opacity-100" color="#e324bd" thickness="3" />
     </v-card>
   </template>
   
   <script>
-  import MapDisplay from '../components/MapDisplay.vue'; // Assuming MapDisplay.vue is in the same directory
+  import GMap from './GMap.vue';
   
   export default {
     name: 'MapBox',
     components: {
-      MapDisplay,
+      GMap,
     },
     props: {
-      latitude: {
-        type: Number,
-        required: true,
-      },
-      longitude: {
-        type: Number,
+      address: {
+        type: String,
         required: true,
       },
       headline1: {
@@ -81,25 +78,47 @@
   .map-box {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+    border-radius: 30px !important;
   }
   
   .text-content {
-    padding: 16px;
+    padding: 20px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
   
-  .map-container {
-    height: 300px;
-    padding: 16px;
+  .map-col {
+    height: 100%;
+    padding: 0 !important;
+    position: relative;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    overflow: hidden;
+  }
+  
+  .map-col :deep(.map-container) {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100% !important;
   }
   
   .headline {
     font-size: 1.5rem;
-    margin-bottom: 8px;
+    margin-bottom: 1rem;
+    color: #ffffff;
+    font-weight: bold;
   }
   
   .subtitle-1 {
     font-size: 1rem;
-    margin: 4px 0;
+    margin: 0.5rem 0;
+    color: #ffffff;
   }
   
   @media (max-width: 1000px) {

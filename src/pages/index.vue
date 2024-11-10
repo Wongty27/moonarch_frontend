@@ -25,14 +25,21 @@
     </v-col>
   </v-row>
 
-    <GlitchGif :text="dynamicText3" :showButton="showButton3" :opac="opacity3" :wrapperHeight="wrapperheight3"/>
+    <!-- Add a spacer div before Contact Us -->
+    <div class="section-spacer"></div>
+
+    <GlitchGif 
+      :text="dynamicText3" 
+      :showButton="showButton3" 
+      :opac="opacity3" 
+      :wrapperHeight="wrapperheight3"
+    />
     <v-card>{{staticText3}}</v-card>
     <div v-for="(location, index) in locations" 
          :key="index"
          class="map-container-wrapper">
       <MapBox
-        :latitude="location.latitude"
-        :longitude="location.longitude"
+        :address="location.address"
         :headline1="location.headline"
         :add1="location.address1"
         :add2="location.address2"
@@ -75,34 +82,31 @@ data() {
   
     locations: [
       {
-        latitude: 3.0333,
-        longitude: 101.6869,
-        headline: 'Puchong Branch',
-        address1: 'Address Line 1',
-        address2: 'Address Line 2',
-        address3: 'Address Line 3',
-        phone: '10-123 4567',
-        email: 'mnPuchong@gmail.com'
+        address: 'Menara Gamuda,Pj Trade Centre, No. 8, Jalan PJU 8/8A, Damansara Perdana, 47820 Petaling Jaya, Selangor',
+        headline: 'Damansara Perdana HQ',
+        address1: 'Pj Trade Centre, No. 8',
+        address2: 'Jalan PJU 8/8A, Damansara Perdana',
+        address3: '47820 Petaling Jaya, Selangor',
+        phone: '3-4565 4321',
+        email: 'gamudahq@gmail.com'
       },
       {
-        latitude: 3.1864,
-        longitude: 101.7059,
-        headline: 'Setapak Branch',
-        address1: 'Address Line 1',
-        address2: 'Address Line 2',
-        address3: 'Address Line 3',
-        phone: '10-765 4321',
-        email: 'mnSetapak@gmail.com'
+        address: 'Gamuda Learning Centre (GLC), 53-61, Jalan SS 22/23, Damansara Jaya, 47400 Petaling Jaya, Selangor',
+        headline: 'Petaling Jaya Branch',
+        address1: '53-61',
+        address2: 'Jalan SS 22/23, Damansara Jaya',
+        address3: '47400 Petaling Jaya, Selangor',
+        phone: '3-1415 9265',
+        email: 'gamudalearningcentre@gmail.com'
       },
       {
-        latitude: 5.4141,
-        longitude: 100.3285,
-        headline: 'Penang Branch',
-        address1: 'Address Line 1',
-        address2: 'Address Line 2',
-        address3: 'Address Line 3',
-        phone: '12-567 1234',
-        email: 'mnPenang@gmail.com'
+        address: 'Universiti Tenaga Nasional (UNITEN), Jalan Wawasan, 43009 Kajang, Selangor',
+        headline: 'Kajang Branch',
+        address1: '1, Jalan Wawasan',
+        address2: '43009 Kajang',
+        address3: 'Selangor',
+        phone: '3-2132 2324',
+        email: 'gamudafarfaraway@gmail.com'
       }
       // Add more locations as needed
     ]
@@ -134,16 +138,17 @@ overflow: hidden;
 background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
 background-repeat: no-repeat;
 background-size: cover;
+padding-bottom: 100px;
 }
 
 .map-container-wrapper {
-margin-bottom: 50px; /* Adjust this value to control vertical spacing */
+margin-bottom: 50px; /* Increase this value for more space */
 width: 100%;
 display: flex;
 justify-content: center;
 }
 
-/* Remove margin from last container */
+/* Remove margin from last container but keep padding */
 .map-container-wrapper:last-child {
 margin-bottom: 0;
 }
@@ -156,5 +161,22 @@ margin-bottom: 0;
   background-color: rgba(62, 0, 84, 1);
   color: rgb(255, 255, 255);
   word-wrap: break-word;
+}
+
+.section-spacer {
+  height: 200px;  /* Adjust this value to control the amount of space */
+  width: 100%;
+}
+
+/* Optional: Add margin to the GlitchGif component for Contact Us */
+.glitch-gif-wrapper {
+  margin-top: 50px;
+}
+
+/* If you want different spacing for different screen sizes */
+@media (max-width: 768px) {
+  .section-spacer {
+    height: 50px;  /* Less space on mobile */
+  }
 }
 </style>
