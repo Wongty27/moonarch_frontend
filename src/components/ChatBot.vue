@@ -24,9 +24,9 @@
       <v-card class="chat-window">
         <!-- Chat Header -->
         <v-card-title class="chat-header">
-          <span>MoonArch Assistant</span>
+          <span class="header-text">MoonArch Assistant</span>
           <v-spacer></v-spacer>
-          <v-btn icon @click="toggleChat">
+          <v-btn icon class="close-button" @click="toggleChat">
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
@@ -139,12 +139,16 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+@import url('../assets/BitStreamFont/stylesheet.css');
+@import url('../assets/BPdotsFont/stylesheet.css');
+
 .chatbot-container {
   position: fixed;
   pointer-events: none;
   z-index: 9999;
   width: 100vw;
   height: 100vh;
+  font-family: 'bitstream';
 }
 
 .chat-button {
@@ -174,6 +178,21 @@ onUnmounted(() => {
   background: #E324BD;
   color: white;
   padding: 15px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.header-text {
+  font-family: 'bitstream';
+  font-size: 1.2em;
+}
+
+.close-button {
+  position: absolute !important;
+  right: 5px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
 }
 
 .chat-messages {
@@ -184,6 +203,7 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 10px;
   background: #000033;
+  font-family: 'bitstream';
 }
 
 .message {
