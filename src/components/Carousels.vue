@@ -1,49 +1,71 @@
 <template>
-    <v-carousel class="carousel-size" hide-delimiters show-arrows="hover">
-  <v-carousel-item
-    src="https://ik.imagekit.io/yz1n0vis7/14.png?updatedAt=1730642531693"
-    cover
-  ></v-carousel-item>
-
-  <v-carousel-item
-    src="https://ik.imagekit.io/yz1n0vis7/16.png?updatedAt=1730642531356"
-    cover
-  ></v-carousel-item>
-
-  <v-carousel-item
-    src="https://ik.imagekit.io/yz1n0vis7/15.png?updatedAt=1730642531262"
-    cover
-  ></v-carousel-item>
-
-  <v-carousel-item
-    src="https://ik.imagekit.io/yz1n0vis7/12.png?updatedAt=1730642531168"
-    cover
-  ></v-carousel-item>
-
-  <v-carousel-item
-    src="https://ik.imagekit.io/yz1n0vis7/11.png?updatedAt=1730642531079"
-    cover
-  ></v-carousel-item>
-
-  <v-carousel-item
-    src="https://ik.imagekit.io/yz1n0vis7/2.png?updatedAt=1730642528098"
-    cover
-  ></v-carousel-item>
-</v-carousel>
+  <v-carousel 
+    class="carousel-size" 
+    hide-delimiters 
+    show-arrows="hover"
+    :height="carouselHeight"
+  >
+    <v-carousel-item
+      v-for="(image, index) in images"
+      :key="index"
+      :src="image"
+      cover
+    ></v-carousel-item>
+  </v-carousel>
 </template>
 
 <script>
 export default {
-    name: 'Carousels',
+  name: 'Carousels',
+  data() {
+    return {
+      windowWidth: window.innerWidth,
+      images: [
+        'https://ik.imagekit.io/yz1n0vis7/14.png?updatedAt=1730642531693',
+        'https://ik.imagekit.io/yz1n0vis7/16.png?updatedAt=1730642531356',
+        'https://ik.imagekit.io/yz1n0vis7/15.png?updatedAt=1730642531262',
+        'https://ik.imagekit.io/yz1n0vis7/12.png?updatedAt=1730642531168',
+        'https://ik.imagekit.io/yz1n0vis7/11.png?updatedAt=1730642531079',
+        'https://ik.imagekit.io/yz1n0vis7/2.png?updatedAt=1730642528098'
+      ]
+    }
+  },
+  computed: {
+    carouselHeight() {
+      if (this.windowWidth <= 600) return 300
+      if (this.windowWidth <= 960) return 400
+      return 607
+    }
+  },
+  mounted() {
+    window.addEventListener('resize', this.onResize)
+    this.onResize()
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.onResize)
+  },
+  methods: {
+    onResize() {
+      this.windowWidth = window.innerWidth
+    }
+  }
 }
 </script>
 
-<style>
-.carousel-size{
-  height: 607px !important;
-  width: 500px !important;
-  margin-left: auto;
-  border-radius: 5%;
+<style scoped>
+.carousel-size {
+  border-radius: 20px;
   box-shadow: 0 0 20px rgba(255, 75, 183, 0.7);
+  overflow: hidden;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+.v-carousel {
+  height: 100% !important;
+}
+
+.v-carousel__item {
+  height: 100% !important;
 }
 </style>

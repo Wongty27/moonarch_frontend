@@ -80,6 +80,7 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 30px !important;
+    box-shadow: 0 0 20px rgba(255, 75, 183, 0.7);
   }
   
   .text-content {

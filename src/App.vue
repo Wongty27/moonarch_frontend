@@ -1,27 +1,16 @@
 <template>
   <v-app>
-    <AppHeader class="bpdots"/>
-    <v-main>
-      <router-view></router-view>
-    <AppFooter class="bpdots"/>
-    </v-main>
+    <!-- Use the default layout as the main layout -->
+    <default-layout>
+      <router-view />
+    </default-layout>
   </v-app>
 </template>
 
-<script>
-import AppHeader from '@/components/AppHeader.vue'
-import AppFooter from '@/components/AppFooter.vue';
-
-export default {
-  name: 'App',
-  components: {
-    AppHeader,
-    AppFooter,
-  }
-}
+<script setup lang="ts">
+import DefaultLayout from '@/layouts/default.vue'
 </script>
 
 <style>
-@import url('@/assets/BitStreamFont/stylesheet.css');
-@import url('@/assets/BPdotsFont/stylesheet.css');
+/* Global styles if needed */
 </style>

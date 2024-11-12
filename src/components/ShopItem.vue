@@ -70,6 +70,7 @@ export default {
   padding: 20px;
   box-sizing: border-box;
   margin: 10px auto;
+  box-shadow: 0 0 20px rgba(255, 75, 183, 0.7);
 }
 
 .centered-text {
@@ -104,5 +105,29 @@ export default {
 
 .styled-button:hover {
   background-color: #d11ca8; /* Slightly darker on hover */
+}
+
+@media (max-width: 600px) {
+  .fixed-size-image {
+    width: 200px;
+    height: 200px;
+  }
+
+  .card-content {
+    max-width: 300px;
+    padding: 10px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 960px) {
+  .fixed-size-image {
+    width: 250px;
+    height: 250px;
+  }
+
+  .card-content {
+    max-width: 350px;
+    padding: 15px;
+  }
 }
 </style>
