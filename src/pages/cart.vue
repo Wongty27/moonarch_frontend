@@ -1,10 +1,10 @@
 <template>
-  <v-main class="container parallax-background" style="min-height: 100%;">
+  <v-main class="container parallax-background" style="min-height: 50rem;">
     <div class="overlay"></div>
     <v-container>
-      <v-card style="background-color: rgba(62, 0, 84, 0.9); padding: 16px; min-height: 50vh;">
-        <span class="text-h2 bpdots shop-title" :style="{ textShadow: '2px 2px 5px #FF66FF'}">SHOPPING CART</span>
-        <v-card-title class="d-flex justify-space-between align-center mb-4 bitstream">
+      <v-card style="background-color: rgba(62, 0, 84, 0.9); padding: 16px; min-height: 100%;">
+        <v-card-title class="d-flex justify-space-between align-center mb-4 bpdots text-h2" :style="{ textShadow: '2px 2px 5px #FF66FF'}">
+          SHOPPING CART
           <v-btn
             color="red"
             @click="clearCart"
@@ -39,7 +39,7 @@
               Total: RM{{ totalPrice }}
             </div>
           </v-col>
-          <v-col cols="12" class="text-right bitstream">
+          <v-col cols="12" class="text-right bitstream pa-2">
             <v-btn 
               color="#E324BD" 
               @click="checkout" 
@@ -48,7 +48,7 @@
             >
               Checkout
             </v-btn>
-            <v-btn color="primary" @click="continueShopping" class="bitstream">
+            <v-btn color="primary" @click="continueShopping" class="bitstream pa-2">
               Continue Shopping
             </v-btn>
           </v-col>

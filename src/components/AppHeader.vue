@@ -113,6 +113,9 @@
   </script>
 
   <style scoped>
+  @import url('../assets/BitStreamFont/stylesheet.css');
+  @import url('../assets/BPdotsFont/stylesheet.css');
+  
 .v-app-bar {
   padding: 0 5px;
   height: auto !important;

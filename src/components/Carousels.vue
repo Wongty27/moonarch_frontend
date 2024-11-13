@@ -4,6 +4,8 @@
     hide-delimiters 
     show-arrows="hover"
     :height="carouselHeight"
+    cycle
+    interval="5000"
   >
     <v-carousel-item
       v-for="(image, index) in images"

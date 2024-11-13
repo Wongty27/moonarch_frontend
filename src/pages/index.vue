@@ -14,7 +14,7 @@
       <v-col cols="12" md="7" sm="2" class="d-flex">
         <div class="content-wrapper">
           <v-card class="about-us-container bitstream text-high-emphasis">
-            <div class="card-content">
+           
               At MoonArch, we're passionate about empowering gamers, content creators, and tech enthusiasts to bring their dream PCs to life.
               Our innovative platform makes it easy to design and customize your perfect machine, with a user-friendly interface and expert guidance every step of the way.
               With a focus on quality, performance, and community, we're dedicated to delivering an unparalleled PC building experience.<br><br>
@@ -25,7 +25,7 @@
 
               With a vast library of components, expert advice, and a supportive community, you'll be able to bring your vision to life and take your computing experience to the next level.
               Join the MoonArch community today and discover a new way to build, upgrade, and enjoy your ultimate gaming and computing rig.
-            </div>
+           
           </v-card>
         </div>
       </v-col>
@@ -148,15 +148,17 @@ padding-bottom: 100px;
 }
 
 .map-container-wrapper {
-margin-bottom: 50px; /* Increase this value for more space */
-width: 100%;
-display: flex;
-justify-content: center;
+  margin: 20px 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-/* Remove margin from last container but keep padding */
-.map-container-wrapper:last-child {
-margin-bottom: 0;
+@media (max-width: 959px) {
+  .map-container-wrapper {
+    margin: 15px 0;
+    padding: 0 10px;
+  }
 }
 
 .about-us-container{
@@ -167,6 +169,12 @@ margin-bottom: 0;
   background-color: rgba(62, 0, 84, 1);
   color: rgb(255, 255, 255);
   word-wrap: break-word;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  overflow-y: auto;
+  text-align: left;
+  font-size: 1.15rem;
 }
 
 .section-spacer {
@@ -197,22 +205,6 @@ margin-bottom: 0;
   flex: 1;
   padding: 0 15px;
   height: 600px; /* Fixed height for both containers */
-}
-
-.about-us-container {
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(255, 75, 183, 0.7);
-  background-color: rgba(62, 0, 84, 1);
-  color: rgb(255, 255, 255);
-  height: 100%;
-  width: 100%;
-}
-
-.card-content {
-  padding: 20px;
-  height: 100%;
-  overflow-y: auto;
-  text-align: left
 }
 
 /* Responsive adjustments */

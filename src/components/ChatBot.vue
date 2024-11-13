@@ -1,70 +1,66 @@
 <template>
   <div class="chatbot-container">
-    <!-- Simplified chat button without draggable wrapper -->
+    <!-- Fixed chat button -->
     <v-btn
       class="chat-button"
-      icon
-      elevation="5"
-      color="#E324BD"
+      icon="mdi-message"
+      size="x-large"
+      elevation="2"
+      color="transparent"
       @click="toggleChat"
     >
-      <v-icon color="white" size="30">
+      <v-icon color="#E324BD" size="30">
         {{ isOpen ? 'mdi-close' : 'mdi-message' }}
       </v-icon>
     </v-btn>
 
     <!-- Chat Window -->
-    <v-dialog
-      v-model="isOpen"
-      max-width="400"
-      persistent
-      transition="dialog-bottom-transition"
-      class="chat-dialog"
-    >
-      <v-card class="chat-window">
-        <!-- Chat Header -->
-        <v-card-title class="chat-header">
-          <span class="header-text">MoonArch Assistant</span>
-          <v-spacer></v-spacer>
-          <v-btn icon class="close-button" @click="toggleChat">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
+    <transition name="slide">
+      <div v-if="isOpen" class="side-chat">
+        <v-card class="chat-window">
+          <!-- Chat Header - Removed close button -->
+          <v-card-title class="chat-header d-flex align-center">
+            <span class="header-text">MoonArch Assistant</span>
+          </v-card-title>
 
-        <!-- Chat Messages -->
-        <v-card-text class="chat-messages" ref="messageContainer">
-          <div v-for="(message, index) in messages" :key="index" 
-               :class="['message', message.sender]">
-            <div class="message-content">
-              {{ message.text }}
+          <!-- Chat Messages -->
+          <v-card-text class="chat-messages" ref="messageContainer">
+            <div v-for="(message, index) in messages" :key="index" 
+                 :class="['message', message.sender]">
+              <div class="message-content">
+                {{ message.text }}
+              </div>
             </div>
-          </div>
-        </v-card-text>
+          </v-card-text>
 
-        <!-- Chat Input -->
-        <v-card-actions class="chat-input">
-          <v-text-field
-            v-model="userInput"
-            placeholder="Type a message..."
-            @keyup.enter="sendMessage"
-            dense
-            outlined
-            hide-details
-          >
-            <template #append>
-              <v-btn
-                icon
-                small
-                @click="sendMessage"
-                :disabled="!userInput.trim()"
-              >
-                <v-icon>mdi-send</v-icon>
-              </v-btn>
-            </template>
-          </v-text-field>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <!-- Chat Input -->
+          <div class="chat-input-container">
+            <v-text-field
+              v-model="userInput"
+              placeholder="Type a message..."
+              @keyup.enter="sendMessage"
+              dense
+              outlined
+              hide-details
+              class="input-field"
+              bg-color="#000033"
+            >
+              <template #append>
+                <v-btn
+                  icon
+                  small
+                  @click="sendMessage"
+                  :disabled="!userInput.trim()"
+                  color="transparent"
+                >
+                  <v-icon color="#E324BD" size="20">mdi-send</v-icon>
+                </v-btn>
+              </template>
+            </v-text-field>
+          </div>
+        </v-card>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -144,123 +140,156 @@ onUnmounted(() => {
 
 .chatbot-container {
   position: fixed;
-  pointer-events: none;
   z-index: 9999;
-  width: 100vw;
-  height: 100vh;
-  font-family: 'bitstream';
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
 }
 
 .chat-button {
-  position: fixed !important;
-  bottom: 80px !important;
-  right: 20px !important;
-  width: 60px !important;
-  height: 60px !important;
-  border-radius: 30px !important;
-  pointer-events: auto !important;
-  z-index: 9999 !important;
-  background-color: #E324BD !important;
+  position: fixed;
+  bottom: 30px;
+  right: 20px;
+  width: 50px !important;
+  height: 50px !important;
+  pointer-events: auto;
+  background: rgba(255, 255, 255, 0.9) !important;
+  z-index: 9997;
 }
 
-.chat-dialog {
+.side-chat {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  height: 450px;
+  width: 300px;
   pointer-events: auto;
+  z-index: 9998;
+  box-shadow: 0 0 20px rgba(227, 36, 189, 0.3);
 }
 
 .chat-window {
-  display: flex;
-  flex-direction: column;
-  height: 500px;
-  background: #000033;
+  height: 100%;
+  margin: 0;
+  border-radius: 12px !important;
+  overflow: hidden;
 }
 
-.chat-header {
-  background: #E324BD;
-  color: white;
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  position: relative;
+/* Animation for side chat */
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s ease;
 }
 
-.header-text {
-  font-family: 'bitstream';
-  font-size: 1.2em;
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateX(100%);
 }
 
-.close-button {
-  position: absolute !important;
-  right: 5px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  background: transparent;
-  border: none;
-}
-
-.chat-messages {
-  flex-grow: 1;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  background: #000033;
-  font-family: 'bitstream';
-}
-
-.message {
-  max-width: 80%;
-  margin: 4px 0;
-}
-
-.message.user {
-  align-self: flex-end;
-}
-
-.message.bot {
-  align-self: flex-start;
-}
-
-.message-content {
-  padding: 10px 15px;
-  border-radius: 15px;
-  background: #E324BD;
-  color: white;
-}
-
-.user .message-content {
-  background: #4A4A4A;
-}
-
-.chat-input {
-  padding: 10px;
-  background: #000033;
-}
-
-/* Custom scrollbar */
-.chat-messages::-webkit-scrollbar {
-  width: 6px;
-}
-
-.chat-messages::-webkit-scrollbar-track {
-  background: #000033;
-}
-
-.chat-messages::-webkit-scrollbar-thumb {
-  background: #E324BD;
-  border-radius: 3px;
+.slide-enter-to,
+.slide-leave-from {
+  transform: translateX(0);
 }
 
 /* Mobile responsiveness */
 @media (max-width: 768px) {
   .chat-button {
-    bottom: 70px !important;
-    right: 10px !important;
+    bottom: 40px;
+    right: 10px;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .side-chat {
+    width: 280px;
+    height: 400px;
+    bottom: 100px;
+    right: 10px;
+  }
+}
+
+.chat-header {
+  background: #E324BD;
+  color: white;
+  padding: 12px 16px !important;
+  min-height: unset !important;
+}
+
+.header-text {
+  font-family: 'bitstream';
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+.chat-input-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: #000033;
+  border-top: 1px solid rgba(227, 36, 189, 0.2);
+}
+
+.input-field {
+  margin: 0;
+  background-color: #000033;
+}
+
+.input-field :deep(.v-field__input) {
+  color: white !important;
+  min-height: 36px !important;
+  padding: 0 8px !important;
+  font-size: 0.9rem;
+}
+
+.input-field :deep(.v-field__outline) {
+  color: #E324BD !important;
+}
+
+.chat-messages {
+  height: calc(100% - 110px);
+  padding: 16px;
+  overflow-y: auto;
+  margin-bottom: 60px; /* Make space for input field */
+}
+
+/* Ensure the chat window has proper layout */
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #000033;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .chat-input-container {
+    padding: 8px;
   }
   
-  .chat-window {
-    height: 100vh;
-    max-height: 100vh;
+  .input-field {
+    font-size: 14px;
   }
+}
+
+.message-content {
+  padding: 8px 12px;
+  border-radius: 15px;
+  margin: 4px 0;
+  max-width: 85%;
+  word-break: break-word;
+}
+
+.user .message-content {
+  background: #4A4A4A;
+  margin-left: auto;
+  color: white;
+}
+
+.bot .message-content {
+  background: #E324BD;
+  margin-right: auto;
+  color: white;
 }
 </style>
