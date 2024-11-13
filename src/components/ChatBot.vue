@@ -193,6 +193,8 @@ onUnmounted(() => {
   right: 5px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
+  background: transparent;
+  border: none;
 }
 
 .chat-messages {
