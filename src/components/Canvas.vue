@@ -38,7 +38,7 @@ interface PartData {
 }
 
 export default defineComponent({
-  name: 'ThreeCanvas',
+  name: 'Canvas',
   props: {
     drawer: {
       type: Boolean,
