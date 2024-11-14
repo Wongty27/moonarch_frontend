@@ -6,16 +6,6 @@
     class="left-sidebar"
   >
     <v-list nav>
-      <!-- <v-list-item>
-        <v-icon>mdi-file-outline</v-icon>
-      </v-list-item>
-      <v-list-item>
-        <v-icon>mdi-rotate-3d</v-icon>
-      </v-list-item>
-      <v-list-item>
-        <v-icon>mdi-cube-outline</v-icon>
-      </v-list-item> -->
-      <!-- Toggle button for main drawer -->
       <v-list-item>
         <v-btn
           @click="drawer = !drawer"
@@ -84,6 +74,8 @@
           Learn More
         </v-btn>
       </div>
+      <!-- Add scroll space -->
+      <div class="drawer-scroll-space"></div>
     </div>
 
     <!-- Choose Products Panel -->
@@ -164,6 +156,8 @@
           </v-card-text>
         </v-card>
       </div>
+      <!-- Add scroll space -->
+      <div class="drawer-scroll-space"></div>
     </div>
   </v-navigation-drawer>
 
@@ -249,29 +243,31 @@
         >
           Save Build to Cart
         </v-btn>
+        <!-- Add scroll space -->
+        <div class="drawer-scroll-space"></div>
       </v-card>
     </v-list>
   </v-navigation-drawer>
 
   <!-- Main content area -->
-  <v-main :class="{ 
+  <div :class="{ 
     'drawer-open': drawer,
     'info-drawer-open': infoDrawer 
   }" class="pa-0">
     <Canvas 
       :drawer="drawer" 
       class="fill-height"
-      @point-clicked="handlePointClick"
-    />
-  </v-main>
+      @point-clicked="handlePointClick">
+    </Canvas>
+  </div>
 </template>
 
 <script>
-import Canvas from '../components/Canvas.vue';
+import Canvas from '../components/Canvas2.vue';
 import { ref, reactive, watch } from 'vue'
 
 export default {
-name: 'Customise2',
+name: 'Customise',
 components: {
   Canvas
 },
@@ -472,11 +468,12 @@ padding-top: 85px;
 height: 100vh;
 width: calc(100vw - 50px);
 position: relative;
-overflow: hidden;
+overflow: visible;
 padding-top: 85px;
 min-height: 100vh;
 margin-left: 50px;
 transition: none; /* Remove transition */
+z-index: 1;
 }
 
 .drawer-open .fill-height,
@@ -515,6 +512,7 @@ width: 100% !important;
 height: 100% !important;
 display: block;
 margin: 0 !important;
+z-index: 1;
 }
 
 .info-drawer {
@@ -547,15 +545,15 @@ margin-right: 300px;
 
 /* Update z-index hierarchy */
 .left-sidebar {
-  z-index: 100 !important; /* Highest z-index for permanent sidebar */
+  z-index: 1000 !important;
 }
 
 .main-drawer {
-  z-index: 99 !important; /* Just below left sidebar */
+  z-index: 999 !important;
 }
 
 .info-drawer {
-  z-index: 99 !important; /* Same as main drawer */
+  z-index: 999 !important;
 }
 
 /* Add pointer-events handling */
@@ -613,11 +611,12 @@ canvas {
   height: 100vh;
   width: calc(100vw - 50px);
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   padding-top: 85px;
   min-height: 100vh;
   margin-left: 50px;
   transition: none; /* Remove transition */
+  z-index: 1;
 }
 
 /* Make sure all drawer-related transitions use the same duration */
@@ -625,5 +624,36 @@ canvas {
 .info-drawer-open .fill-height,
 .drawer-open.info-drawer-open .fill-height {
   transition: none; /* Remove transition */
+}
+
+/* Add new styles for the points container */
+.points-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.point {
+  position: absolute;
+  transform-origin: center;
+  pointer-events: auto;
+  z-index: 11;
+  cursor: pointer;
+}
+
+/* Add this to your styles */
+.drawer-scroll-space {
+  height: 100px; /* Adjust this value to control scroll space */
+  flex-shrink: 0; /* Prevent space from shrinking */
+}
+
+/* Update drawer content styles */
+.v-navigation-drawer__content {
+  height: 100%;
+  overflow-y: auto
 }
 </style>
