@@ -129,6 +129,7 @@
   height: 32px !important;
   transition: background-color 0.3s ease;
   white-space: nowrap;
+  font-weight: 800;
 }
 
 .button-container {

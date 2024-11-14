@@ -4,10 +4,11 @@
     :timeout="3000"
     top
     color="#E324BD"
-    style="opacity: 0.85;"
+    style="opacity: 0.8;"
   >
-  <v-row>
-    <span class="pa-2">{{ message }}</span>
+  <v-row >
+    <v-col cols="9" class="mt-2">{{ message }}</v-col>
+    <v-col cols="3">
     <v-btn
       @click="closeSnackbar"
       small
@@ -16,6 +17,7 @@
     >
       close
     </v-btn>
+  </v-col>
   </v-row>
   </v-snackbar>
 </template>
@@ -64,7 +66,6 @@ export default {
 <style>
 
 .close-btn {
-  margin-left:80%;
   color: white;
   text-transform: none;
   background-color: transparent;
