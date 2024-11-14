@@ -263,7 +263,7 @@
 </template>
 
 <script>
-import Canvas from '../components/Canvas2.vue';
+import Canvas from '../components/Canvas.vue';
 import { ref, reactive, watch } from 'vue'
 
 export default {
