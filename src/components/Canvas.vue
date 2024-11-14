@@ -89,7 +89,8 @@ export default defineComponent({
         {
             title:'CPU (Central Processing Unit)',
             image:'https://cdn.prod.website-files.com/60a3c1fc44c5715c395770e7/649edc7c4e62aa0c0f6c34c2_A%20CPU%20made%20with%20silicon%20wafers..jpg',
-            description:'cacsccsacscascas',
+            description:`The core component of a computer that performs calculations and controls all other parts.\n
+                        "A CPU is like the brain of your computer.  It controls all the parts and makes sure they work together."`,
             website:'https://www.mcba.ch/en/',
             position: new THREE.Vector3(9.292, 0.580, -0.116),
             stockList: [
@@ -273,138 +274,147 @@ export default defineComponent({
       return ['tooltip-bottom']; // Fallback to bottom
     },
     init() {
-      const scene = new THREE.Scene();
-      const sceneContainer = this.$refs.SceneContainer as HTMLElement;
-      const containerRect = sceneContainer.getBoundingClientRect();
-
-      this.camera = new THREE.PerspectiveCamera(50, containerRect.width / containerRect.height, 0.1, 120);
-      this.camera.position.set(5, 0, 10);
-      this.camera.updateProjectionMatrix();
-
-      // Renderer setup
-      const renderer = new THREE.WebGLRenderer({
-        antialias: true
-      });
-      this.renderer = renderer;
-      renderer.setSize(containerRect.width, containerRect.height);
-      renderer.setClearColor('#ffffff');
-      renderer.setPixelRatio(window.devicePixelRatio);
-      sceneContainer.appendChild(renderer.domElement);
-
-      // Lights
-      const ambientLight = new THREE.AmbientLight('#ffffff', 2);
-      scene.add(ambientLight);
-      const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
-      directionalLight.position.set(-1, 1, 0);
-      scene.add(directionalLight);
-
-      // Controls
-      this.controls = new OrbitControls(this.camera, renderer.domElement);
-      this.controls.minDistance = 2;
-      this.controls.maxDistance = 10;
-      this.controls.enableDamping = true;
-      this.controls.maxPolarAngle = Math.PI / 2;
-      this.controls.target.set(8.485, -0.68, -0.31);
-
-      // Add change event listener to controls
-      this.controls.addEventListener('change', this.updatePointPositions);
-
-      // Modify the controls event listeners
-      this.controls.addEventListener('start', () => {
-        // Remove temporary to prevent conflicts during drag
-        document.removeEventListener('click', this.handleClickOutside);
-      });
-
-      this.controls.addEventListener('end', () => {
-        // Reattach immediately after control operation ends
-        document.addEventListener('click', this.handleClickOutside);
-      });
-
-      // Load 3D Model
-      const loader = new GLTFLoader();
-      loader.load(
-        '../models/scene.gltf',
-        (gltf) => {
-          const model = gltf.scene;
-          model.position.set(0, 0, 0);
-          model.scale.set(1, 1, 1);
-          scene.add(model);
-          this.updatePointPositions();
-          this.isLoading = false; // Hide loading animation
-        },
-        (xhr) => {
-          console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        (error) => {
-          console.error('Error loading model:', error);
-          this.isLoading = false; // Hide loading on error
-        }
-      );
-
-      // Animation loop without point updates
-      const animate = () => {
-        requestAnimationFrame(animate);
-        if (this.camera) {
-          renderer.render(scene, this.camera);
-          this.controls?.update();
-        }
-      };
-
-      animate();
-
-      // Add this helper method
-      const calculateCameraDistance = (width: number, height: number) => {
-        // Base distance for a reference size (e.g., 1000px width)
-        const baseDistance = 10;
-        const referenceWidth = 1000;
-        // Scale factor based on container width
-        const scale = Math.max(referenceWidth / width, 1);
-        return baseDistance * scale;
-      };
-
-      // Store the resize handler as a class property so we can remove it later
-      this.resizeHandler = () => {
-        if (!this.camera || !this.controls || !this.$refs.SceneContainer) return;
-        
+      // Wait for the next tick to ensure DOM is ready
+      this.$nextTick(() => {
         const sceneContainer = this.$refs.SceneContainer as HTMLElement;
         if (!sceneContainer) return;
 
-        const newRect = sceneContainer.getBoundingClientRect();
-        
-        // Update camera
-        this.camera.aspect = newRect.width / newRect.height;
+        const scene = new THREE.Scene();
+        const containerRect = sceneContainer.getBoundingClientRect();
+
+        this.camera = new THREE.PerspectiveCamera(50, containerRect.width / containerRect.height, 0.1, 120);
+        this.camera.position.set(5, 0, 10);
         this.camera.updateProjectionMatrix();
-        
-        // Calculate new distance based on container size
-        const newDistance = calculateCameraDistance(newRect.width, newRect.height);
-        
-        // Update controls distance limits
-        this.controls.minDistance = newDistance * 0.5;
-        this.controls.maxDistance = newDistance * 1.5;
-        
-        // Update camera position while maintaining current viewing angle
-        const spherical = new THREE.Spherical().setFromVector3(
-          this.camera.position.clone().sub(this.controls.target)
+
+        // Renderer setup
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true
+        });
+        this.renderer = renderer;
+        renderer.setSize(containerRect.width, containerRect.height);
+        renderer.setClearColor('#ffffff');
+        renderer.setPixelRatio(window.devicePixelRatio);
+        sceneContainer.appendChild(renderer.domElement);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight('#ffffff', 2);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
+        directionalLight.position.set(-1, 1, 0);
+        scene.add(directionalLight);
+
+        // Controls
+        this.controls = new OrbitControls(this.camera, renderer.domElement);
+        this.controls.minDistance = 2;
+        this.controls.maxDistance = 10;
+        this.controls.enableDamping = true;
+        this.controls.maxPolarAngle = Math.PI / 2;
+        this.controls.target.set(8.485, -0.68, -0.31);
+
+        // Add change event listener to controls
+        this.controls.addEventListener('change', this.updatePointPositions);
+
+        // Modify the controls event listeners
+        this.controls.addEventListener('start', () => {
+          // Remove temporary to prevent conflicts during drag
+          document.removeEventListener('click', this.handleClickOutside);
+        });
+
+        this.controls.addEventListener('end', () => {
+          // Reattach immediately after control operation ends
+          document.addEventListener('click', this.handleClickOutside);
+        });
+
+        // Load 3D Model
+        const loader = new GLTFLoader();
+        loader.load(
+          '../models/scene.gltf',
+          (gltf) => {
+            const model = gltf.scene;
+            model.position.set(0, 0, 0);
+            model.scale.set(1, 1, 1);
+            scene.add(model);
+            // Wait for next tick before updating points
+            this.$nextTick(() => {
+              this.updatePointPositions();
+              this.isLoading = false;
+            });
+          },
+          (xhr) => {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+          },
+          (error) => {
+            console.error('Error loading model:', error);
+            this.isLoading = false;
+          }
         );
-        spherical.radius = newDistance;
-        
-        this.camera.position.setFromSpherical(spherical).add(this.controls.target);
-        
-        renderer.setSize(newRect.width, newRect.height);
-        this.controls.update();
-        this.updatePointPositions();
-      };
 
-      // Add resize event listener
-      window.addEventListener('resize', this.resizeHandler);
+        // Animation loop without point updates
+        const animate = () => {
+          requestAnimationFrame(animate);
+          if (this.camera) {
+            renderer.render(scene, this.camera);
+            this.controls?.update();
+          }
+        };
 
-      // Add mousedown listener to track click start time
-      document.addEventListener('mousedown', () => {
-        this.mouseDownTime = Date.now();
+        animate();
+
+        // Add this helper method
+        const calculateCameraDistance = (width: number, height: number) => {
+          // Base distance for a reference size (e.g., 1000px width)
+          const baseDistance = 10;
+          const referenceWidth = 1000;
+          // Scale factor based on container width
+          const scale = Math.max(referenceWidth / width, 1);
+          return baseDistance * scale;
+        };
+
+        // Store the resize handler as a class property so we can remove it later
+        this.resizeHandler = () => {
+          if (!this.camera || !this.controls || !this.$refs.SceneContainer) return;
+          
+          const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+          if (!sceneContainer) return;
+
+          const newRect = sceneContainer.getBoundingClientRect();
+          
+          // Update camera
+          this.camera.aspect = newRect.width / newRect.height;
+          this.camera.updateProjectionMatrix();
+          
+          // Calculate new distance based on container size
+          const newDistance = calculateCameraDistance(newRect.width, newRect.height);
+          
+          // Update controls distance limits
+          this.controls.minDistance = newDistance * 0.5;
+          this.controls.maxDistance = newDistance * 1.5;
+          
+          // Update camera position while maintaining current viewing angle
+          const spherical = new THREE.Spherical().setFromVector3(
+            this.camera.position.clone().sub(this.controls.target)
+          );
+          spherical.radius = newDistance;
+          
+          this.camera.position.setFromSpherical(spherical).add(this.controls.target);
+          
+          renderer.setSize(newRect.width, newRect.height);
+          this.controls.update();
+          this.updatePointPositions();
+        };
+
+        // Add resize event listener
+        window.addEventListener('resize', this.resizeHandler);
+
+        // Add mousedown listener to track click start time
+        document.addEventListener('mousedown', () => {
+          this.mouseDownTime = Date.now();
+        });
       });
     },
     updatePointPositions() {
-      if (!this.camera) return;
+      if (!this.camera || !this.$refs.SceneContainer) return;
+      
       const sceneContainer = this.$refs.SceneContainer as HTMLElement;
       const containerRect = sceneContainer.getBoundingClientRect();
       
@@ -418,7 +428,7 @@ export default defineComponent({
           
           const x = (vector.x * 0.5 + 0.5) * containerRect.width;
           const y = (-vector.y * 0.5 + 0.5) * containerRect.height;
-
+          
           point.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
           point.style.display = vector.z < 1 ? 'block' : 'none';
         }
