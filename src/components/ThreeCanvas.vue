@@ -1,82 +1,728 @@
 <template>
-  <!-- <v-container> -->
-    <div ref="SceneContainer" class="scene-container"/>
-  <!-- </v-container> -->
-  
+  <div ref="SceneContainer" class="scene-container">
+    <!-- Loading animation with transition -->
+    <transition name="fade">
+      <div v-if="isLoading" class="loading-container">
+        <div class="loading-circle"></div>
+        <span class="loading-text">Loading Model...</span>
+      </div>
+    </transition>
+
+    <!-- Model content with transition -->
+    <transition name="fade">
+      <div class="points-container" v-show="!isLoading">
+        <div v-for="(point, index) in data" 
+             :key="index" 
+             :class="[
+               'point', 
+               { 
+                 'active': activePoint === index,
+                 'selected': isPartSelected(point.title),
+                 'hovered': hoveredPoint === index
+               }
+             ]"
+             :style="{ zIndex: hoveredPoint === index ? 10001 : 100 }"
+             :ref="'point-' + index"
+             @click="handlePointClick(point, index)"
+             @mouseenter="showTooltip(point, index)"
+             @mouseleave="hideTooltip">
+          <v-icon v-if="isPartSelected(point.title)" 
+                  class="success-icon" 
+                  size="x-large"
+                  color="#e324bd">
+            mdi-check-circle
+          </v-icon>
+          
+          <!-- Add image tooltip -->
+          <div v-show="hoveredPoint === index" 
+               class="image-tooltip"
+               :class="getTooltipPositionClass(index)">
+            <img :src="point.image" :alt="point.title">
+            <div class="tooltip-title">{{ point.title }}</div>
+          </div>
+        </div>
+      </div>
+    </transition>
+  </div>
 </template>
 
-<script type="module" lang="ts">
+<script lang="ts">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { defineComponent } from 'vue';
 
-export default {
-  name: 'ThreeCanvas',
-  mounted() {
-    this.init();
+interface PartData {
+  title: string;
+  image: string;
+  description: string;
+  website: string;
+  position: THREE.Vector3;
+  stockList: { stockName: string; stockPrice: string; image: string; stockQuantity: number }[];
+}
+
+export default defineComponent({
+  name: 'Canvas',
+  props: {
+    drawer: {
+      type: Boolean,
+      required: true
+    },
+    items: {
+      type: Array,
+      required: true
+    }
   },
-
-  methods: {
-    init() {
-      const scene = new THREE.Scene();
-
-      const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-      camera.position.set(-10, 3, 5);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-        
-      const axesHelper = new THREE.AxesHelper( 5 );
-      scene.add( axesHelper );
-      const renderer = new THREE.WebGLRenderer({
-        powerPreference: 'low-power',
-        precision: 'lowp',
-        antialias: false,
-      });
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setClearColor('#ffffff'); // 001655
-      renderer.setPixelRatio( window.devicePixelRatio );
-      const sceneContainer = this.$refs.SceneContainer as HTMLElement;
-      sceneContainer.appendChild(renderer.domElement);
-
-      const ambientLight = new THREE.AmbientLight('#ffffff', 2);
-      scene.add(ambientLight);
-
-      const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
-      directionalLight.position.set(-1, 1, 0);
-      scene.add(directionalLight);
-
-      const controls = new OrbitControls(camera, renderer.domElement);
-      controls.minDistance = 2;
-      controls.maxDistance = 10;
-      controls.target.set(0, 0, -0.2);
-      controls.update();
-
-      const loader = new GLTFLoader();
-      let model;
-      loader.load(
-        '../models/scene.gltf',
-        (gltf) => {
-          model = gltf.scene;
-          model.position.set(-4.5, 1.5, -0.5);
-          model.scale.set(0.5, 0.5, 0.5);
-          scene.add(model);
+  data() {
+    return {
+      isLoading: true,
+      mouseDownTime: 0,
+      activePoint: null as number | null,
+      camera: null as THREE.PerspectiveCamera | null,
+      controls: null as OrbitControls | null,
+      renderer: null as THREE.WebGLRenderer | null,
+      scene: null as THREE.Scene | null,
+      resizeHandler: null as (() => void) | null,
+      resizeObserver: null as ResizeObserver | null,
+      data: [
+        //pc case
+        {
+            title:'Casing',
+            image:'https://images-eu.ssl-images-amazon.com/images/I/712giHWFxxL._AC_UL330_SR330,330_.jpg',
+            description:`The protective shell that houses all the other components, providing structural support and ventilation.\n
+                        "A case is like a big box that holds all your computer's parts.  It protects them and helps them work together."`,
+            position: new THREE.Vector3(8.538, 2.040, 2.722),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://images-eu.ssl-images-amazon.com/images/I/712giHWFxxL._AC_UL330_SR330,330_.jpg', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://images-eu.ssl-images-amazon.com/images/I/712giHWFxxL._AC_UL330_SR330,330_.jpg', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://images-eu.ssl-images-amazon.com/images/I/712giHWFxxL._AC_UL330_SR330,330_.jpg', stockQuantity: 10}
+            ],
+        },
+        //cooling fan
+        {
+            title:'Fan',
+            image:'https://cdn.sznbone.com/snowfan/20210610/1-210610140321422.jpg',
+            description:`A device that moves air to dissipate heat generated by components like the CPU and GPU.\n
+                        "A fan is like a tiny airplane engine that blows air to cool down your computer.  It helps keep your computer from overheating and keeps it running smoothly."  `,
+            position: new THREE.Vector3(8.509, -0.554, 2.764),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100",image:'https://cdn.sznbone.com/snowfan/20210610/1-210610140321422.jpg' , stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://cdn.sznbone.com/snowfan/20210610/1-210610140321422.jpg', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://cdn.sznbone.com/snowfan/20210610/1-210610140321422.jpg', stockQuantity: 10}
+            ],
+        },
+        //CPU
+        {
+            title:'CPU (Central Processing Unit)',
+            image:'https://cdn.prod.website-files.com/60a3c1fc44c5715c395770e7/649edc7c4e62aa0c0f6c34c2_A%20CPU%20made%20with%20silicon%20wafers..jpg',
+            description:`The core component of a computer that performs calculations and controls all other parts.\n
+                        "A CPU is like the brain of your computer.  It controls all the parts and makes sure they work together."`,
+            position: new THREE.Vector3(9.292, 0.580, -0.116),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://cdn.prod.website-files.com/60a3c1fc44c5715c395770e7/649edc7c4e62aa0c0f6c34c2_A%20CPU%20made%20with%20silicon%20wafers..jpg', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://cdn.prod.website-files.com/60a3c1fc44c5715c395770e7/649edc7c4e62aa0c0f6c34c2_A%20CPU%20made%20with%20silicon%20wafers..jpg', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://cdn.prod.website-files.com/60a3c1fc44c5715c395770e7/649edc7c4e62aa0c0f6c34c2_A%20CPU%20made%20with%20silicon%20wafers..jpg', stockQuantity: 10}
+            ],
+        },
+        //RAM
+        {
+            title:'RAM (Random Access Memory)',
+            image:'https://www.sweetwater.com/sweetcare/media/2023/08/Installed-RAM-How-To-Install-RAM-In-a-Windows-PC.jpg',
+            description:`RAM is like your computer's short-term memory.  It's where your computer temporarily stores data and programs that it's currently using.\n
+                        It's much faster than a hard drive, but it's also volatile, meaning it loses its contents when the computer is turned off.`,
+            position: new THREE.Vector3(9.113, 0.618, 0.537),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://www.sweetwater.com/sweetcare/media/2023/08/Installed-RAM-How-To-Install-RAM-In-a-Windows-PC.jpg', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://www.sweetwater.com/sweetcare/media/2023/08/Installed-RAM-How-To-Install-RAM-In-a-Windows-PC.jpg', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://www.sweetwater.com/sweetcare/media/2023/08/Installed-RAM-How-To-Install-RAM-In-a-Windows-PC.jpg', stockQuantity: 10}
+            ],
+        },
+        //Storages
+        {
+            title:'Storages (SSD/HDD)',
+            image:'https://irp-cdn.multiscreensite.com/8463d849/SSD-vs-HDD-1.png',
+            description : `Storage devices that store data and programs on your computer.\n
+                          "SSDs are like the super-fast memory cards for your computer, while HDDs are like the old-school hard drives that store your data on spinning platters."`,
+            position: new THREE.Vector3(8.598, -1.958, 1.938),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://irp-cdn.multiscreensite.com/8463d849/SSD-vs-HDD-1.png', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://irp-cdn.multiscreensite.com/8463d849/SSD-vs-HDD-1.png', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://irp-cdn.multiscreensite.com/8463d849/SSD-vs-HDD-1.png', stockQuantity: 10}
+            ],
+        },
+        //GPU
+        {
+            title:'GPU (Graphic Processing Unit)',
+            image:'https://postperspective.com/wp-content/uploads/2022/10/GeForce-RTX4090-3QTR-Back-Left-1.jpg',
+            description:`A specialized processor designed to handle graphics rendering, making games and other visually intensive tasks run smoothly.\n
+                        "GPU is like a super-fast graphics card for your computer.  It's much faster than a CPU and can make your computer run games and other graphics-heavy tasks much quicker."`,
+            position: new THREE.Vector3(8.694, -0.546, -0.282),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://postperspective.com/wp-content/uploads/2022/10/GeForce-RTX4090-3QTR-Back-Left-1.jpg', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://postperspective.com/wp-content/uploads/2022/10/GeForce-RTX4090-3QTR-Back-Left-1.jpg', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://postperspective.com/wp-content/uploads/2022/10/GeForce-RTX4090-3QTR-Back-Left-1.jpg', stockQuantity: 10}
+            ],
+        },
+        //motherboard
+        {
+            title:'Motherboard',
+            image:'https://dlcdnwebimgs.asus.com/files/media/53D30A49-0B79-48F2-AD43-DEB7F954AE2B/v1/img/kv/ROG-Strix-B760-F-Gaming.png',
+            description:`The central circuit board that connects all components and allows them to communicate.\n
+                        "Motherboard is neural network of your computer.  It connects all the parts together and allows them to work together."`,
+            position: new THREE.Vector3(9.303, -1.162, 0.777),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://dlcdnwebimgs.asus.com/files/media/53D30A49-0B79-48F2-AD43-DEB7F954AE2B/v1/img/kv/ROG-Strix-B760-F-Gaming.png', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://dlcdnwebimgs.asus.com/files/media/53D30A49-0B79-48F2-AD43-DEB7F954AE2B/v1/img/kv/ROG-Strix-B760-F-Gaming.png', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://dlcdnwebimgs.asus.com/files/media/53D30A49-0B79-48F2-AD43-DEB7F954AE2B/v1/img/kv/ROG-Strix-B760-F-Gaming.png', stockQuantity: 10}
+            ],
+        },
+        //PSU
+        {
+            title:'PSU (Power Supply Unit)',
+            image:'https://www.techzone.com.my/image/techzone/image/cache/data/all_product_images/product-1981/Zr4x3ufK1600421951-500x353.jpg',
+            description:`Converts household electricity into the appropriate voltage and current for the computer's components.\n
+                        "A PSU is like the power outlet for your computer.  It takes the electricity from the wall and converts it into the right voltage and current for your computer's parts."`,
+            position: new THREE.Vector3(8.605, -2.155, -0.667),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://www.techzone.com.my/image/techzone/image/cache/data/all_product_images/product-1981/Zr4x3ufK1600421951-500x353.jpg', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://www.techzone.com.my/image/techzone/image/cache/data/all_product_images/product-1981/Zr4x3ufK1600421951-500x353.jpg', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://www.techzone.com.my/image/techzone/image/cache/data/all_product_images/product-1981/Zr4x3ufK1600421951-500x353.jpg', stockQuantity: 10}
+            ],
+        },
+        //AIO Cooler
+        {
+            title:'AIO Cooler (All-In-One Cooler) *This is optional*',
+            image:'https://i.pcmag.com/imagery/roundups/03bpUEwnbhKiurbBNLVrbtp-1..v1648267897.jpg',
+            description:`An integrated cooling system that combines the CPU cooler and the fan into a single unit.\n
+                        "An AIO cooler is like a built-in air conditioner for your computer.  It cools down your CPU and keeps it from overheating."`,
+            position: new THREE.Vector3(8.400, 1.900, 0.374),
+            stockList: [
+              { stockName: "Samsung", stockPrice: "100" , image:'https://i.pcmag.com/imagery/roundups/03bpUEwnbhKiurbBNLVrbtp-1..v1648267897.jpg', stockQuantity: 10},
+              { stockName: "Apple", stockPrice: "100" , image:'https://i.pcmag.com/imagery/roundups/03bpUEwnbhKiurbBNLVrbtp-1..v1648267897.jpg', stockQuantity: 10},
+              { stockName: "Huawei", stockPrice: "120" , image:'https://i.pcmag.com/imagery/roundups/03bpUEwnbhKiurbBNLVrbtp-1..v1648267897.jpg', stockQuantity:10}
+            ],
         }
-      );
-
-      const animate  = () => {
-        requestAnimationFrame(animate);
-        // model.rotation.y += 0.002;
-        renderer.render(scene, camera);
+      ] as PartData[],
+      hoveredPoint: null,
+    }
+  },
+  emits: ['point-clicked'],
+  methods: {
+    handlePointClick(point: PartData, index: number) {
+      this.activePoint = this.activePoint === index ? null : index;
+      if (this.activePoint !== null) {
+        // Find the exact point data from our data array
+        const selectedPoint = this.data.find(p => p.title === point.title);
+        
+        this.$emit('point-clicked', {
+          title: point.title,
+          image: selectedPoint?.image || point.image, // Ensure image is passed
+          description: point.description,
+          website: point.website,
+          stockList: point.stockList
+        });
+      } else {
+        this.$emit('point-clicked', null);
+      }
+    },
+    //Detect Panning and prevent closing while clicking after panning
+    handleClickOutside(event: MouseEvent) {
+      const clickDuration = Date.now() - this.mouseDownTime;
+      if (clickDuration < 200) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('.point') && !target.closest('.tooltip')) {
+          this.activePoint = null;
+        }
+      }
+    },
+    getTooltipPositionClass(index) {
+      const pointRef = this.$refs[`point-${index}`] as HTMLElement[];
+      if (!pointRef || !pointRef[0]) return '';
+      
+      const point = pointRef[0];
+      const rect = point.getBoundingClientRect();
+      const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+      const containerRect = sceneContainer.getBoundingClientRect();
+      
+      const TOOLTIP_WIDTH = 200;  // Match your CSS width
+      const TOOLTIP_HEIGHT = 160; // Approximate height based on content
+      
+      // Calculate tooltip edges for each possible position
+      const positions = {
+        top: {
+          left: rect.left - (TOOLTIP_WIDTH / 2),
+          right: rect.left + (TOOLTIP_WIDTH / 2),
+          top: rect.top - TOOLTIP_HEIGHT - 10,
+          bottom: rect.top - 10
+        },
+        bottom: {
+          left: rect.left - (TOOLTIP_WIDTH / 2),
+          right: rect.left + (TOOLTIP_WIDTH / 2),
+          top: rect.bottom + 10,
+          bottom: rect.bottom + TOOLTIP_HEIGHT + 10
+        },
+        left: {
+          left: rect.left - TOOLTIP_WIDTH - 10,
+          right: rect.left - 10,
+          top: rect.top - (TOOLTIP_HEIGHT / 2),
+          bottom: rect.top + (TOOLTIP_HEIGHT / 2)
+        },
+        right: {
+          left: rect.right + 10,
+          right: rect.right + TOOLTIP_WIDTH + 10,
+          top: rect.top - (TOOLTIP_HEIGHT / 2),
+          bottom: rect.top + (TOOLTIP_HEIGHT / 2)
+        }
       };
 
-      animate();
+      // Check if each position fits within container
+      const fits = {
+        top: positions.top.left >= 0 && 
+             positions.top.right <= containerRect.width && 
+             positions.top.top >= 0,
+        bottom: positions.bottom.left >= 0 && 
+                positions.bottom.right <= containerRect.width && 
+                positions.bottom.bottom <= containerRect.height,
+        left: positions.left.left >= 0 && 
+              positions.left.top >= 0 && 
+              positions.left.bottom <= containerRect.height,
+        right: positions.right.right <= containerRect.width && 
+               positions.right.top >= 0 && 
+               positions.right.bottom <= containerRect.height
+      };
 
-    //   window.addEventListener('resize', () => {
-    //     camera.aspect = window.innerWidth / window.innerHeight;
-    //     camera.updateProjectionMatrix();
-    //     renderer.setSize(window.innerWidth, window.innerHeight);
-    //   });
+      // Choose best position
+      if (fits.top) return [];           // Default top position
+      if (fits.bottom) return ['tooltip-bottom'];
+      if (fits.left) return ['tooltip-left'];
+      if (fits.right) return ['tooltip-right'];
+      
+      // If no position fits perfectly, choose the one that's most visible
+      return ['tooltip-bottom']; // Fallback to bottom
+    },
+    init() {
+      // Wait for the next tick to ensure DOM is ready
+      this.$nextTick(() => {
+        const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+        if (!sceneContainer) return;
+
+        const scene = new THREE.Scene();
+        const containerRect = sceneContainer.getBoundingClientRect();
+       
+        scene.background = new THREE.Color('#130227');
+
+        this.camera = new THREE.PerspectiveCamera(50, containerRect.width / containerRect.height, 0.1, 120);
+        this.camera.position.set(5, 0, 10);
+        this.camera.updateProjectionMatrix();
+
+        // Renderer setup
+        const renderer = new THREE.WebGLRenderer({
+          antialias: true
+        });
+        this.renderer = renderer;
+        renderer.setSize(containerRect.width, containerRect.height);
+        renderer.setClearColor('#001655');
+        renderer.setPixelRatio(window.devicePixelRatio);
+        sceneContainer.appendChild(renderer.domElement);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight('#ffffff', 2);
+        scene.add(ambientLight);
+        const directionalLight = new THREE.DirectionalLight('#ffffff', 2);
+        directionalLight.position.set(-1, 1, 0);
+        scene.add(directionalLight);
+
+        // Controls
+        this.controls = new OrbitControls(this.camera, renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.05;
+        this.controls.rotateSpeed = 0.5;
+        this.controls.minDistance = 2;
+        this.controls.maxDistance = 10;
+        this.controls.target.set(8.485, -0.68, -0.31);
+
+        // Use RAF for smoother updates
+        this.controls.addEventListener('change', () => {
+          requestAnimationFrame(this.updatePointPositions);
+        });
+
+        // Modify the controls event listeners
+        this.controls.addEventListener('start', () => {
+          // Remove temporary to prevent conflicts during drag
+          document.removeEventListener('click', this.handleClickOutside);
+        });
+
+        this.controls.addEventListener('end', () => {
+          // Reattach immediately after control operation ends
+          document.addEventListener('click', this.handleClickOutside);
+        });
+
+        // Load 3D Model
+        const loader = new GLTFLoader();
+        loader.load(
+          '../models/scene.gltf',
+          (gltf) => {
+            const model = gltf.scene;
+            model.position.set(0, 0, 0);
+            model.scale.set(1, 1, 1);
+            scene.add(model);
+            // Wait for next tick before updating points
+            this.$nextTick(() => {
+              this.updatePointPositions();
+              this.isLoading = false;
+            });
+          },
+          (xhr) => {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+          },
+          (error) => {
+            console.error('Error loading model:', error);
+            this.isLoading = false;
+          }
+        );
+
+        // Animation loop without point updates
+        const animate = () => {
+          requestAnimationFrame(animate);
+          if (this.camera) {
+            renderer.render(scene, this.camera);
+            this.controls?.update();
+          }
+        };
+
+        animate();
+
+        // Add this helper method
+        const calculateCameraDistance = (width: number, height: number) => {
+          // Base distance for a reference size (e.g., 1000px width)
+          const baseDistance = 10;
+          const referenceWidth = 1000;
+          // Scale factor based on container width
+          const scale = Math.max(referenceWidth / width, 1);
+          return baseDistance * scale;
+        };
+
+        // Store the resize handler as a class property so we can remove it later
+        this.resizeHandler = () => {
+          if (!this.camera || !this.controls || !this.$refs.SceneContainer) return;
+          
+          const sceneContainer = this.$refs.SceneContainer as HTMLElement;
+          if (!sceneContainer) return;
+
+          const newRect = sceneContainer.getBoundingClientRect();
+          
+          // Update camera
+          this.camera.aspect = newRect.width / newRect.height;
+          this.camera.updateProjectionMatrix();
+          
+          // Calculate new distance based on container size
+          const newDistance = calculateCameraDistance(newRect.width, newRect.height);
+          
+          // Update controls distance limits
+          this.controls.minDistance = newDistance * 0.5;
+          this.controls.maxDistance = newDistance * 1.5;
+          
+          // Update camera position while maintaining current viewing angle
+          const spherical = new THREE.Spherical().setFromVector3(
+            this.camera.position.clone().sub(this.controls.target)
+          );
+          spherical.radius = newDistance;
+          
+          this.camera.position.setFromSpherical(spherical).add(this.controls.target);
+          
+          renderer.setSize(newRect.width, newRect.height);
+          this.controls.update();
+          this.updatePointPositions();
+        };
+
+        // Add resize event listener
+        window.addEventListener('resize', this.resizeHandler);
+
+        // Add mousedown listener to track click start time
+        document.addEventListener('mousedown', () => {
+          this.mouseDownTime = Date.now();
+        });
+      });
+    },
+    updatePointPositions() {
+      if (!this.camera || !this.$refs.SceneContainer) return;
+      
+      const container = this.$refs.SceneContainer;
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      const matrix = new THREE.Matrix4();
+      
+      // Get camera matrix
+      matrix.multiplyMatrices(
+        this.camera.projectionMatrix,
+        this.camera.matrixWorldInverse
+      );
+
+      this.data.forEach((point, index) => {
+        const pointRef = this.$refs[`point-${index}`];
+        if (!pointRef?.[0]) return;
+
+        const element = pointRef[0];
+        const position = point.position.clone();
+        
+        // Apply matrix transformation
+        position.applyMatrix4(matrix);
+
+        if (position.z > 1) {
+          element.style.display = 'none';
+          return;
+        }
+
+        const x = (position.x * 0.5 + 0.5) * width;
+        const y = (-position.y * 0.5 + 0.5) * height;
+
+        element.style.display = '';
+        element.style.transform = `translate3d(${~~x}px, ${~~y}px, 0)`;
+      });
+    },
+    updateLayout() {
+      if (this.camera && this.controls) {
+        const container = this.$refs.SceneContainer as HTMLElement;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        
+        // Update camera
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix();
+        
+        // Update renderer size
+        if (this.renderer) {
+          this.renderer.setSize(width, height, true);
+        }
+        
+        // Recalculate camera position to maintain view
+        const distance = this.calculateCameraDistance();
+        if (this.camera.position.z !== distance) {
+          this.camera.position.z = distance;
+        }
+        
+        // Update point positions
+        this.updatePointPositions();
+        this.controls.update();
+      }
+    },
+    calculateCameraDistance() {
+      // Adjust this calculation based on your model size
+      const container = this.$refs.SceneContainer as HTMLElement;
+      const width = container.clientWidth;
+      return 15 * (800 / width); // Adjust multiplier based on your needs
+    },
+    setupControls() {
+      if (this.camera && this.scene) {
+        this.controls = new OrbitControls(this.camera, this.$refs.SceneContainer as HTMLElement);
+        this.controls.addEventListener('change', () => {
+          this.updatePointPositions();
+        });
+        // Add end event listener
+        this.controls.addEventListener('end', () => {
+          this.updateLayout();
+        });
+      }
+    },
+    // Add cleanup in beforeUnmount
+    beforeUnmount() {
+      // Remove resize event listener
+      if (this.resizeHandler) {
+        window.removeEventListener('resize', this.resizeHandler);
+      }
+
+      // Remove click listener
+      document.removeEventListener('click', this.handleClickOutside);
+
+      // Cleanup Three.js resources
+      if (this.renderer) {
+        this.renderer.dispose();
+      }
+      if (this.controls) {
+        this.controls.dispose();
+      }
+    },
+    isPartSelected(partTitle) {
+      // Check if any item with this part title exists in the cart
+      return this.items.some(item => item.name === partTitle && item.quantity > 0);
+    },
+    showTooltip(point, index) {
+      this.hoveredPoint = index;
+    },
+    hideTooltip() {
+      this.hoveredPoint = null;
     }
+  },
+  watch: {
+    drawer: {
+      handler() {
+        // First immediate update
+        this.updateLayout();
+        
+        // Second update after a very short delay to ensure DOM has updated
+        requestAnimationFrame(() => {
+          this.updateLayout();
+        });
+        
+        // Final update to catch any remaining layout changes
+        requestAnimationFrame(() => {
+          this.updateLayout();
+        });
+      }
+    }
+  },
+  mounted() {
+    this.init();
+    // Add click listener to close tooltip when clicking outside
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  unmounted() {
+    // Clean up listener
+    document.removeEventListener('click', this.handleClickOutside);
   }
-};
+});
 </script>
+
+<style scoped>
+.scene-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #001655;
+}
+
+.points-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.point {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 2px solid #e324bd;
+  border-radius: 50%;
+  cursor: pointer;
+  pointer-events: auto;
+  transform-origin: center;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translate(-50%, -50%);
+  transition: all 0s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+}
+
+.point.selected {
+  background-color: #e324bd;
+  animation: success-bounce 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.point.hovered {
+  z-index: 10001;
+}
+
+/* Remove any transition delays */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.2s;
+}
+
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.95);
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.loading-circle {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #e324bd;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.loading-text {
+  color: #e324bd;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Style the success icon */
+.success-icon {
+  font-size: 20px !important;
+  color: white;
+}
+
+@keyframes success-bounce {
+  0%, 100% { transform: scale(1.2); }
+  50% { transform: scale(1.4); }
+}
+
+.image-tooltip {
+  position: absolute;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+  z-index: inherit;
+  pointer-events: none;
+  width: 200px;
+  /* Default top position */
+  transform: translate(-50%, -100%) translateY(-20px);
+}
+
+/* Position variants */
+.tooltip-bottom {
+  transform: translate(-50%, 20px);
+  top: 100%;
+}
+
+.tooltip-left {
+  transform: translate(-100%, -50%) translateX(-20px);
+  top: 50%;
+  left: 0;
+}
+
+.tooltip-right {
+  transform: translate(20px, -50%);
+  top: 50%;
+  left: 100%;
+}
+
+.image-tooltip img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.tooltip-title {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+</style>

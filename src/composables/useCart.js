@@ -8,7 +8,7 @@ export const useCart = () => {
     console.log('Adding item to cart:', item);
     const existingItem = cartItems.value.find(cartItem => cartItem.id === item.id);
     if (existingItem) {
-      existingItem.quantity++;
+      existingItem.quantity += item.quantity;
     } else {
       cartItems.value.push({ 
         id: item.id,
@@ -16,7 +16,7 @@ export const useCart = () => {
         imageUrl: item.imageUrl,
         price: item.price,
         description: item.description,
-        quantity: 1 
+        quantity: item.quantity 
       });
     }
     console.log('Current cart items:', cartItems.value);

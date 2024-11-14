@@ -10,65 +10,94 @@
       <!-- Content will stack on mobile -->
       <v-col cols="12" md="6">
         <div class="text-content">
-          <h1 class="headline">{{ headline1 }}</h1>
-          <h4 class="subtitle-1">{{ add1 }}</h4>
-          <h4 class="subtitle-1">{{ add2 }}</h4>
-          <h4 class="subtitle-1">{{ add3 }}</h4>
-          <h4 class="subtitle-1">HP: +60{{ hp1 }}</h4>
-          <h4 class="subtitle-1">Email: {{ email1 }}</h4>
+          <h1 class="headline">{{ headline }}</h1>
+          <h4 class="subtitle-1">{{ address1 }}</h4>
+          <h4 class="subtitle-1">{{ address2 }}</h4>
+          <h4 class="subtitle-1">{{ address3 }}</h4>
+          <h4 class="subtitle-1">HP: +{{ phone }}</h4>
+          <h4 class="subtitle-1">Email: {{ email }}</h4>
         </div>
       </v-col>
       <v-col cols="12" md="6" class="map-col">
-        <GMap :mapId="'map-' + index" :address="address"/>
+        <GMap 
+          :mapId="'map-' + index" 
+          :address="address"
+          :options="{
+            zoom: 15,
+            styles: darkMapStyle,
+            mapTypeControl: false
+          }"
+        />
       </v-col>
     </v-row>
     <v-divider class="border-opacity-100" color="#e324bd" thickness="3" />
   </v-card>
 </template>
 
-<script>
-import GMap from './GMap.vue';
+<script setup>
+import GMap from './GMap.vue'
 
-export default {
-  name: 'MapBox',
-  components: {
-    GMap,
+// Add dark map style configuration
+const darkMapStyle = [
+  { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#38414e" }],
   },
-  props: {
-    address: {
-      type: String,
-      required: true,
-    },
-    headline1: {
-      type: String,
-      required: true,
-    },
-    add1: {
-      type: String,
-      required: true,
-    },
-    add2: {
-      type: String,
-      required: true,
-    },
-    add3: {
-      type: String,
-      required: true,
-    },
-    hp1: {
-      type: String,
-      required: true,
-    },
-    email1: {
-      type: String,
-      required: true,
-    },
-    index: {
-      type: Number,
-      required: true,
-    },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#212a37" }],
   },
-};
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9ca5b3" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#17263c" }],
+  },
+];
+
+defineProps({
+  address: {
+    type: String,
+    required: true,
+  },
+  headline: {
+    type: String,
+    required: true,
+  },
+  address1: {
+    type: String,
+    required: true,
+  },
+  address2: {
+    type: String,
+    required: true,
+  },
+  address3: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  index: {
+    type: Number,
+    required: true,
+  },
+})
 </script>
 
 <style scoped>

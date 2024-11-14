@@ -16,42 +16,10 @@
   </v-carousel>
 </template>
 
-<script>
-export default {
-  name: 'Carousels',
-  data() {
-    return {
-      windowWidth: window.innerWidth,
-      images: [
-        'https://ik.imagekit.io/yz1n0vis7/14.png?updatedAt=1730642531693',
-        'https://ik.imagekit.io/yz1n0vis7/16.png?updatedAt=1730642531356',
-        'https://ik.imagekit.io/yz1n0vis7/15.png?updatedAt=1730642531262',
-        'https://ik.imagekit.io/yz1n0vis7/12.png?updatedAt=1730642531168',
-        'https://ik.imagekit.io/yz1n0vis7/11.png?updatedAt=1730642531079',
-        'https://ik.imagekit.io/yz1n0vis7/2.png?updatedAt=1730642528098'
-      ]
-    }
-  },
-  computed: {
-    carouselHeight() {
-      if (this.windowWidth <= 600) return 300
-      if (this.windowWidth <= 960) return 400
-      return 607
-    }
-  },
-  mounted() {
-    window.addEventListener('resize', this.onResize)
-    this.onResize()
-  },
-  beforeUnmount() {
-    window.removeEventListener('resize', this.onResize)
-  },
-  methods: {
-    onResize() {
-      this.windowWidth = window.innerWidth
-    }
-  }
-}
+<script setup>
+import { useCarousel } from '@/composables/useCarousel.js'
+
+const { images, carouselHeight } = useCarousel()
 </script>
 
 <style scoped>

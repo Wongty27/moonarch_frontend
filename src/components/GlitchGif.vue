@@ -16,28 +16,25 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'GlitchGif',
-  props: {
-    text: {
-      type: String,
-      required: true
-    },
-    showButton: {
-      type: Boolean,
-      default: false
-    },
-    opac: {
-      type: Number,
-      default: 100
-    },
-    wrapperHeight: {
-      type: String,
-      default: '100vh'
-    }
+<script setup>
+defineProps({
+  text: {
+    type: String,
+    required: true
+  },
+  showButton: {
+    type: Boolean,
+    default: false
+  },
+  opac: {
+    type: Number,
+    default: 100
+  },
+  wrapperHeight: {
+    type: String,
+    default: '100vh'
   }
-}
+})
 </script>
 
 <style scoped>
