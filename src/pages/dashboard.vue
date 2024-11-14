@@ -48,12 +48,23 @@
 
     <div class="mt-0">
         <v-row class="d-flex justify-space-around">
-            <v-col lg="7" xs="12" class="my-auto">
+            <v-col lg="5" xs="12" class="my-auto">
                 <h2 class="text-center section-title mb-5"> Inventory management</h2>
                 <v-card border="opacity-50 lg" class="chart-card mb-5">
                     <BarChart :chartData="barchartData" :chartOptions="barchartOptions"/>
                 </v-card>
+            </v-col>
 
+            <v-col lg="5" xs="12" class="my-auto" >
+                <h2 class="text-center mb-5"> Prebuilt PC sales</h2>
+                <v-card border="opacity-50 lg" class="chart-card" >
+                    <BarChart :chartData="prebuiltBarchartData" :chartOptions="prebuiltBarchartOptions"/>
+                </v-card>
+            </v-col>
+        </v-row>
+
+        <v-row class="d-flex justify-space-around">
+            <v-col lg="7" xs="12" class="my-auto">
                 <h2 class="text-center mb-5"> Traffic engagement</h2>
                 <v-card border="opacity-50 lg" class="chart-card mb-5">
                     <LineChart :chartData="singlelinechartData" :chartOptions="singlelinechartOptions"/>
@@ -85,7 +96,7 @@
     import { useDashboardStore } from '../stores/dashboardstore'; 
 
     const dashboardStore = useDashboardStore();
-    const { profits, orders, conversions, ratings, brands, stocks, traffics, sources } = storeToRefs(dashboardStore);
+    const { profits, orders, conversions, ratings, brands, stocks, traffics,prebuiltSales, sources } = storeToRefs(dashboardStore);
 
     const sunburstStore = useSunburstStore();
     const { labels, parents, values } = storeToRefs(sunburstStore);
@@ -225,7 +236,7 @@
 
     //all plot layout
     const plotgaugeLayout = {
-        height: 200,
+        height: 400,
         margin: { t: 0, b: 0, pad: 0 },
         paper_bgcolor: 'black',
         font: {
@@ -280,8 +291,8 @@
         },
         layout: {
             padding: {
-            left: 30,
-            right: 30,
+            left: 10,
+            right: 10,
             top: 10,
             bottom: 10
             }
@@ -294,6 +305,69 @@
             },
             legend: {
             labels: { color: 'white' }
+            }
+        }
+    });
+
+    const prebuiltBarchartData = computed(() => ({
+        labels: prebuiltSales.value.map((item) => item.build_name),
+        datasets: [
+            { 
+                label: 'Units Sold',
+                backgroundColor: '#8479f8',
+                data: prebuiltSales.value.map((item) => item.total_sold),
+                barPercentage: 0.3,  // Make bars thinner
+                categoryPercentage: 1.0  // Add more space between bars
+            }
+        ]
+    }));
+
+    const prebuiltBarchartOptions = ref({
+        responsive: true,
+        maintainAspectRatio: false,
+        aspectRatio: 1,
+        scales: {
+            y: {  // This becomes the horizontal axis (categories)
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Prebuilt PC Models',
+                    color: "white"
+                },
+                ticks: { 
+                    color: 'white',
+                    maxRotation: 0
+                }
+            },
+            x: {  // This becomes the vertical axis (values)
+                display: true,
+                title: {
+                    display: true,
+                    text: 'Units Sold',
+                    color: "white"
+                },
+                ticks: { 
+                    color: 'white',
+                    beginAtZero: true
+                }
+            }
+        },
+        layout: {
+            padding: {
+                left: 10,
+                right: 30,  // Added more padding for labels
+                top: 10,
+                bottom: 10
+            }
+        },
+        plugins: {
+            title: {
+                display: true,
+                text: 'Prebuilt PC Sales Performance',
+                color: "white"
+            },
+            legend: {
+                labels: { color: 'white' }
             }
         }
     });
@@ -371,13 +445,13 @@
     const piechartOptions = ref({
         responsive: true,
         maintainAspectRatio: false,
-        aspectRatio: 500,
+        aspectRatio: 400,
         layout: {
             padding: {
             left: 30,
             right: 30,
             top: 10,
-            bottom: 10
+            bottom:120
             }
         },
         plugins: {
@@ -392,6 +466,8 @@
             }
         }
     });
+
+    
 </script>
 
 <style scoped>

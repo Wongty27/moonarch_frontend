@@ -26,6 +26,12 @@ const GUEST_ONLY_ROUTES = [
   '/register'
 ]
 
+const PUBLIC_ROUTES = [
+  '/',
+  '/shop',
+  '/build'
+]
+
 // Add meta data to routes
 routes.forEach(route => {
   if (MASTER_ONLY_ROUTES.includes(route.path)) {
@@ -44,6 +50,14 @@ routes.forEach(route => {
     route.meta = {
       ...route.meta,
       guestOnly: true,
+    }
+  }
+
+  if (route.component) {
+    const originalComponent = route.component
+    route.component = async () => {
+      const comp = await (originalComponent as () => Promise<any>)()
+      return comp.default
     }
   }
 })
@@ -113,3 +127,5 @@ router.onError((error) => {
 })
 
 export default router
+
+  

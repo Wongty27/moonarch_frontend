@@ -40,6 +40,12 @@ interface Sources{
     platform_count: number;
 }
 
+// Add new interface
+interface PrebuiltSales {
+  build_name: string;
+  total_sold: number;
+}
+
 export const useDashboardStore = defineStore("dashboardstore", {
     state : () => ({
         profits : [] as Profits [],
@@ -50,6 +56,7 @@ export const useDashboardStore = defineStore("dashboardstore", {
         stocks: [] as Stocks[],
         traffics: [] as Traffics[],
         sources: [] as Sources[],
+        prebuiltSales: [] as PrebuiltSales[],
     }),
 
     actions: {
@@ -74,7 +81,8 @@ export const useDashboardStore = defineStore("dashboardstore", {
             this.fetchBrands(),
             this.fetchStocks(),
             this.fetchTraffics(),
-            this.fetchSources()
+            this.fetchSources(),
+            this.fetchPrebuiltSales()
           ])
         } catch(err){
           console.log(err)
@@ -106,5 +114,8 @@ export const useDashboardStore = defineStore("dashboardstore", {
       async fetchSources() {
         this.sources = await this.fetchData<Sources>('/dashboard/sources');
       },
+      async fetchPrebuiltSales() {
+        this.prebuiltSales = await this.fetchData<PrebuiltSales>('/dashboard/prebuilt-sales');
+    },
     },
   });

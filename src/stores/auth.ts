@@ -1,17 +1,23 @@
 import { defineStore } from 'pinia'
 import useApi from '@/composables/useApi'
 
-interface UserState {
-  token: string | null
-  user: {
-    email: string | null
-    id: string | null
-    user_type: string | null
-  } | null
+interface User {
+  email: string
+  user_id: string
+  user_type: string
 }
 
+interface AuthState {
+  token: string | null
+  user: User | null
+}
+
+interface SignupData {
+  email: string
+  password: string
+}
 export const useAuthStore = defineStore('auth', {
-  state: (): UserState => ({
+  state: (): AuthState => ({
     token: localStorage.getItem('token'),
     user: null
   }),
@@ -43,7 +49,7 @@ export const useAuthStore = defineStore('auth', {
         formData.append('username', email)
         formData.append('password', password)
 
-        const response = await api.post('/token', formData, {
+        const response = await api.post('/auth/token', formData, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           }
@@ -61,13 +67,42 @@ export const useAuthStore = defineStore('auth', {
 
         this.user = {
           email: payload.sub,
-          id: payload.id,
+          user_id: payload.id,
           user_type: payload.user_type
         }
 
         return true
       } catch (error) {
         console.error('Login error:', error)
+        this.logout()
+        throw error
+      }
+    },
+
+    async signup(userData: SignupData) {
+      try {
+        const api = useApi()
+        const response = await api.post('/auth/users', userData)
+        
+        const token = response.data.access_token
+        const payload = this.decodeToken(token)
+        
+        if (!payload) {
+          throw new Error('Invalid token received')
+        }
+
+        this.token = token
+        localStorage.setItem('token', token)
+
+        this.user = {
+          email: payload.sub,
+          user_id: payload.id,
+          user_type: payload.user_type
+        }
+
+        return true
+      } catch (error) {
+        console.error('Signup error:', error)
         this.logout()
         throw error
       }
@@ -102,7 +137,7 @@ export const useAuthStore = defineStore('auth', {
       // Restore user state
       this.user = {
         email: payload.sub,
-        id: payload.id,
+        user_id: payload.id,
         user_type: payload.user_type
       }
 

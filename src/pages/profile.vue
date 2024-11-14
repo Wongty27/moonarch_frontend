@@ -1,6 +1,6 @@
 <template>
   <v-card class="ma-15 border-primary">
-    <v-toolbar color="primary" title="User Profile" class="text-center"></v-toolbar>
+    <v-toolbar color="primary" title="User Profile" class="text-center mb-5"></v-toolbar>
 
     <!-- Add success alert -->
     <v-alert
@@ -28,6 +28,7 @@
         v-model="tab"
         color="primary"
         direction="vertical"
+        class="my-6"
       >
         <v-tab prepend-icon="mdi-account" text="User Information" value="info"></v-tab>
         <v-tab prepend-icon="mdi-history" text="Order History" value="orders"></v-tab>

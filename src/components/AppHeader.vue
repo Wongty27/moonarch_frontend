@@ -6,9 +6,9 @@
 
     <v-spacer />
     <v-btn-toggle v-model="toggle" color="#3e0054">
-      <v-btn href="" size="large">About</v-btn>
-      <v-btn href="" size="large">Shop Now</v-btn>
-      <v-btn href="" size="large">Customise</v-btn>
+      <v-btn to="/" size="large">About</v-btn>
+      <v-btn to="/shop" size="large">Shop Now</v-btn>
+      <v-btn to="/build" size="large">Customise</v-btn>
     </v-btn-toggle>
 
     <v-spacer />

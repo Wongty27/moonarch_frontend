@@ -10,7 +10,8 @@ declare module 'vue' {
     AppFooter: typeof import('./components/AppFooter.vue')['default']
     AppHeader: typeof import('./components/AppHeader.vue')['default']
     BarChart: typeof import('./components/BarChart.vue')['default']
-    HelloWorld: typeof import('./components/HelloWorld.vue')['default']
+    CartList: typeof import('./components/CartList.vue')['default']
+    ItemCard: typeof import('./components/ItemCard.vue')['default']
     LineChart: typeof import('./components/LineChart.vue')['default']
     LogoutButton: typeof import('./components/LogoutButton.vue')['default']
     OrderItemsTable: typeof import('./components/OrderItemsTable.vue')['default']
@@ -19,6 +20,8 @@ declare module 'vue' {
     Plotlysb: typeof import('./components/Plotlysb.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShopItem: typeof import('./components/ShopItem.vue')['default']
+    Snackbar: typeof import('./components/Snackbar.vue')['default']
     SunburstChart: typeof import('./components/SunburstChart.vue')['default']
     VueGauge: typeof import('./components/VueGauge.vue')['default']
   }
