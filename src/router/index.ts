@@ -22,6 +22,16 @@ const router = createRouter({
       component: () => import('@/pages/index.vue')
     },
     {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../pages/login.vue')
+    },
+    {
+      path: '/profile',
+      name: 'Profile',
+      component: () => import('../pages/profile.vue')
+    },
+    {
       path: '/shop',
       name: 'shop',
       component: () => import('@/pages/shop.vue')
@@ -40,7 +50,7 @@ const router = createRouter({
       path: '/customise',
       name: 'customise',
       component: () => import('@/pages/customise.vue')
-    }
+    },
   ]
 })
 

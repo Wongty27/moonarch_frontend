@@ -33,7 +33,7 @@
         <v-card color="#3e0054" flat class="pa-4">
           <v-row no-gutters align="center">
             <v-col cols="10">
-              <p class="text-subtitle-1 text-white text-center">Part Information</p>
+              <p class="text-subtitle-1 text-white text-center bitstream">What is this?</p>
             </v-col>
             <v-col cols="2" class="text-right">
               <v-btn
@@ -47,19 +47,19 @@
         </v-card>
   
         <div v-if="selectedPart" class="pa-4">
-          <div class="text-h6 mb-4">{{ selectedPart.title }}</div>
+          <div class="text-h6 mb-4 bitstream">{{ selectedPart.title }}</div>
           <v-img
             :src="selectedPart.image"
             height="200"
             cover
             class="rounded-lg mb-4"
           ></v-img>
-          <p class="text-body-1 mb-4 description-text">{{ selectedPart.description }}</p>
+          <p class="text-body-1 mb-4 description-text bitstream">{{ selectedPart.description }}</p>
           
           <v-btn
             color="#e324bd"
             block
-            class="mb-4"
+            class="mb-4 bitstream"
             @click="showProducts = true"
           >
             Show Products
@@ -82,7 +82,7 @@
               ></v-btn>
             </v-col>
             <v-col cols="8">
-              <p class="text-subtitle-1 text-white text-center">Choose Products</p>
+              <p class="text-subtitle-1 text-white text-center bitstream">Our Selection</p>
             </v-col>
             <v-col cols="2" class="text-right">
               <v-btn
@@ -99,16 +99,16 @@
           <v-card
             v-for="(stock, index) in selectedPart.stockList"
             :key="index"
-            class="mb-4"
+            class="mb-4 "
             variant="outlined"
           >
             <v-card-text>
               <div class="d-flex justify-space-between align-center">
                 <div>
-                  <div class="text-body-1 font-weight-medium">{{ stock.stockName }}</div>
-                  <div class="text-subtitle-2">RM{{ stock.stockPrice }}</div>
-                  <div class="text-caption text-grey">Stock left: {{ stock.stockQuantity }}</div>
-                  <div class="text-caption text-grey" v-if="getSavedQuantity(stock)">
+                  <div class="text-body-1 font-weight-medium bitstream">{{ stock.stockName }}</div>
+                  <div class="text-subtitle-2 bitstream">RM{{ stock.stockPrice }}</div>
+                  <div class="text-caption text-grey bitstream">Stock left: {{ stock.stockQuantity }}</div>
+                  <div class="text-caption text-grey bitstream" v-if="getSavedQuantity(stock)">
                     In Cart: {{ getSavedQuantity(stock) }}
                   </div>
                 </div>
@@ -138,7 +138,7 @@
               <v-btn
                 v-if="getStockQuantity(stock) > 0"
                 color="#e324bd"
-                class="mt-2"
+                class="mt-2 bitstream"
                 size="small"
                 block
                 @click="addToCart(stock)"
@@ -167,7 +167,7 @@
       persistent
     >
       <v-card color="#3e0054" flat class="pa-4">
-        <p class="text-subtitle-1 text-white text-center">Choose Your Parts</p>
+        <p class="text-subtitle-1 text-white text-center bitstream">Your Build</p>
       </v-card>
       <v-list>
         <v-list-item
@@ -178,10 +178,10 @@
           <div class="d-flex flex-column">
             <div class="d-flex justify-space-between align-center mb-2">
               <div>
-                <div class="text-body-1 font-weight-medium">{{ item.name }}</div>
-                <div class="text-caption text-grey">{{ item.model || 'T0ASB-2S' }}</div>
+                <div class="text-body-1 font-weight-medium bitstream">{{ item.name }}</div>
+                <div class="text-caption text-grey bitstream">{{ item.model || 'T0ASB-2S' }}</div>
               </div>
-              <div class="text-body-1">${{ item.unitPrice.toFixed(2) }}</div>
+              <div class="text-body-1 bitstream">RM{{ item.unitPrice.toFixed(2) }}</div>
             </div>
   
             <div class="d-flex align-center justify-space-between">
@@ -219,18 +219,18 @@
         <v-card color="#001655" class="pa-4">
           <v-row no-gutters align="center" class="mb-2">
             <v-col cols="6">
-              <span class="text-subtitle-1 text-grey">Sub-Total</span>
-              <div class="text-caption text-grey">{{ items.length }} items</div>
+              <span class="text-subtitle-1 text-grey bitstream">Sub-Total</span>
+              <div class="text-caption text-grey bitstream">{{ items.length }} items</div>
             </v-col>
             <v-col cols="6" class="text-right">
-              <span class="text-h5">${{ calculateTotal().toFixed(2) }}</span>
+              <span class="text-h5 bitstream">RM{{ calculateTotal().toFixed(2) }}</span>
             </v-col>
           </v-row>
           
           <v-btn 
             color="#e324bd" 
             block 
-            class="mt-2"
+            class="mt-2 bitstream"
             @click="navigateToCart"
             :disabled="items.length === 0"
           >
@@ -269,6 +269,11 @@
   components: {
     Canvas
   },
+
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
   data() {
     return {
       drawer: false,
@@ -282,11 +287,19 @@
       savedQuantities: reactive({}),
     };
   },
-  setup() {
-    const { addToCart } = useCart();
-    const router = useRouter();
-    return { addToCart, router };
+  created() {
+    // Load saved items when component is created
+    const savedItems = localStorage.getItem('customBuildItems');
+    if (savedItems) {
+      this.items = JSON.parse(savedItems);
+      // Sync savedQuantities with items
+      this.items.forEach(item => {
+        const key = `${item.name}-${item.model}`;
+        this.savedQuantities[key] = item.quantity;
+      });
+    }
   },
+
   methods: {
     calculateTotal() {
       let total = 0;
@@ -336,8 +349,11 @@
       } else {
         // Remove item and its saved quantity
         const key = `${this.items[index].name}-${this.items[index].model}`;
-        this.savedQuantities[key] = 0;
+        delete this.savedQuantities[key];
         this.items.splice(index, 1);
+        
+        // Update localStorage
+        localStorage.setItem('customBuildItems', JSON.stringify(this.items));
       }
     },
     updateQuantity(index) {
@@ -352,25 +368,65 @@
       this.savedQuantities[key] = this.items[index].quantity;
     },
     navigateToCart() {
-      // Convert items to the format expected by the cart
+    // Convert items to the format expected by the cart
       this.items.forEach(item => {
-        // Find the matching part data to get the correct image
-        const partData = this.selectedPart || this.data.find(part => part.title === item.name);
-        
         const cartItem = {
-          id: `${item.name}-${item.model}`,
+          id: `${item.name}-${item.model}`, // Use existing item properties
           name: `${item.name} - ${item.model}`,
           price: item.unitPrice,
           quantity: item.quantity,
-          imageUrl: partData?.image || 'default-image-url.jpg', // Use the correct image from part data
-          description: partData?.description || ''
+          imageUrl: item.image || 'default-image-url.jpg', // Use item's image directly
+          description: item.description || '' // Use item's description directly
         };
-        this.addToCart(cartItem);
+        
+        // Add to cart using the useCart composable
+        const { addToCart } = useCart();
+        addToCart(cartItem);
       });
+
+      // Save current build to localStorage before navigation
+      localStorage.setItem('customBuildItems', JSON.stringify(this.items));
 
       // Navigate to cart page
       this.router.push('/cart');
     },
+
+    addToCart(stock) {
+      if (!this.selectedPart) return; // Guard clause for when selectedPart is null
+      
+      const key = `${this.selectedPart.title}-${stock.stockName}`;
+      const quantity = this.stockQuantities[key];
+      
+      if (quantity > 0 && stock.stockQuantity >= quantity) {
+        const existingItemIndex = this.items.findIndex(item => 
+          item.name === this.selectedPart.title && 
+          item.model === stock.stockName
+        );
+
+        if (existingItemIndex !== -1) {
+          // Update quantity instead of adding
+          this.items[existingItemIndex].quantity = quantity;
+          this.savedQuantities[key] = quantity;
+        } else {
+          this.items.push({
+            name: this.selectedPart.title,
+            model: stock.stockName,
+            unitPrice: parseFloat(stock.stockPrice),
+            quantity: quantity,
+            image: this.selectedPart.image,
+            description: this.selectedPart.description // Save description with item
+          });
+          this.savedQuantities[key] = quantity;
+        }
+        
+        this.drawer = true;
+        stock.stockQuantity -= quantity;
+        this.stockQuantities[key] = 0;
+      }
+      
+      localStorage.setItem('customBuildItems', JSON.stringify(this.items));
+    },
+
     handlePointClick(pointData) {
       this.selectedPart = pointData;
       this.showProducts = false;
@@ -430,6 +486,9 @@
         stock.stockQuantity -= quantity;
         this.stockQuantities[key] = 0;
       }
+      
+      // After adding/updating items, save to localStorage
+      localStorage.setItem('customBuildItems', JSON.stringify(this.items));
     },
     // Add method to handle direct quantity input in main drawer
     handleQuantityInput(index, event) {
@@ -441,6 +500,11 @@
     },
     handleItemAdded() {
       this.drawer = true;
+    },
+    // Add method to clear saved items (optional)
+    clearSavedBuild() {
+      localStorage.removeItem('customBuildItems');
+      this.items = [];
     }
   },
   watch: {
@@ -462,12 +526,21 @@
           window.dispatchEvent(new Event('resize'));
         }, 100);
       });
+    },
+    items: {
+      handler(newItems) {
+        localStorage.setItem('customBuildItems', JSON.stringify(newItems));
+      },
+      deep: true
     }
   }
   };
   </script>
   
-  <style>
+  <style >
+  @import url('../assets/BitStreamFont/stylesheet.css');
+  @import url('../assets/BPdotsFont/stylesheet.css');
+
   .left-sidebar {
   background-color: #f5f5f5;
   z-index: 3;
@@ -605,9 +678,9 @@
   }
   
   /* Remove any overlay that might block interactions */
-  .v-overlay {
+  /* .v-overlay {
     display: none !important;
-  }
+  } */
   
   .v-navigation-drawer__scrim {
     display: none !important;

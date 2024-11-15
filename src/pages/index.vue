@@ -36,6 +36,7 @@
             </div>
           </v-col>
         </v-row>
+        <div class="post-about-spacer"></div>
       </template>
 
       <!-- Spacer before Contact -->
@@ -44,7 +45,7 @@
 
     <div v-for="(location, index) in locations" 
          :key="'loc-' + index"
-         class="map-container-wrapper">
+         class="map-container-wrapper bitstream">
       <MapBox v-bind="{ ...location, index }" />
     </div>
   </div>
@@ -116,7 +117,7 @@ padding-bottom: 100px;
 }
 
 .section-spacer {
-  height: 200px;  /* Adjust this value to control the amount of space */
+  height: 50px;  /* Reduced from 200px */
   width: 100%;
 }
 
@@ -128,7 +129,7 @@ padding-bottom: 100px;
 /* If you want different spacing for different screen sizes */
 @media (max-width: 768px) {
   .section-spacer {
-    height: 50px;  /* Less space on mobile */
+    height: 25px;  /* Reduced from 50px */
   }
 }
 
@@ -160,6 +161,17 @@ padding-bottom: 100px;
 @media (max-width: 600px) {
   .about-section {
     padding: 5px;
+  }
+}
+
+.post-about-spacer {
+  height: 200px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .post-about-spacer {
+    height: 50px;
   }
 }
 </style>

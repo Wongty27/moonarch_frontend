@@ -34,7 +34,17 @@ export default {
     const { addToCart } = useCart();
 
     const addToCartHandler = (item) => {
-      addToCart(item);
+      // Ensure item has all required properties
+      const cartItem = {
+        id: item.id,
+        name: item.name,
+        imageUrl: item.imageUrl,
+        price: item.price,
+        description: item.description,
+        quantity: 1 // Set default quantity for shop items
+      };
+      
+      addToCart(cartItem);
       emit('showSnackbar', `Added ${item.name} to cart`);
     };
 

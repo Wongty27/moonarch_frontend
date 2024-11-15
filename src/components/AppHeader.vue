@@ -49,37 +49,45 @@
         </v-badge>
       </v-btn>
   
-      <!-- <v-menu>
+      <v-menu>
         <template #activator="{ props }">
-          <v-btn icon="mdi-account" size="x-large" v-bind="props" />
+          <v-btn icon="mdi-account" 
+                size="x-large" 
+                v-bind="props" 
+                :style="{ textShadow: '2px 2px 5px #FF66FF'}"
+                />
         </template>
   
         <v-list>
           <v-list-item
             v-for="(item, index) in items"
             :key="index"
+            @click="item.action"
           >
             <v-list-item-title>
               <v-btn v-bind:prepend-icon="item.icon">
                 {{ item.title }}
               </v-btn>
             </v-list-item-title>
-  
           </v-list-item>
         </v-list>
-      </v-menu> -->
+      </v-menu>
     </v-app-bar>
   </template>
   
   <script>
+    import { useRouter } from 'vue-router'
     import { useCart } from '@/composables/useCart';
+    import { ref } from 'vue'
 
     export default {
       setup() {
+        const router = useRouter()
         const { cartItems } = useCart();
 
         return {
           cartItems,
+          router,
         };
       },
       data () {
@@ -91,9 +99,23 @@
             { text: 'Customise', to: '/customise' }
           ],
           items: [
-            { title: 'Login/Signup', icon: 'mdi-login' },
-            { title: 'Profile', icon: 'mdi-account-cog' },
-            { title: 'Logout', icon: 'mdi-logout' },
+            { 
+              title: 'Login/Signup', 
+              icon: 'mdi-login', 
+              action: () => this.router.push('/login')
+            },
+            { 
+              title: 'Profile', 
+              icon: 'mdi-account-cog', 
+              action: () => this.router.push('/profile')
+            },
+            { 
+              title: 'Logout', 
+              icon: 'mdi-logout',
+              action: () => {
+                console.log('Logging out...')
+              }
+            },
           ],
         }
       },
@@ -115,6 +137,8 @@
   <style scoped>
   @import url('../assets/BitStreamFont/stylesheet.css');
   @import url('../assets/BPdotsFont/stylesheet.css');
+
+
   
 .v-app-bar {
   padding: 0 5px;

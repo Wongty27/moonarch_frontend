@@ -1,5 +1,5 @@
 <template>
-  <v-main class="container parallax-background" style="min-height: 50rem;">
+  <v-main class="container background" style="min-height: 90rem;">
     <div class="overlay"></div>
     <v-container>
       <v-card style="background-color: rgba(62, 0, 84, 0.9); padding: 16px; min-height: 100%;">
@@ -71,7 +71,13 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const { cartItems, updateQuantity, clearCart } = useCart();
+    const { cartItems, updateQuantity, clearCart: originalClearCart } = useCart();
+
+    const clearCart = () => {
+      originalClearCart();
+      
+      localStorage.removeItem('customBuildItems');
+    };
 
     const totalPrice = computed(() => {
       return cartItems.value
@@ -112,8 +118,9 @@ export default {
 @import url('../assets/BitStreamFont/stylesheet.css');
 @import url('../assets/BPdotsFont/stylesheet.css');
 
-.parallax-background {
-  background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif');
+.background {
+  background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), 
+              url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
   background-attachment: fixed;
   background-size: cover;
   background-position: center;

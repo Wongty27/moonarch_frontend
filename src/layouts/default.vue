@@ -4,7 +4,7 @@
     <v-main>
       <!-- This slot will receive the router-view content -->
       <slot></slot>
-      <ChatBot />
+      <ChatBot v-if="!isAuthPage" />
     </v-main>
     <AppFooter />
   </div>
@@ -14,6 +14,14 @@
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import ChatBot from '@/components/ChatBot.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+const isAuthPage = computed(() => {
+  return route.path === '/login' || route.path === '/signup'
+})
 </script>
 
 <style scoped>

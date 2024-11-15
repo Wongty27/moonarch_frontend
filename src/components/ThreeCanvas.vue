@@ -312,7 +312,7 @@ export default defineComponent({
         scene.background = new THREE.Color('#130227');
 
         this.camera = new THREE.PerspectiveCamera(50, containerRect.width / containerRect.height, 0.1, 120);
-        this.camera.position.set(5, 0, 10);
+        this.camera.position.set(0, 0, 15);
         this.camera.updateProjectionMatrix();
 
         // Renderer setup
@@ -337,8 +337,8 @@ export default defineComponent({
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.rotateSpeed = 0.5;
-        this.controls.minDistance = 2;
-        this.controls.maxDistance = 10;
+        this.controls.minDistance = 5;
+        this.controls.maxDistance = 20;
         this.controls.target.set(8.485, -0.68, -0.31);
 
         // Use RAF for smoother updates

@@ -1,36 +1,60 @@
 <template>
-  <v-footer class="custom-footer d-flex">
-    <span class="footer-text">MoonArch -- Dream Builders for Your Desires</span>
-    <v-spacer />
-    <span class="footer-text">@{{ new Date().getFullYear() }} MoonArch Tech PC SDN. BHD. All Rights Reserved.</span>
+  <v-footer class="footer-container bpdots">
+    <div class="footer-content">
+      <span class="left-text">MOONARCH -- Dream Builders For Your Desires</span>
+      <span class="right-text">{{ new Date().getFullYear() }} MOONARCH TECH PC SDN. BHD. ALL RIGHTS RESERVED.</span>
+    </div>
   </v-footer>
 </template>
 
 <style scoped>
-.custom-footer {
-  height: 40px !important; /* Reduced height */
-  color: white !important;
-  display: flex !important;
-  align-items: center !important; /* Vertical centering */
-  justify-content: center !important; /* Horizontal centering */
+@import url('../assets/BitStreamFont/stylesheet.css');
+@import url('../assets/BPdotsFont/stylesheet.css');
+
+.footer-container {
+  background-color: black !important;
+  padding: 8px 16px;
+  width: 100%;
+  height: 60px;
+  z-index: 999;
 }
 
-.footer-text {
-  font-family: 'BPdots', sans-serif;
-  font-size: 1.25rem;
+.footer-content {
   display: flex;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
+  font-size: 1.2rem; /* Default for large screens */
+  color: white;
+  text-shadow: 0 0 10px #FF66FF;
 }
 
-/* Responsive design for smaller screens */
-@media (max-width: 768px) {
-  .custom-footer {
-    height: 80px !important; /* Taller on mobile for text wrapping */
-    padding: 10px 15px !important;
-  }
+.left-text, .right-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  .footer-text {
-    font-size: 0.75rem;
+/* Medium screens */
+@media (max-width: 1264px) {
+  .footer-content {
+    font-size: 1rem;
+  }
+}
+
+/* Small screens */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 4px;
+    font-size: 0.6rem;
+  }
+  
+  .footer-container {
+    height: auto;
+    min-height: 60px;
+    padding: 4px 8px;
   }
 }
 </style>

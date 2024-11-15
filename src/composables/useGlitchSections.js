@@ -4,7 +4,7 @@ export function useGlitchSections() {
   const sections = ref([
     {
       id: 'welcome',
-      dynamicText: 'WELCOME',
+      dynamicText: 'WELCOME TO MOONARCH',
       opacity: 100,
       showButton: true,
       wrapperHeight: '100vh',

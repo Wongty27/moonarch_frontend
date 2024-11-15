@@ -1,438 +1,272 @@
 <template>
-    <v-card class="ma-15 border-primary">
-      <v-toolbar color="primary" title="User Profile" class="text-center mb-5"></v-toolbar>
-  
-      <!-- Add success alert -->
-      <v-alert
-        v-if="showSuccessAlert"
-        type="success"
-        class="mt-4"
-        closable
-        @click:close="showSuccessAlert = false"
-      >
-      Profile information updated successfully!
-      </v-alert>
-  
-      <v-alert
-        v-if="showPasswordSuccessAlert"
-        type="success"
-        class="mt-4"
-        closable
-        @click:close="showPasswordSuccessAlert = false"
-      >
-        Password updated successfully!
-      </v-alert>
-  
-      <div class="d-flex flex-row">
-        <v-tabs
-          v-model="tab"
-          color="primary"
-          direction="vertical"
-          class="my-6"
+  <div class="profile-container">
+    <div class="profile-content">
+      <!-- Vertical Tabs -->
+      <div class="tabs">
+        <button 
+          :class="['tab-btn', { active: activeTab === 'account' }]"
+          @click="activeTab = 'account'"
         >
-          <v-tab prepend-icon="mdi-account" text="User Information" value="info"></v-tab>
-          <v-tab prepend-icon="mdi-history" text="Order History" value="orders"></v-tab>
-        </v-tabs>
-  
-        <v-window 
-          v-model="tab" 
-          class="flex-grow-1"
-          transition="slide-x-transition"
-          reverse-transition="slide-x-reverse-transition"
+          Account Information
+        </button>
+        <button 
+          :class="['tab-btn', { active: activeTab === 'orders' }]"
+          @click="activeTab = 'orders'"
         >
-          <!-- User Information Tab -->
-          <v-window-item value="info">
-            <v-card flat>
-              <v-card-text>
-                <v-form @submit.prevent="updateUserInfo">
-                  <v-text-field
-                    v-model="userInfo.email"
-                    label="Email"
-                    disabled
-                    variant="outlined"
-                  ></v-text-field>
-  
-                  <v-text-field
-                    v-model="userInfo.full_name"
-                    label="Full Name"
-                    variant="outlined"
-                    :rules="[v => !!v || 'Full name is required']"
-                  ></v-text-field>
-  
-                  <v-text-field
-                    v-model="userInfo.phone_number"
-                    label="Phone Number"
-                    variant="outlined"
-                    :rules="[v => !!v || 'Phone number is required']"
-                  ></v-text-field>
-  
-                  <v-textarea
-                    v-model="userInfo.address"
-                    label="Shipping Address"
-                    variant="outlined"
-                    rows="4"
-                    :rules="[v => !!v || 'Address is required']"
-                  ></v-textarea>
-  
-                  <v-btn
-                    color="primary"
-                    type="submit"
-                    class="mt-4"
-                  >
-                    Update Information
-                  </v-btn>
-  
-                  <v-btn
-                    color="secondary"
-                    type="button"
-                    class="mt-4 ml-4"
-                    @click="showPasswordModal = true"
-                  >
-                    Change Password
-                  </v-btn>
-  
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-window-item>
-  
-          <v-alert
-            v-if="showRatingSuccessAlert"
-            type="success"
-            class="mt-4"
-            closable
-            @click:close="showRatingSuccessAlert = false"
-          >
-            Rating submitted successfully!
-          </v-alert>
-          <!-- Order History Tab -->
-          <v-window-item value="orders">
-            <v-card flat>
-              <v-card-text>
-                <div v-if="ordersInfo.length">
-                  <v-expansion-panels>
-                    <v-expansion-panel
-                      v-for="order in ordersInfo"
-                      :key="order.order_id"
-                    >
-                      <v-expansion-panel-title>
-                        <v-row align="center" no-gutters>
-                          <v-col cols="6">
-                            <span>Order #{{ order.order_id }}</span>
-                          </v-col>
-                          
-                          <v-col cols="2">
-                            <span>{{ formatDate(order.order_time) }}</span>
-                          </v-col>
-                          
-                          <v-col cols="2">
-                            <v-chip
-                              :color="getStatusColor(order.order_status)"
-                              text-color="white"
-                            >
-                              {{ order.order_status }}
-                            </v-chip>
-                          </v-col>
-                          
-                          <v-col cols="2">
-                            <v-btn
-                              :color="order.feedback ? 'success' : 'primary'"
-                              v-if="order.order_status === 'Completed'" 
-                              @click.stop="openRatingDialog(order)"
-                              size="small"
-                            >
-                              {{ order.feedback ? 'View Rating' : 'Rate Order' }}
-                            </v-btn>
-                          </v-col>
-                        </v-row>
-                      </v-expansion-panel-title>
-                      <v-expansion-panel-text>
-                        <OrderItemsTable v-if="order.items && order.items.length" :items="order.items" />
-                      </v-expansion-panel-text>
-                    </v-expansion-panel>
-                  </v-expansion-panels>
-                </div>
-                <v-alert
-                  v-else
-                  type="info"
-                  text="No orders found"
-                ></v-alert>
-              </v-card-text>
-            </v-card>
-          </v-window-item>
-        </v-window>
+          Order History
+        </button>
       </div>
-  
-      <!-- Password Change Dialog -->
-      <v-dialog v-model="showPasswordModal" max-width="500px">
-        <v-card>
-          <v-card-title>Change Password</v-card-title>
-          <v-card-text>
-            <!-- Add error alert -->
-            <v-alert
-              v-if="showPasswordErrorAlert"
-              type="error"
-              class="mb-4"
-              closable
-              @click:close="showPasswordErrorAlert = false"
-            >
-              {{ passwordErrorMessage }}
-            </v-alert>
-            <v-form @submit.prevent="updateUserPassword">
-              <v-text-field
-                v-model="passwordInfo.old_password"
-                label="Current Password"
-                :type="showPassword.old ? 'text' : 'password'"
-                variant="outlined"
-                :rules="[v => !!v || 'Current password is required']"
-                :append-inner-icon="showPassword.old ? 'mdi-eye-off' : 'mdi-eye'"
-                @click:append-inner="showPassword.old = !showPassword.old"
-              ></v-text-field>
-  
-              <v-text-field
-                v-model="passwordInfo.new_password"
-                label="New Password"
-                :type="showPassword.new ? 'text' : 'password'"
-                variant="outlined"
-                :rules="[v => !!v || 'New password is required']"
-                :append-inner-icon="showPassword.new ? 'mdi-eye-off' : 'mdi-eye'"
-                @click:append-inner="showPassword.new = !showPassword.new"
-              ></v-text-field>
-  
-              <v-text-field
-                v-model="passwordInfo.confirm_password"
-                label="Confirm New Password"
-                :type="showPassword.confirm ? 'text' : 'password'"
-                variant="outlined"
-                :rules="[
-                  v => !!v || 'Password confirmation is required',
-                  v => v === passwordInfo.new_password || 'Passwords do not match'
-                ]"
-                :append-inner-icon="showPassword.confirm ? 'mdi-eye-off' : 'mdi-eye'"
-                @click:append-inner="showPassword.confirm = !showPassword.confirm"
-              ></v-text-field>
-  
-              <!-- Add success alert for password change -->
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="error" type="button" @click="closePasswordModal">Cancel</v-btn>
-                <v-btn color="primary" type="submit">Update Password</v-btn>
-              </v-card-actions>
-            </v-form>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-  
-  
-        <!-- Add Rating Dialog -->
-      <v-dialog v-model="showRatingDialog" max-width="500px">
-        <v-card>
-          <v-card-title class="text-center ma-3">{{ currentOrder?.feedback ? 'Your Rating' : 'Rate Your Order' }}</v-card-title>
-          <v-card-text>
-            <v-form @submit.prevent="submitRating" v-if="!currentOrder?.feedback">
-              <div class="d-flex align-center mb-4 justify-center">
-                <span class="mr-4">Rating:</span>
-                <v-rating
-                  v-model="ratingInfo.rating"
-                  color="warning"
-                  hover
-                  :readonly="!!currentOrder?.feedback"
-                ></v-rating>
-              </div>
-  
-              <v-select
-                v-model="ratingInfo.platform"
-                :items="platforms"
-                label="How did you hear about us?"
-                :readonly="!!currentOrder?.feedback"
-                required
-              ></v-select>
-  
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="error" type="button" @click="showRatingDialog = false">Cancel</v-btn>
-                <v-btn 
-                  color="primary" 
-                  :disabled="!ratingInfo.rating || !ratingInfo.platform"
-                  type="submit"
-                >
-                  Submit Rating
-                </v-btn>
-              </v-card-actions>
-            </v-form>
-  
-            <!-- View only mode -->
-            <div v-else>
-              <div class="d-flex align-center mb-4 justify-space-around">
-                <span class="mr-4">Your Rating:</span>
-                <v-rating
-                  v-model="currentOrder.feedback.rating"
-                  color="warning"
-                  readonly
-                ></v-rating>
-              </div>
-  
-              <div class="d-flex align-center justify-space-around">
-                <span class="mr-4">Platform:</span>
-                <v-select
-                  v-model="currentOrder.feedback.platform"
-                  :items="platforms"
-                  readonly
-                  variant="outlined"
-                  density="compact"
-                  hide-details
-                  class="max-width-200" 
-                ></v-select>
-              </div>
-  
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="primary" @click="showRatingDialog = false">Close</v-btn>
-              </v-card-actions>
+
+      <!-- Tab Content -->
+      <div class="tab-content">
+        <!-- Account Information Tab -->
+        <div v-if="activeTab === 'account'" class="account-info">
+          <h1>Account Information</h1>
+          <form @submit.prevent="updateProfile">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" v-model="user.email" readonly>
             </div>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
-    </v-card>
-  </template>
-  
-  
-  <script setup>
-    import { ref, onMounted } from 'vue'
-    import { storeToRefs } from 'pinia'
-    import { useUserProfileStore } from '@/stores/profile'
-    import OrderItemsTable from '@/components/OrderItemsTable.vue'
-  
-    const userProfileStore = useUserProfileStore();
-    const { userInfo, ordersInfo, passwordInfo, ratingInfo } = storeToRefs(userProfileStore);
-    const tab = ref('info')
-  
-    // Update User Info
-    const showSuccessAlert = ref(false)
-  
-    const updateUserInfo = async () => {
-      await userProfileStore.updateUserInfo(userInfo.value)
-      showSuccessAlert.value = true
-      setTimeout(() => {
-        showSuccessAlert.value = false
-      }, 3000)
-    }
-  
-    // Password Change - Dialog / Alert
-    const showPasswordModal = ref(false)
-    const showPassword = ref({
-      old: false,
-      new: false,
-      confirm: false
-    })
-  
-    const showPasswordSuccessAlert = ref(false)
-    const showPasswordErrorAlert = ref(false)
-    const passwordErrorMessage = ref('')
-  
-    const updateUserPassword = async () => {
-      try {
-        await userProfileStore.updateUserPassword(passwordInfo.value)
-        showPasswordSuccessAlert.value = true
-        setTimeout(() => {
-          showPasswordSuccessAlert.value = false
-        }, 3000)
-        // Only close modal and reset form if update was successful
-        closePasswordModal()
-      } catch (error) {
-        // Handle error response
-        showPasswordErrorAlert.value = true
-        passwordErrorMessage.value = error.response?.data?.message || 'Incorrect current password'
-        setTimeout(() => {
-          showPasswordErrorAlert.value = false
-        }, 3000)
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" v-model="user.fullName">
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="tel" v-model="user.phone">
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <textarea v-model="user.address" rows="3"></textarea>
+            </div>
+            <button type="submit" class="save-btn">Save Changes</button>
+          </form>
+        </div>
+
+        <!-- Order History Tab -->
+        <div v-if="activeTab === 'orders'" class="order-history">
+          <h1>Order History</h1>
+          <div v-if="orders.length === 0" class="no-orders">
+            No orders found
+          </div>
+          <div v-else class="orders-list">
+            <div v-for="order in orders" :key="order.id" class="order-card">
+              <div class="order-header">
+                <span class="order-id">Order #{{ order.id }}</span>
+                <span class="order-date">{{ order.date }}</span>
+                <span :class="['order-status', order.status]">{{ order.status }}</span>
+              </div>
+              <div class="order-items">
+                <div v-for="item in order.items" :key="item.id" class="order-item">
+                  <img :src="item.image" :alt="item.name">
+                  <div class="item-details">
+                    <h4>{{ item.name }}</h4>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Price: ${{ item.price }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="order-total">
+                Total: ${{ order.total }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+
+const activeTab = ref('account')
+const user = ref({
+  email: 'user@example.com',
+  fullName: 'John Doe',
+  phone: '',
+  address: ''
+})
+
+const orders = ref([
+  {
+    id: '1001',
+    date: '2024-01-15',
+    status: 'delivered',
+    total: 299.99,
+    items: [
+      {
+        id: 1,
+        name: 'Gaming Mouse',
+        quantity: 1,
+        price: 299.99,
+        image: '/path-to-image.jpg'
       }
-    }
-  
-    const closePasswordModal = () => {
-      showPasswordModal.value = false
-      showPasswordErrorAlert.value = false // Reset error state
-      passwordErrorMessage.value = '' // Reset error message
-      passwordInfo.value = {
-        old_password: '',
-        new_password: '',
-        confirm_password: ''
-      }
-    }
-  
-    //Feedback dialog 
-    const showRatingDialog = ref(false)
-    const currentOrder = ref(null)
-    const showRatingSuccessAlert = ref(false)
-  
-    const platforms = [
-      'Facebook',
-      'Youtube',
-      'Twitter',
-      'Instagram',
-      'Tiktok'
     ]
-  
-    const openRatingDialog = async (order) => {
-      currentOrder.value = order
-      showRatingDialog.value = true
-      
-      if (!order.feedback) {
-        // Reset rating data for new rating
-        ratingInfo.value = {
-          rating: 0,
-          platform: ''
-        }
-      }
-    }
-  
-    const submitRating = async () => {
-      try {
-        await userProfileStore.submitOrderRating(currentOrder.value.order_id, ratingInfo.value)
-        await userProfileStore.fetchOrders()
-  
-        showRatingDialog.value = false
-        showRatingSuccessAlert.value = true
-  
-        setTimeout(() => {
-          showRatingSuccessAlert.value = false
-        }, 3000)
-      } catch (error) {
-        console.error('Failed to submit rating:', error)
-        }
-      }
-  
-    // Functionality of page
-    const formatDate = (dateString) => {
-      return new Date(dateString).toLocaleDateString()
-    }
-  
-    const getStatusColor = (status) => {
-      if (!status) return 'grey' 
-  
-      const colors = {
-        'pending': 'warning',
-        'processing': 'info',
-        'completed': 'success',
-        'cancelled': 'error'
-      }
-      return colors[status.toLowerCase()] || 'grey'
-    }
-  
-    onMounted(async() => {
-      await userProfileStore.fetchUserInfo()
-      await userProfileStore.fetchOrders()
-      console.log(passwordInfo.value)
-    })
-  
-  </script>
-  
-  <style scoped>
-    .v-window {
-      height: 100%;
-    }
-  
-    .max-width-200 {
-      max-width: 200px;
-    }
-  </style>
+  }
+  // Add more orders as needed
+])
+
+const updateProfile = () => {
+  // Implement profile update logic here
+  console.log('Profile updated:', user.value)
+}
+
+onMounted(() => {
+  // Fetch user data and orders
+})
+</script>
+
+<style scoped>
+@import url('../assets/BitStreamFont/stylesheet.css');
+@import url('../assets/BPdotsFont/stylesheet.css');
+
+.profile-container {
+  min-height: 92vh;
+  padding: 2rem;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), 
+              url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+.profile-content {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #3e0054;
+  padding: 2rem;
+  border-radius: 30px;
+  box-shadow: 0px 0px 15px #E324BD;
+  backdrop-filter: blur(5px);
+}
+
+.tabs {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-family: 'bitstream';
+}
+
+.tab-btn {
+  padding: 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #ffffff;
+  font-size: 1.2rem;
+}
+
+.tab-btn.active {
+  border-left-color: #E324BD;
+  background: rgba(76, 175, 80, 0.1);
+  color: #E324BD;
+}
+
+.tab-content {
+  flex: 1;
+  padding: 0 1rem;
+  font-family: 'bitstream';
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: #ffffff;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: 'bitstream';
+}
+
+.save-btn {
+  background: #001655;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  box-shadow: 0 0px 5px #E324BD;
+}
+
+.save-btn:hover {
+  background: #E324BD;
+}
+
+.order-card {
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.order-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.875rem;
+}
+
+.order-status.delivered {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.order-item {
+  display: flex;
+  gap: 1rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+}
+
+.order-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.order-total {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  text-align: right;
+  font-weight: bold;
+}
+
+.no-orders {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+</style>

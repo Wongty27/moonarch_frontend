@@ -1,143 +1,173 @@
 <template>
-    <v-container class="fill-height">
-      <v-row justify="center">
-        <v-col cols="12" sm="8" md="6" lg="4">
-          <v-card class="elevation-12">
-            <v-card-title class="text-center text-h5 py-4">
-              <v-icon
-                color="primary"
-                class="mr-2"
-                size="large"
-              >
-                {{ isLogin ? 'mdi-account-circle' : 'mdi-account-plus' }}
-              </v-icon>
-                {{ isLogin ? 'Login' : 'Sign Up' }}
-            </v-card-title>
-            
-            <v-card-text>
-              <v-form @submit.prevent="handleSubmit" ref="form">
-                <v-text-field
-                  v-model="formData.email"
-                  label="Email"
-                  type="email"
-                  required
-                  :rules="[rules.required, rules.email]"
-                  prepend-icon="mdi-email"
-                  variant="outlined"
-                />
+  <div class="login-container">
+    <div class="login-card">
+      <h1>{{ isLogin ? 'LOGIN' : 'SIGN UP' }}</h1>
+      
+      <form @submit.prevent="handleSubmit">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            v-model="email" 
+            required
+            placeholder="Enter your email"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            v-model="password" 
+            required
+            placeholder="Enter your password"
+          >
+        </div>
+
+        <div class="form-group" v-if="!isLogin">
+          <label for="confirmPassword">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            v-model="confirmPassword" 
+            required
+            placeholder="Confirm your password"
+          >
+        </div>
+
+        <button type="submit" class="submit-btn">
+          {{ isLogin ? 'Login' : 'Sign Up' }}
+        </button>
+      </form>
+
+      <p class="toggle-text">
+        {{ isLogin ? "Don't have an account?" : "Already have an account?" }}
+        <a href="#" @click.prevent="toggleMode">
+          {{ isLogin ? 'Sign Up' : 'Login' }}
+        </a>
+      </p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+
+const isLogin = ref(true)
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+
+const toggleMode = () => {
+  isLogin.value = !isLogin.value
+  email.value = ''
+  password.value = ''
+  confirmPassword.value = ''
+}
+
+const handleSubmit = () => {
+  if (!isLogin.value && password.value !== confirmPassword.value) {
+    alert('Passwords do not match!')
+    return
+  }
   
-                <v-text-field
-                  v-model="formData.password"
-                  label="Password"
-                  :type="showPassword ? 'text' : 'password'"
-                  required
-                  :rules="[rules.required, rules.password]"
-                  prepend-icon="mdi-lock"
-                  :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                  @click:append="showPassword = !showPassword"
-                  variant="outlined"
-                />
-  
-                <v-alert
-                  v-if="error"
-                  type="error"
-                  class="mb-4"
-                  closable
-                  @click:close="error = ''"
-                >
-                  {{ error }}
-                </v-alert>
-  
-                <v-btn
-                  type="submit"
-                  color="primary"
-                  block
-                  class="mt-4"
-                  :loading="loading"
-                >
-                  {{ isLogin ? 'Login' : 'Sign Up' }}
-                </v-btn>
-  
-                <v-btn
-                  variant="text"
-                  block
-                  class="mt-2"
-                  @click="toggleMode"
-                >
-                  {{ isLogin ? 'Need an account? Sign up' : 'Already have an account? Login' }}
-                </v-btn>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </template>
-  
-  <script setup lang="ts">
-    import { ref, reactive } from 'vue'
-    import { useAuthStore } from '@/stores/auth'
-    import { useRouter } from 'vue-router'
-  
-    const router = useRouter()
-    const authStore = useAuthStore()
-  
-    const isLogin = ref(true)
-    const showPassword = ref(false)
-    const loading = ref(false)
-    const error = ref('')
-    const form = ref<any>(null)
-  
-    const formData = reactive({
-      email: '',
-      password: ''
-    })
-  
-    const rules = {
-      required: (v: string) => !!v || 'This field is required',
-      email: (v: string) => /.+@.+\..+/.test(v) || 'Please enter a valid email',
-      password: (v: string) => v.length >= 4 || 'Password must be at least 6 characters'
-    }
-  
-    const toggleMode = () => {
-      isLogin.value = !isLogin.value
-      error.value = ''
-      formData.email = ''
-      formData.password = ''
-    }
-  
-    const handleSubmit = async () => {
-      const isValid = await form.value?.validate()
-      if (!isValid.valid) return
-  
-      loading.value = true
-      error.value = ''
-  
-      try {
-        if (isLogin.value) {
-          await authStore.login(formData.email, formData.password)
-        } else {
-          await authStore.signup(formData)
-        }
-        
-        // Redirect based on user type
-        if (authStore.isMaster) {
-          router.push('/admin')
-        } else {
-          router.push('/')
-        }
-      } catch (err: any) {
-        error.value = err.response?.data?.detail || 
-          `${isLogin.value ? 'Login' : 'Sign up'} failed. Please try again.`
-      } finally {
-        loading.value = false
-      }
-    }
-  </script>
-  
-  <route lang="yaml">
-    name: auth
-    meta:
-      layout: auth
-      guest: true
-  </route>
+  // TODO: Implement actual login/signup logic here
+  console.log('Form submitted:', {
+    mode: isLogin.value ? 'login' : 'signup',
+    email: email.value,
+    password: password.value
+  })
+}
+</script>
+
+<style scoped>
+@import url('../assets/BitStreamFont/stylesheet.css');
+@import url('../assets/BPdotsFont/stylesheet.css');
+
+.login-container {
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), 
+              url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+.login-card {
+  background-color: #3e0054;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 400px;
+  backdrop-filter: blur(5px);
+  box-shadow: 0px 0px 15px #E324BD;
+  border-radius: 30px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #ffffff;
+  font-family: 'bpdots';
+  font-size: 3rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  font-family: 'bitstream';
+}
+
+input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: 'bitstream';
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #001655;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: 'bitstream';
+  box-shadow: 0 0px 5px #E324BD;
+}
+
+.submit-btn:hover {
+  background-color: #E324BD;
+}
+
+.toggle-text {
+  text-align: center;
+  margin-top: 1rem;
+  font-family: 'bitstream';
+}
+
+a {
+  color: #E324BD;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+</style>
