@@ -18,7 +18,7 @@
   
       <v-card-subtitle class="pt-4 d-flex justify-center">
         <span class="text-h6 text-white bitstream">
-          ${{ build.build_price.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
+          RM {{ build.build_price.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }}
         </span>
       </v-card-subtitle>
   

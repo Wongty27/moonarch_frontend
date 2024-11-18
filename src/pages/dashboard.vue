@@ -85,12 +85,12 @@
     import { ref, onMounted } from 'vue';
     import { storeToRefs } from 'pinia'
 
-    import LineChart from '@/components/LineChart'
-    import PieChart from '@/components/PieChart'
-    import VueGauge from '@/components/VueGauge'    
-    import SunburstChart from '@/components/SunburstChart'
-    import PlotlyGauge from '@/components/PlotlyGauge.vue'
-    import BarChart from '@/components/BarChart.vue'
+    import LineChart from '@/components/dashboard/LineChart'
+    import PieChart from '@/components/dashboard/PieChart'
+    import VueGauge from '@/components/dashboard/VueGauge'    
+    import SunburstChart from '@/components/dashboard/SunburstChart'
+    import PlotlyGauge from '@/components/dashboard/PlotlyGauge.vue'
+    import BarChart from '@/components/dashboard/BarChart.vue'
 
     import { useSunburstStore } from '@/stores/sunburstchartstore';
     import { useDashboardStore } from '../stores/dashboardstore'; 

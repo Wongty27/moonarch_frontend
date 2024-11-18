@@ -48,16 +48,18 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue'
+  import { storeToRefs } from 'pinia'
+
   import { useBuildStore } from '@/stores/build'
   import { useAuthStore } from '@/stores/auth'
-  import { storeToRefs } from 'pinia'
-  // import { useRouter } from 'vue-router'
+  import { useCartStore } from '@/stores/cartstore'
+
   import ItemCard from '@/components/ItemCard.vue'
   import Snackbar from '@/components/Snackbar.vue'
 
   const buildStore = useBuildStore()
   const authStore = useAuthStore()
-  // const router = useRouter()
+  const cartStore = useCartStore()
 
   const { prebuiltPC } = storeToRefs(buildStore)
 
@@ -76,10 +78,10 @@
   const filterOption = ref('all')
   const filterOptions = [
       { title: 'All Prices', value: 'all' },
-      { title: 'Under $3,000', value: 'under-3000' },
-      { title: '$3,000 - $4,000', value: '3000-4000' },
-      { title: '$4,000 - $5,000', value: '4000-5000' },
-      { title: 'Above $5,000', value: 'above-5000' },
+      { title: 'Under RM3000', value: 'under-3000' },
+      { title: 'RM3000 - RM4000', value: '3000-4000' },
+      { title: 'RM4000 - RM5000', value: '4000-5000' },
+      { title: 'Above RM5000', value: 'above-5000' },
   ]
 
   // Updated computed property to handle both filtering and sorting
@@ -124,42 +126,44 @@
   onMounted(async () => {
       await buildStore.fetchPrebuiltPCs()
       const a = prebuiltPC.value.sort((a, b) => a.build_price - b.build_price)
-      console.log(a)
   })
 
   const showSnackbar = ref(false)
   const snackbarMessage = ref('')
 
-  const addToCart = (build: any) => {
-      if (!authStore.isAuthenticated) {
-          snackbarMessage.value = 'Please login to add items to cart'
-          showSnackbar.value = true
-          return
-      }
+  const addToCart = async (build: any) => {
+    if (!authStore.isAuthenticated) {
+        snackbarMessage.value = 'Please login to add items to cart'
+        showSnackbar.value = true
+        return
+    }
 
-      if (!isCustomer.value) {
-          snackbarMessage.value = 'Only customers can add items to cart'
-          showSnackbar.value = true
-          return
-      }
+    if (!isCustomer.value) {
+        snackbarMessage.value = 'Only customers can add items to cart'
+        showSnackbar.value = true
+        return
+    }
 
-      try {
-          // Your cart logic here
-          snackbarMessage.value = `${build.build_name} added to cart successfully!`
-          showSnackbar.value = true
-      } catch (error) {
-          snackbarMessage.value = 'Failed to add item to cart. Please try again.'
-          showSnackbar.value = true
-      }
-  }
+    try {
+        await cartStore.addToCart({
+            build_id: build.build_id,
+            quantity: 1
+        })
+        snackbarMessage.value = `${build.build_name} added to cart successfully!`
+        showSnackbar.value = true
+    } catch (error) {
+        snackbarMessage.value = 'Failed to add item to cart. Please try again.'
+        showSnackbar.value = true
+    }
+}
 </script>
 
 <route lang="yaml">
   meta:
   layout: default
-  name: build
-  path: /build
-  component: build
+  name: shop
+  path: /shop
+  component: shop
 </route>
 
 <style scoped>

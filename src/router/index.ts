@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from 'vue-router/auto-routes'
 import { useAuthStore } from '@/stores/auth'
+import { useCheckoutStore } from '@/stores/checkoutStore'
+import { useCartStore } from '@/stores/cartstore'
 
 // Define protected routes more explicitly
 const MASTER_ONLY_ROUTES = [
@@ -17,7 +19,7 @@ const MASTER_ONLY_ROUTES = [
 
 const CUSTOMER_ONLY_ROUTES = [
   '/cart',
-  '/checkout',
+  '/payment',
   '/profile'
 ]
 
@@ -82,6 +84,7 @@ const router = createRouter({
 
 // Navigation Guards remain the same...
 router.beforeEach((to, from, next) => {
+  const checkoutStore = useCheckoutStore()
   const authStore = useAuthStore()
   const isAuthenticated = authStore.isAuthenticated
   const isMaster = authStore.isMaster
@@ -116,6 +119,25 @@ router.beforeEach((to, from, next) => {
     return next({ path: '/unauthorized' })
   }
 
+  // Handle payment route protection
+  if (to.path === '/payment') {
+    // Check authentication and customer status
+    if (!authStore.isAuthenticated || !authStore.isCustomer) {
+        return next({ path: '/unauthorized' })
+    }
+
+    // Check if checkout was properly initiated
+    if (!checkoutStore.isCheckoutInitiated) {
+        return next({ path: '/cart' })
+    }
+
+    // Check if cart is empty
+    const cartStore = useCartStore()
+    if (cartStore.cartItems.length === 0) {
+        return next({ path: '/cart' })
+    }
+}
+
   // Proceed to route
   next()
 })
@@ -127,5 +149,3 @@ router.onError((error) => {
 })
 
 export default router
-
-  
