@@ -125,26 +125,39 @@
     }
 
     const handlePaymentSuccess = async (paymentDetails) => {
-        try {
+        const { resolve, reject, ...paymentInfo } = paymentDetails
+
+        try {   
             const result = await orderStore.createOrder(
                 profileFormRef.value.formData,
-                paymentDetails,
+                paymentInfo,
                 orderSummaryRef.value
-            )
+        )
 
-            // Redirect to home with success message
-            router.push({
-                path: '/',
-                query: {    
-                    payment: 'success',
-                    ref: paymentDetails.reference 
-                }       
-            })
+        // If successful, resolve the promise from dialog
+        resolve()
+
+        // Wait 5 seconds before redirecting (giving time for dialog close and snackbar)
+        await new Promise(resolve => setTimeout(resolve, 5000))
+
+        // Redirect to home with success message
+        router.push({
+            path: '/',
+            query: {    
+                payment: 'success',
+                ref: paymentInfo.reference 
+            }       
+        })
         } catch (error) {
             console.error('Payment processing failed:', error)
-            // Handle error (show error message to user)
+            let errorMessage = 'Payment processing failed'
+            if (error.response && error.response.data) {
+                errorMessage = error.response.data.detail || error.response.data.message || errorMessage
             }
+            reject(errorMessage)
         }
+    }
+
 
     //fetch cart data
     onMounted(async () => {

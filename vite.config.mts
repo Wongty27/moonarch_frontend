@@ -1,3 +1,4 @@
+
 // Plugins
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -13,6 +14,13 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler', // or 'modern'
+      }
+    }
+  },
   plugins: [
     VueRouter({
       routesFolder: 'src/pages', //this is the only change I made in this file

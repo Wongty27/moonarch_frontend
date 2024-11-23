@@ -3,6 +3,7 @@ import { useRouter } from 'vue-router'
 
 import useApi from '../composables/useApi'
 
+import { useProductStore } from './productstore'
 import { useCartStore } from './cartstore'
 import { useCheckoutStore } from './checkoutStore'
 import { useAuthStore } from './auth'
@@ -60,7 +61,7 @@ export const useOrderStore = defineStore('order', {
 
                     payment_info: {
                         payment_method: orderSummary.paymentMethod,
-                        payment_reference: paymentDetails.reference,
+                        payment_reference: paymentDetails.refnum, //this part error, my fren
                         payment_status: 'Completed',
                         payment_time: new Date().toISOString()
                     }
@@ -75,8 +76,8 @@ export const useOrderStore = defineStore('order', {
 
                 // Clear cart and checkout data
                 await cartStore.clearCart()
+                cartStore.clearBuildIData()
                 checkoutStore.clearCheckout()
-
                 // Return success data
                 return response.data
 

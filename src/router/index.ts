@@ -31,7 +31,7 @@ const GUEST_ONLY_ROUTES = [
 const PUBLIC_ROUTES = [
   '/',
   '/shop',
-  '/build'
+  '/customise'
 ]
 
 // Add meta data to routes
@@ -98,12 +98,13 @@ router.beforeEach((to, from, next) => {
 
   // Handle guest-only routes (login, register)
   if (guestOnly && isAuthenticated) {
-    return next({ path: '/' })
+    const redirect = to.query.redirect as string
+    return next({ path: redirect || '/' })
   }
 
   // Handle authentication required routes
   if (requiresAuth && !isAuthenticated) {
-    return next({ 
+    return next({
       path: '/login',
       query: { redirect: to.fullPath }
     })
@@ -136,10 +137,10 @@ router.beforeEach((to, from, next) => {
     if (cartStore.cartItems.length === 0) {
         return next({ path: '/cart' })
     }
-}
+  }
 
   // Proceed to route
-  next()
+  next();
 })
 
 // Handle authentication errors

@@ -1,31 +1,47 @@
 <template>
-  <v-card class="ma-15 border-primary">
-    <v-toolbar color="primary" title="User Profile" class="text-center mb-5"></v-toolbar>
-
-    <div class="d-flex flex-row">
+  <div class="profile-container">
+    <div class="profile-content">
       <v-tabs
         v-model="tab"
-        color="primary"
+        color="#E324BD"
         direction="vertical"
-        class="my-6"
+        class="tabs"
       >
-        <v-tab prepend-icon="mdi-account" text="User Information" value="info"></v-tab>
-        <v-tab prepend-icon="mdi-history" text="Order History" value="orders"></v-tab>
+        <v-tab 
+          prepend-icon="mdi-account" 
+          value="info"
+          class="tab-btn"
+          :class="{ 'active': tab === 'info' }"
+        >
+          User Information
+        </v-tab>
+        <v-tab 
+          prepend-icon="mdi-history" 
+          value="orders"
+          class="tab-btn"
+          :class="{ 'active': tab === 'orders' }"
+        >
+          Order History
+        </v-tab>
       </v-tabs>
 
       <v-window 
         v-model="tab" 
-        class="flex-grow-1"
+        class="tab-content"
         transition="slide-x-transition"
         reverse-transition="slide-x-reverse-transition"
       >
         <!-- User Information Tab -->
         <v-window-item value="info">
-          <ProfileForm 
-            :isProfilePage="true"
-            v-model:showSuccessAlert="showSuccessAlert"
-            @showPasswordModal="showPasswordModal = true"
-          />
+          <div class="account-info">
+            <h1 class="white--text mb-6 text-center">User Information</h1>
+            <ProfileForm 
+              :isProfilePage="true"
+              v-model:showSuccessAlert="showSuccessAlert"
+              @showPasswordModal="showPasswordModal = true"
+              class="custom-form"
+            />
+          </div>
         </v-window-item>
 
         <!-- Order History Tab -->
@@ -40,13 +56,16 @@
             Rating submitted successfully!
           </v-alert>
 
+          <h1 class="white--text mb-6 text-center">Order History</h1>
+
           <v-card flat>
-            <v-card-text>
+            <v-card-text style="background-color: #3e0054;">
               <div v-if="ordersInfo.length">
-                <v-expansion-panels>
+                <v-expansion-panels class="custom-panels">
                   <v-expansion-panel
                     v-for="order in ordersInfo"
                     :key="order.order_id"
+                    class="custom-panels"
                   >
                     <v-expansion-panel-title>
                       <v-row align="center" no-gutters>
@@ -166,7 +185,7 @@
         </v-card-text>
       </v-card>
     </v-dialog>
-  </v-card>
+  </div>
 </template>
 
 
@@ -247,6 +266,97 @@
 </script>
 
 <style scoped>
+  @import url('@/assets/BitStreamFont/stylesheet.css');
+  @import url('@/assets/BPdotsFont/stylesheet.css');
+
+  .profile-container {
+    min-height: 92vh;
+    padding: 2rem;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), 
+                url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .profile-content {
+    display: flex;
+    gap: 2rem;
+    max-width: 1800px;
+    margin: 0 auto;
+    background: #3e0054;
+    padding: 2rem;
+    border-radius: 30px;
+    box-shadow: 0px 0px 15px #E324BD;
+    backdrop-filter: blur(5px);
+  }
+
+  .tabs {
+    width: 300px;
+    font-family: 'bitstream';
+    background: transparent !important;
+  }
+
+  .tab-btn {
+    color: white !important;
+    font-size: 1.2rem !important;
+    opacity: 0.8;
+    transition: all 0.3s;
+  }
+
+  .tab-btn.active {
+    color: #E324BD !important;
+    opacity: 1;
+    background: rgba(227, 36, 189, 0.1);
+  }
+
+  .tab-content {
+    flex: 1;
+    padding: 0 1rem;
+    font-family: 'bitstream';
+  }
+
+  /* Custom styling for ProfileForm component */
+  :deep(.custom-form) {
+    .v-label {
+      color: white !important;
+    }
+
+    .v-field {
+      background: rgba(255, 255, 255, 0.1) !important;
+      border: 1px solid rgba(227, 36, 189, 0.5) !important;
+      border-radius: 8px !important;
+      transition: all 0.3s;
+
+      &:hover, &:focus-within {
+        border-color: #E324BD !important;
+        box-shadow: 0 0 10px rgba(227, 36, 189, 0.3);
+      }
+    }
+
+    .v-field__input {
+      color: white !important;
+    }
+
+    .v-btn {
+      background: #001655 !important;
+      box-shadow: 0 0px 5px #E324BD !important;
+      transition: all 0.3s;
+
+      &:hover {
+        background: #E324BD !important;
+      }
+    }
+  }
+
+  /* Keep your existing order history styles */
+  .order-card {
+    border: 1px solid #ffffff;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
   .v-window {
     height: 100%;
   }
@@ -254,4 +364,41 @@
   .max-width-200 {
     max-width: 200px;
   }
+
+  :deep(.custom-panels) {
+  /* Panel background */
+  .v-expansion-panel {
+    background-color: #3e0054 !important;
+    color: white !important;
+  }
+
+  /* Panel title */
+  .v-expansion-panel-title {
+    background-color: #3e0054 !important;
+    color: white !important;
+  }
+
+  /* Panel content */
+  .v-expansion-panel-text {
+    background-color: #3e0054 !important;
+    color: white !important;
+  }
+
+  /* Remove default borders if needed */
+  .v-expansion-panel {
+    border: none !important;
+  }
+
+  /* Optional: Style the expansion indicator (arrow) */
+  .v-expansion-panel-title__icon {
+    color: white !important;
+  }
+
+  /* Optional: Add hover effect */
+  .v-expansion-panel:hover {
+    background-color: #4e0068 !important;
+  }
+
+  
+}
 </style>

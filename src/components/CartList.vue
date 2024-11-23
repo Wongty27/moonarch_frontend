@@ -18,8 +18,8 @@
               
               <!-- Item Details -->
               <v-col :cols="item.img_url ? 6 : 9">
-                <v-list-item-title class="text-h6 mb-1 bitstream">{{ item.product_name }}</v-list-item-title>
-                <v-list-item-subtitle class="bitstream"> {{ item.category }} </v-list-item-subtitle>
+                <v-list-item-title class="text-h6 mb-1 bitstream">{{ item.product_name.toUpperCase() }}</v-list-item-title>
+                <v-list-item-subtitle class="bitstream"> {{ item.category.toUpperCase() }} </v-list-item-subtitle>
                 <v-list-item-subtitle class="bitstream"> {{ item.quantity }} x RM {{ item.price?.toFixed(2) }} </v-list-item-subtitle>
               </v-col>
 

@@ -46,6 +46,7 @@
                         color: 'white'  // This sets the text color
                     }"
                     @click="closeDialog"
+                    :disabled="processing"
                 >
                     Cancel
                 </v-btn>
@@ -56,21 +57,23 @@
                     }"
                     :disabled="!cardFormValid"
                     @click="processPayment"
+                    :loading="processing"
                 >
                     Pay RM {{ total.toFixed(2) }}
                 </v-btn>
             </v-card-actions>
         </v-card>
-
-        <!-- Add Snackbar -->
-        <v-snackbar
-            v-model="showSnackbar"
-            color="success"
-            timeout="3000"
-        >
-            {{ snackbarMessage }}
-        </v-snackbar>
     </v-dialog>
+
+    <!-- Add Snackbar -->
+    <v-snackbar
+        v-model="showSnackbar"
+        :color="snackbarColor"
+        timeout="3000"
+        location="top"
+    >
+    {{ snackbarMessage }}
+    </v-snackbar>
 </template>
 
 <script setup>
@@ -169,39 +172,59 @@
         cvv.value = cvv.value.replace(/\D/g, '').substring(0, 3)
     }
 
+    const processing = ref(false)
+    const snackbarColor = ref('success')
+    const showSnackbar = ref(false)
+    const snackbarMessage = ref('')
+
+    const processPayment = async () => {
+        if (!cardFormValid.value) return
+
+        processing.value = true
+        try {
+            // Simulate initial processing
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            // Emit event first and wait for parent to process
+            const result = await new Promise((resolve, reject) => {
+                emit('payment-processed', {
+                    status: 'success',
+                    method: 'card',
+                    refnum: cardNumber.value.slice(-4),
+                    resolve,
+                    reject
+                })
+            })
+
+            // Only show success if parent processing succeeded
+            snackbarColor.value = 'success'
+            snackbarMessage.value = 'Payment processed successfully and order placed.'
+            showSnackbar.value = true
+
+            setTimeout(() => { closeDialog() }, 3000)
+
+        } catch (error) {
+            snackbarColor.value = 'error'
+            snackbarMessage.value = typeof error === 'string' ? error : 'Payment failed. Please try again.'
+            showSnackbar.value = true
+            
+            // Keep dialog open on error
+            setTimeout(() => {
+                showSnackbar.value = false
+                closeDialog()
+            }, 3000)
+        } finally {
+            processing.value = false
+        }
+    }
+
     const closeDialog = () => {
         show.value = false
         cardNumber.value = ''
         expiryDate.value = ''
         cvv.value = ''
         cardFormValid.value = false
+        processing.value = false
     }
-
-    const showSnackbar = ref(false)
-    const snackbarMessage = ref('')
-
-    const processPayment = async () => {
-        try {
-            // Mock payment processing
-            await new Promise(resolve => setTimeout(resolve, 1000))
-            snackbarMessage.value = 'Payment processed successfully'
-            showSnackbar.value = true
-
-            emit('payment-processed', {
-                status: 'success',
-                method: 'card',
-                refnum: cardNumber.value.slice(-4)
-            })
-
-            // Close dialog after a short delay
-            setTimeout(() => { closeDialog() }, 1000)
-        } catch (error) {
-            console.error('Payment failed:', error)
-            snackbarMessage.value = 'Payment failed. Please try again.'
-            showSnackbar.value = true
-        }
-    }
-
 
     watch(() => props.modelValue, (newVal) => {
         show.value = newVal

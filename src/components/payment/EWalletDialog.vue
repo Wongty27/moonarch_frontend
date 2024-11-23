@@ -54,6 +54,7 @@
                     bg-color="#E324BD"
                     color="white"
                     @click="closeDialog"
+                    :disabled="processing"
                 >
                     Cancel
                 </v-btn>
@@ -68,16 +69,18 @@
                 </v-btn>
             </v-card-actions>
 
-            <!-- Success Snackbar -->
-            <v-snackbar
-                v-model="showSnackbar"
-                :color="snackbarColor"
-                timeout="3000"
-            >
-                {{ snackbarMessage }}
-            </v-snackbar>
         </v-card>
     </v-dialog>
+
+    <!-- Success Snackbar -->
+    <v-snackbar
+        v-model="showSnackbar"
+        :color="snackbarColor"
+        timeout="3000"
+        location="top"
+    >
+        {{ snackbarMessage }}
+    </v-snackbar>
 </template>
 
 <script setup>
@@ -118,6 +121,47 @@
         emit('update:modelValue', newVal)
     })
 
+    const confirmPayment = async () => {
+        if (!isValid.value) return
+
+        processing.value = true
+        try {
+            // Simulate initial processing
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            
+            // Emit event and wait for parent to process
+            await new Promise((resolve, reject) => {
+                emit('payment-processed', {
+                    status: 'success',
+                    method: 'tng_ewallet',
+                    refnum: referenceNumber.value,
+                    resolve,
+                    reject
+                })
+            })
+
+            // Only show success if parent processing succeeded
+            snackbarColor.value = 'success'
+            snackbarMessage.value = 'Touch n Go payment confirmed successfully and order placed.'
+            showSnackbar.value = true
+
+            setTimeout(() => { closeDialog() }, 3000)
+
+        } catch (error) {
+            snackbarColor.value = 'error'
+            snackbarMessage.value = typeof error === 'string' ? error : 'Payment failed. Please try again.'
+            showSnackbar.value = true
+            
+            // Keep dialog open on error
+            setTimeout(() => {
+                showSnackbar.value = false
+                closeDialog()
+            }, 3000)
+        } finally {
+            processing.value = false
+        }
+    }
+
     // Methods
     const closeDialog = () => {
         show.value = false
@@ -125,34 +169,4 @@
         processing.value = false
     }
 
-    const confirmPayment = async () => {
-        if (!isValid.value) return
-
-        processing.value = true
-        try {
-            // Simulate payment processing
-            await new Promise(resolve => setTimeout(resolve, 1500))
-            
-            snackbarColor.value = 'success'
-            snackbarMessage.value = 'Touch n Go payment confirmed successfully'
-            showSnackbar.value = true
-
-            emit('payment-processed', {
-                status: 'success',
-                method: 'tng_ewallet',
-                reference: referenceNumber.value
-            })
-
-            setTimeout(() => {
-                closeDialog()
-            }, 1000)
-        } catch (error) {
-            console.error('Payment confirmation failed:', error)
-            snackbarColor.value = 'error'
-            snackbarMessage.value = 'Payment failed. Please try again.'
-            showSnackbar.value = true
-        } finally {
-            processing.value = false
-        }
-    }
 </script>

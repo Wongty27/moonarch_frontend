@@ -1,3 +1,8 @@
+<!-- 
+    This is the signup form for the user.
+    It is used to collect the user's name, email, phone number, and address.
+    It is also used to collect the user's talk title, brief, and track.
+
 <template>
     <div class="container">
         <div class="centered-div">
@@ -14,7 +19,6 @@
                 name="Contact"   
                 :validation-rules="{ required: true }"
                 :validation-messages="{ required: 'Please complete all required fields before proceeding.' }">
-                  <!-- collect name, email, and company info -->
                   <FormKit 
                   type="text" 
                   label="First Name" 
@@ -62,7 +66,6 @@
                 name="Shipping" 
                 :validation-rules="{ required: true }"
                 :validation-messages="{ required: 'Please complete all required fields before proceeding.' }">
-                  <!-- Get talk title, brief, and track -->
                   <FormKit 
                     type="textarea" 
                     label="Street Address" 
@@ -211,3 +214,5 @@
 }
 
 </style>
+-->
+

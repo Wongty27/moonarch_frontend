@@ -72,6 +72,7 @@
                         label="Payment Receipt"
                         :show-size="true"
                         density="compact"
+                        :error-messages="paymentProof?.size > 5000000 ? 'File size should be less than 5MB' : ''"
                     ></v-file-input>
                 </div>
 
@@ -92,6 +93,8 @@
                     bg-color="#E324BD"
                     color="white"
                     @click="closeDialog"
+                    :disabled="processing"
+                    
                 >
                     Cancel
                 </v-btn>
@@ -100,21 +103,24 @@
                     color="white"
                     :disabled="!isValid"
                     @click="confirmTransfer"
+                    :loading="processing"
+                    
                 >
                     Confirm Transfer
                 </v-btn>
             </v-card-actions>
-
-            <!-- Success Snackbar -->
-            <v-snackbar
-                v-model="showSnackbar"
-                color="success"
-                timeout="3000"
-            >
-                {{ snackbarMessage }}
-            </v-snackbar>
         </v-card>
     </v-dialog>
+
+    <!-- Success Snackbar -->
+    <v-snackbar
+        v-model="showSnackbar"
+        :color="snackbarColor"
+        timeout="3000"
+        location="top"
+    >
+    {{ snackbarMessage }}
+    </v-snackbar>
 </template>
 
 <script setup>
@@ -130,13 +136,14 @@
     const show = ref(props.modelValue)
     const paymentProof = ref(null)
     const referenceNumber = ref('')
-    const showSnackbar = ref(false)
-    const snackbarMessage = ref('')
 
     // Validation rules
     const proofRules = [
-        v => !!v || 'Payment proof is required',
-        v => !v || v.size < 5000000 || 'File size should be less than 5MB'
+        v => {
+            if (!v) return 'Payment proof is required'
+            if (v.size > 5000000) return 'File size should be less than 5MB'
+            return true
+        }
     ]
 
     const referenceRules = [
@@ -144,9 +151,10 @@
         v => v.length >= 6 || 'Reference number should be at least 6 characters'
     ]
 
-    // Computed property for form validation
+    // Updated isValid computed property
     const isValid = computed(() => {
-        return paymentProof.value && referenceNumber.value.length >= 6
+        if (!paymentProof.value || !referenceNumber.value) return false
+        return paymentProof.value.size <= 5000000 && referenceNumber.value.length >= 6
     })
 
     // Watch for dialog state changes
@@ -169,32 +177,56 @@
         }
     }
 
+    const processing = ref(false)
+    const snackbarColor = ref('success')
+    const showSnackbar = ref(false)
+    const snackbarMessage = ref('')
+
+    const confirmTransfer = async () => {
+        if (!isValid.value) return
+
+        processing.value = true
+        try {
+            // Simulate initial processing
+            await new Promise(resolve => setTimeout(resolve, 1500))
+            
+            // Emit event and wait for parent to process
+            await new Promise((resolve, reject) => {
+                emit('payment-processed', {
+                    status: 'success',
+                    method: 'bank_transfer',
+                    refnum: referenceNumber.value,
+                    resolve,
+                    reject
+                })
+            })
+
+            // Only show success if parent processing succeeded
+            snackbarColor.value = 'success'
+            snackbarMessage.value = 'Transfer confirmation submitted successfully and order placed.'
+            showSnackbar.value = true
+
+            setTimeout(() => { closeDialog() }, 3000)
+
+        } catch (error) {
+            snackbarColor.value = 'error'
+            snackbarMessage.value = typeof error === 'string' ? error : 'Payment failed. Please try again.'
+            showSnackbar.value = true
+            
+            // Keep dialog open on error
+            setTimeout(() => {
+                showSnackbar.value = false
+                closeDialog()
+            }, 3000)
+        } finally {
+            processing.value = false
+        }
+    }
+
     const closeDialog = () => {
         show.value = false
         paymentProof.value = null
         referenceNumber.value = ''
-    }
-
-    const confirmTransfer = async () => {
-        try {
-            // Simulate processing
-            await new Promise(resolve => setTimeout(resolve, 1500))
-            
-            emit('payment-processed', {
-                status: 'success',
-                method: 'bank_transfer',
-                refnum: referenceNumber.value
-            })
-            
-            snackbarMessage.value = 'Transfer confirmation submitted successfully'
-            showSnackbar.value = true
-            
-            setTimeout(() => {
-                closeDialog()
-            }, 1000)
-        } catch (error) {
-            console.error('Transfer confirmation failed:', error)
-        }
     }
 </script>
 

@@ -5,7 +5,9 @@
     "lib": ["DOM", "ESNext"],
     "baseUrl": ".",
     "module": "ESNext",
-    "moduleResolution": "bundler",
+    // "moduleResolution": "bundler", changes
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true, //changes
     "paths": {
       "@/*": ["src/*"]
     },

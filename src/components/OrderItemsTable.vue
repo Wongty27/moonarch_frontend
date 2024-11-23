@@ -2,30 +2,44 @@
   <v-data-table
     :headers="headers"
     :items="items"
-    class="elevation-1"
+    class="elevation-1"  
     hover
     density="compact"
     :items-per-page="50"
   >
 
-    <template v-slot:item.unit_price="{ item }">
-      RM{{ item.price.toFixed(2) }}
+
+    <!-- Header styling -->
+    <template #headers="{ columns }">
+      <tr>
+        <th
+          v-for="column in columns"
+          :key="column.key"
+          class="table-cell"
+          :class="column.align === 'end' ? 'text-end' : ''"
+        >
+          {{ column.title }}
+        </th>
+      </tr>
     </template>
-    <template v-slot:item.quantity="{ item }">
-      x{{ item.quantity }}
-    </template>
-    <template v-slot:item.total_price="{ item }">
-      RM{{ (item.price * item.quantity).toFixed(2) }}
+
+    <!-- Row styling -->
+    <template #item="{ item }"> 
+      <tr class="table-cell">
+        <td>{{ item.product_name }}</td>
+        <td>{{ item.category }}</td>
+        <td class="text-end">RM{{ item.price.toFixed(2) }}</td>
+        <td class="text-end">x{{ item.quantity }}</td>
+        <td class="text-end">RM{{ (item.price * item.quantity).toFixed(2) }}</td>
+      </tr>
     </template>
     
+    <!-- Bottom section styling -->
     <template v-slot:bottom>
-      <div class="d-flex pa-4">
+      <div class="d-flex pa-4 table-cell">
         <div style="flex: 1;" class="text-h6"> Total: </div>
         <div style="flex: 1;"></div>
-        <div class="text-h6 text-align-left mr-16">
-          x{{ calculateTotalQuantity(items) }}
-        </div>
-        <div class="text-h6 text-right">
+        <div class="text-h6 text-right ml-16">
           RM{{ calculateTotal(items).toFixed(2) }}
         </div>
       </div>
@@ -60,4 +74,10 @@
   .v-data-table {
     margin: 16px 0;
   }
+
+  :deep(.table-cell) {
+    background-color: #3e0054 !important;
+    color: white !important;
+  }
+
 </style>

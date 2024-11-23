@@ -114,13 +114,13 @@
                 label: "Revenue",
                 backgroundColor: '#8479f8',
                 borderColor: '#8479f8',
-                data: profits.value.map(item => item.total_order_cost)
+                data: profits.value.map(item => item.total_sales_price)
             },
             { 
                 label: "Cost",
                 backgroundColor: '#f87979',
                 borderColor: '#f87979',
-                data: profits.value.map(item => item.total_sales_price)
+                data: profits.value.map(item => item.total_order_cost)
             },
         ]}))
     

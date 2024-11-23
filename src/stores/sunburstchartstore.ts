@@ -38,23 +38,43 @@ export const useSunburstStore = defineStore('sunburst', {
       const dashboardStore = useDashboardStore();
       await dashboardStore.fetchBrands();
       const brandsList = dashboardStore.brands;
-
+  
       // Reset the arrays
-      this.labels = ["PC Components"];
+      this.labels = ["PC COMPONENTS"];
       this.parents = [""];
       this.values = [0];
-
+  
+      // Helper function to format text
+      const formatText = (str: string) => {
+        // Terms that should be in all caps
+        const upperCaseTerms = ['hdd', 'ssd', 'psu', 'cpu', 'gpu', 'ram'];
+        
+        return str.split(' ')
+          .map(word => {
+            const lowerWord = word.toLowerCase();
+            // Check if word should be all caps
+            if (upperCaseTerms.includes(lowerWord)) {
+              return word.toUpperCase();
+            }
+            // Otherwise capitalize first letter
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          })
+          .join(' ');
+      };
+  
       brandsList.forEach((item) => {
-        if (!this.labels.includes(item.category)) {
-          this.labels.push(item.category);
+        const formattedCategory = formatText(item.category);
+        const formattedBrand = formatText(item.brand);
+  
+        if (!this.labels.includes(formattedCategory)) {
+          this.labels.push(formattedCategory);
           this.parents.push("");
           this.values.push(0);
         }
-        this.labels.push(item.brand);
-        this.parents.push(item.category);
+        this.labels.push(formattedBrand);
+        this.parents.push(formattedCategory);
         this.values.push(item.count);
       });
-
     },
   },
 

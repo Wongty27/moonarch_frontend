@@ -145,7 +145,7 @@
     }
 
     try {
-        await cartStore.addToCart({
+        await cartStore.addPrebuiltToCart({
             build_id: build.build_id,
             quantity: 1
         })

@@ -1,5 +1,5 @@
 <template>
-  <v-card style="background-color:#001655" class="ma-5 bitstream">
+  <v-card :style="{ backgroundColor: isProfilePage ? '#3e0054' : '#001655' }"  class="ma-5 bitstream">
     <v-divider class="border-opacity-75" :thickness="4" color="#E324BD"></v-divider>
     
     <v-alert
@@ -12,20 +12,19 @@
       Profile information updated successfully!
     </v-alert>
 
-    <v-form ref="form" @submit.prevent="isProfilePage && handleSubmit">
-      <v-row class="ma-auto pa-2 ">
+    <v-form ref="form" @submit.prevent="isProfilePage && handleSubmit" class="profile-form">
+      <v-row class="ma-auto px-2 pt-5">
         <v-text-field 
         v-model="formData.email" 
         label="Email address*" 
         type="email" 
         placeholder="user_id@domain.com" 
+        variant="outlined"
         readonly
         disabled
         required
         ></v-text-field>
       </v-row>
-
-      <v-divider class="border-opacity-25 mb-3 mx-2"></v-divider>
 
       <v-row>
         <v-col cols="6" class="ma-auto pa-5">
@@ -33,6 +32,7 @@
             v-model="formData.full_name" 
             label="Full Name*" 
             placeholder="John Doe" 
+            variant="outlined"
             clearable 
             required
             :rules="[v => !!v || 'Full name is required']"
@@ -44,6 +44,7 @@
             v-model="formData.phone_number" 
             label="Phone Number*" 
             placeholder="+60123456789" 
+            variant="outlined"
             clearable 
             required
             :rules="[v => !!v || 'Phone number is required']"
@@ -55,7 +56,8 @@
         <v-textarea 
           v-model="formData.street_address" 
           label="Street Address*" 
-          place   holder="Enter Address" 
+          placeholder="Enter Address" 
+          variant="outlined"
           clearable   
           required
           :rules="[v => !!v || 'Street address is required']"
@@ -69,6 +71,7 @@
             v-model="formData.city" 
             label="City*" 
             placeholder="City" 
+            variant="outlined"
             required
             :rules="[v => !!v || 'City is required']"
             clearable
@@ -80,6 +83,7 @@
             v-model="formData.postcode"
             label="Postcode/ZIP*"
             placeholder="Enter Postcode/ZIP"
+            variant="outlined"
             :rules="postCodeRules"
             maxlength="5"
             required
@@ -94,6 +98,7 @@
           v-model="formData.state"
           :items="states"
           label="State/Province*"
+          variant="outlined"
           required
           :rules="[v => !!v || 'State is required']"
           clearable
@@ -104,6 +109,7 @@
           <v-text-field 
             v-model="formData.country" 
             label="Country"
+            variant="outlined"
             readonly
             disabled
             value="Malaysia"
@@ -115,14 +121,14 @@
         <v-card-actions v-if="isProfilePage">
           <v-spacer></v-spacer>
           <v-btn
-            color="primary"
+            class="custom-btn mx-5"
             type="submit"
             @click="handleSubmit"
           >
             Update Profile
           </v-btn>
           <v-btn
-            color="secondary"
+            class="custom-btn mx-5"
             @click="showPasswordModal = true"
           >
             Change Password
@@ -348,4 +354,15 @@
 <style scoped>
     @import url('../assets/BitStreamFont/stylesheet.css');
     @import url('../assets/BPdotsFont/stylesheet.css');
+
+    .custom-btn {
+      background-color: #001655 !important;
+      color: white !important;
+    }
+
+    /* Add hover effect (optional) */
+    .custom-btn:hover {
+      background-color: #4e0068 !important; /* slightly lighter shade for hover */
+      box-shadow: 0 0 10px rgba(227, 36, 189, 0.5) !important;
+    }
 </style>
