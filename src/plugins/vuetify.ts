@@ -10,9 +10,16 @@ import 'vuetify/styles'
 
 // Composables
 import { createVuetify, ThemeDefinition } from 'vuetify'
+import { VDateInput } from 'vuetify/labs/VDateInput'
+
+
+//newly imported
+// Pre-import commonly used components
+
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 
 // https://vuetifyjs.com/en/introduction/why-vuetify/#feature-guides
-
 const customDarkTheme: ThemeDefinition = {
   dark: true,
   colors: {
@@ -37,4 +44,6 @@ export default createVuetify({
       customDarkTheme,
     },
   },
+  components,
+  directives,
 })
