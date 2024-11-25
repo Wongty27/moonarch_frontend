@@ -274,8 +274,8 @@
           <div class="drawer-scroll-space"></div>
         </v-card>
       </v-list>
-    </v-navigation-drawer>
-  
+      </v-navigation-drawer>
+    
     <!-- Main content area -->
     <div :class="{ 
       'drawer-open': drawer,
@@ -290,6 +290,9 @@
       >
       </Canvas>
     </div>
+
+    <ChatBox />
+
 </template>
   
 <script setup lang="ts">
@@ -297,12 +300,13 @@
   import { useProductStore } from '@/stores/productstore';
   import { useCartStore } from '@/stores/cartstore';
   import { useRouter, useRoute } from 'vue-router';
+
   import Canvas from '@/components/ThreeCanvas.vue';
+  import ChatBox from '@/components/ChatBox.vue';
 
   const productStore = useProductStore();
   const cartStore = useCartStore();
   const router = useRouter();
-  const route = useRoute();
 
   const drawer = ref(false);
   const infoDrawer = ref(false);
@@ -314,19 +318,50 @@
       product_list: any[];
     } | null>(null);
 
-  const items = ref<any[]>([]);
+  const items = ref<any[]>(cartStore.loadBuildFromLocal() as any[]);
 
-  // Load saved build from localStorage on mount
-  onMounted(async () => {
-    await productStore.fetchAllComponents();
-    items.value = cartStore.loadBuildFromLocal() as any[];
-    console.log(route.query.drawer)
+   // Add these with your other refs
+   const productSortOptions = [
+    { text: 'Name (A-Z)', value: 'name-asc' },
+    { text: 'Name (Z-A)', value: 'name-desc' },
+    { text: 'Price (Low-High)', value: 'price-asc' },
+    { text: 'Price (High-Low)', value: 'price-desc' }
+  ];
 
+  const currentSort = ref('name-asc');
 
-    if (route.query.drawer === 'open') {
-        drawer.value = true;
+  // Add computed property for sorted products
+  const sortedProducts = computed(() => {
+    if (!selectedPart.value?.product_list) return [];
+    
+    const products = [...selectedPart.value.product_list];
+    
+    switch (currentSort.value) {
+      case 'name-asc':
+        return products.sort((a, b) => 
+          a.product_name.localeCompare(b.product_name)
+        );
+      case 'name-desc':
+        return products.sort((a, b) => 
+          b.product_name.localeCompare(a.product_name)
+        );
+      case 'price-asc':
+        return products.sort((a, b) => 
+          Number(a.product_price) - Number(b.product_price)
+        );
+      case 'price-desc':
+        return products.sort((a, b) => 
+          Number(b.product_price) - Number(a.product_price)
+        );
+      default:
+        return products;
     }
   });
+
+  // Add sort method
+  const sortProducts = (sortType: string) => {
+    currentSort.value = sortType;
+  };
 
   const getSavedQuantity = (product: any) => {
     const buildItem = cartStore.buildItems.find(item => item.product_id === product.product_id);
@@ -433,47 +468,9 @@
     return total.toFixed(2);
   };
 
-  // Add these with your other refs
-  const productSortOptions = [
-    { text: 'Name (A-Z)', value: 'name-asc' },
-    { text: 'Name (Z-A)', value: 'name-desc' },
-    { text: 'Price (Low-High)', value: 'price-asc' },
-    { text: 'Price (High-Low)', value: 'price-desc' }
-  ];
-
-  const currentSort = ref('name-asc');
-
-  // Add computed property for sorted products
-  const sortedProducts = computed(() => {
-    if (!selectedPart.value?.product_list) return [];
-    
-    const products = [...selectedPart.value.product_list];
-    
-    switch (currentSort.value) {
-      case 'name-asc':
-        return products.sort((a, b) => 
-          a.product_name.localeCompare(b.product_name)
-        );
-      case 'name-desc':
-        return products.sort((a, b) => 
-          b.product_name.localeCompare(a.product_name)
-        );
-      case 'price-asc':
-        return products.sort((a, b) => 
-          Number(a.product_price) - Number(b.product_price)
-        );
-      case 'price-desc':
-        return products.sort((a, b) => 
-          Number(b.product_price) - Number(a.product_price)
-        );
-      default:
-        return products;
-    }
-  });
-
-  // Add sort method
-  const sortProducts = (sortType: string) => {
-    currentSort.value = sortType;
+  // Add a storage event listener
+  const handleStorageChange = () => {
+    items.value = cartStore.loadBuildFromLocal() as any[];
   };
 
   // Add watchers for drawer states
@@ -499,6 +496,19 @@
   watch(items, (newItems) => {
     localStorage.setItem('customBuildItems', JSON.stringify(newItems));
   }, { deep: true });
+
+  // Add a watcher for cartStore's buildItems
+  watch(() => cartStore.buildItems, (newItems) => {
+    items.value = newItems;
+  }, { deep: true });
+
+
+    // Load saved build from localStorage on mount
+  onMounted(async () => {
+    await productStore.fetchAllComponents();
+    window.addEventListener('storage', handleStorageChange);
+    items.value = cartStore.loadBuildFromLocal() as any[];
+  });
 </script>
   
 <style >

@@ -487,7 +487,7 @@
           // Handle special cases
           if (normalizedItemCategory === 'case' && normalizedPartTitle === 'casing') {
             return item.quantity > 0;
-          }
+          } 
     
           if (normalizedItemCategory === 'cooler' && normalizedPartTitle.includes('all in one cooler')) {
             return item.quantity > 0;
