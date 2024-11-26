@@ -53,8 +53,8 @@
 	import { defineComponent } from 'vue';
 
   import { useProductStore } from '../stores/productstore';
-  import type { ComponentResponse, Product } from '../stores/productstore'; // Import the interfaces
-  import { storeToRefs } from 'pinia';
+  import type { ComponentResponse } from '../stores/productstore'; // Import the interfaces
+  // import { storeToRefs } from 'pinia';
   
   interface PartData extends ComponentResponse {
     position: THREE.Vector3;
@@ -290,7 +290,7 @@
           // Load 3D Model
           const loader = new GLTFLoader();
           loader.load(
-            '../models/scene.gltf',
+            '/models/scene.gltf',
             (gltf) => {
               const model = gltf.scene;
               model.position.set(0, 0, 0);

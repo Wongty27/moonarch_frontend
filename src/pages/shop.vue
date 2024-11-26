@@ -125,7 +125,7 @@
 
   onMounted(async () => {
       await buildStore.fetchPrebuiltPCs()
-      const a = prebuiltPC.value.sort((a, b) => a.build_price - b.build_price)
+    //   const a =prebuiltPC.value.sort((a, b) => a.build_price - b.build_price)
   })
 
   const showSnackbar = ref(false)
