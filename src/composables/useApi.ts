@@ -2,7 +2,7 @@ import axios, { AxiosInstance } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import router from '@/router'
 
-const useApi = (apiUrl = 'https://moonarch-api-service-220646501559.us-central1.run.app'): AxiosInstance => {
+const useApi = (apiUrl = 'https://moonarch-api-service-220646501559.us-central1.run.app/'): AxiosInstance => {
   const instance = axios.create({
     baseURL: apiUrl,
     headers: {
