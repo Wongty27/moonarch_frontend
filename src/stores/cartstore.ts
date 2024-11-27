@@ -67,7 +67,7 @@ export const useCartStore = defineStore("cart", {
         async addPrebuiltToCart(item: CartItemCreate) {
             try {
                 const api = useApi();
-                const response = await api.post("/cart", item);
+                const response = await api.post("/cart/", item);
                 await this.fetchCartItems(); // Refresh cart after adding
                 return response.data; // Return the response data
             } catch (error) {
