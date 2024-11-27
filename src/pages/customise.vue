@@ -299,7 +299,7 @@
   import { ref, onMounted } from 'vue';
   import { useProductStore } from '@/stores/productstore';
   import { useCartStore } from '@/stores/cartstore';
-  import { useRouter, useRoute } from 'vue-router';
+  import { useRouter } from 'vue-router';
 
   import Canvas from '@/components/ThreeCanvas.vue';
   import ChatBox from '@/components/ChatBox.vue';

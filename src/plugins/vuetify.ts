@@ -10,7 +10,7 @@ import 'vuetify/styles'
 
 // Composables
 import { createVuetify, ThemeDefinition } from 'vuetify'
-import { VDateInput } from 'vuetify/labs/VDateInput'
+// import { VDateInput } from 'vuetify/labs/VDateInput'
 
 
 //newly imported

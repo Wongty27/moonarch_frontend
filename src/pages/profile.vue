@@ -57,7 +57,6 @@
           </v-alert>
 
           <h1 class="white--text mb-6 text-center">Order History</h1>
-
           <v-card flat>
             <v-card-text style="background-color: #3e0054;">
               <div v-if="ordersInfo.length">
@@ -206,7 +205,7 @@
 
   const userProfileStore = useUserProfileStore();
   const { ordersInfo, ratingInfo } = storeToRefs(userProfileStore);
-  const tab = ref('info')
+  const tab = ref('orders')
 
   //Feedback dialog 
   const showRatingDialog = ref(false)

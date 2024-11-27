@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 
 import useApi from '../composables/useApi'
 
-import { useProductStore } from './productstore'
+// import { useProductStore } from './productstore'
 import { useCartStore } from './cartstore'
 import { useCheckoutStore } from './checkoutStore'
 import { useAuthStore } from './auth'
@@ -20,7 +20,7 @@ export const useOrderStore = defineStore('order', {
             const cartStore = useCartStore()
             const checkoutStore = useCheckoutStore()
             const authStore = useAuthStore()
-            const router = useRouter()
+            // const router = useRouter()
 
             // Check if user is authenticated
             if (!authStore.isAuthenticated || !authStore.user) {

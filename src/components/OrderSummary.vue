@@ -10,7 +10,7 @@
         <v-list-item v-for="item in cartItems" :key="item.cart_item_id">
           <v-row align="center" no-gutters>
             <v-col cols="3">
-              <v-img :src="item.img_url" height="50" width="50" cover></v-img>
+              <v-img :src="item.img_url ?? ''" height="50" width="50" cover></v-img>
             </v-col>
 
             <v-col cols="6">
@@ -103,7 +103,7 @@
   
 
 // Props
-  const props = defineProps({
+  defineProps({
     cartItems: {
       type: Array as () => CartItem[],
       required: true

@@ -30,9 +30,5 @@ declare module 'vue-router/auto-routes' {
     '/profile': RouteRecordInfo<'/profile', '/profile', Record<never, never>, Record<never, never>>,
     'shop': RouteRecordInfo<'shop', '/shop', Record<never, never>, Record<never, never>>,
     'unauthorized': RouteRecordInfo<'unauthorized', '/UnauthorizedView', Record<never, never>, Record<never, never>>,
-    'build': RouteRecordInfo<'build', '/build', Record<never, never>, Record<never, never>>,
-    '/unused/profiletest': RouteRecordInfo<'/unused/profiletest', '/unused/profiletest', Record<never, never>, Record<never, never>>,
-    '/unused/signup': RouteRecordInfo<'/unused/signup', '/unused/signup', Record<never, never>, Record<never, never>>,
-    '/unused/signupv2': RouteRecordInfo<'/unused/signupv2', '/unused/signupv2', Record<never, never>, Record<never, never>>,
   }
 }

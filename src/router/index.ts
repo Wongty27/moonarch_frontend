@@ -28,11 +28,11 @@ const GUEST_ONLY_ROUTES = [
   '/register'
 ]
 
-const PUBLIC_ROUTES = [
-  '/',
-  '/shop',
-  '/customise'
-]
+// const PUBLIC_ROUTES = [
+//   '/',
+//   '/shop',
+//   '/customise'
+// ]
 
 // Add meta data to routes
 routes.forEach(route => {

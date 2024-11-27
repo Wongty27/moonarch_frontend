@@ -11,7 +11,7 @@
       <v-btn
         @click="closeSnackbar"
         small
-        text
+
         class="close-btn"
       >
         close
