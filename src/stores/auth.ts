@@ -49,7 +49,7 @@ export const useAuthStore = defineStore('auth', {
         formData.append('username', email)
         formData.append('password', password)
 
-        const response = await api.post('/auth/token/', formData, {
+        const response = await api.post('/auth/token', formData, {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
           }
@@ -82,7 +82,7 @@ export const useAuthStore = defineStore('auth', {
     async signup(userData: SignupData) {
       try {
         const api = useApi()
-        const response = await api.post('/auth/users/', userData)
+        const response = await api.post('/auth/users', userData)
         
         const token = response.data.access_token
         const payload = this.decodeToken(token)

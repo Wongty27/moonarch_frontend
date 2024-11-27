@@ -19,7 +19,7 @@ export const useUserStore = defineStore("userstore", {
         async addUsers(user: User): Promise <void> {
             try { 
                 const api = useApi();
-                await api.post("/users/", user);
+                await api.post("/users", user);
             } catch (error) {
                 console.error("Error saving book:", error);
                 throw error;

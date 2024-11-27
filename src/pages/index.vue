@@ -43,11 +43,11 @@
       <div v-if="index === 2" class="section-spacer"></div>
     </template>
 
-    <!-- <div v-for="(location, index) in locations" 
+    <div v-for="(location, index) in locations" 
          :key="'loc-' + index"
          class="map-container-wrapper bitstream">
       <MapBox v-bind="{ ...location, index }" />
-    </div> -->
+    </div>
   </div>
 </template>
 

@@ -77,7 +77,7 @@ export const useUserProfileStore = defineStore("userprofile", {
         async fetchUserInfo(): Promise<UserInfo> {
             try {
                 const api = useApi();
-                const response = await api.get("/user/profile/");
+                const response = await api.get("/user/profile");
                 this.userInfo = response.data
                 return this.userInfo;
             } catch (error) {
@@ -89,7 +89,7 @@ export const useUserProfileStore = defineStore("userprofile", {
         async updateUserInfo(profileData: ProfileUpdate): Promise<void> {
             try {
                 const api = useApi();
-                await api.put("/user/profile/", profileData);
+                await api.put("/user/profile", profileData);
                 await this.fetchUserInfo();
             } catch (error) {
                 console.error('Error updating user info:', error);
@@ -100,7 +100,7 @@ export const useUserProfileStore = defineStore("userprofile", {
         async updateUserPassword(passwordData: PasswordInfo): Promise<void> {
             try {
                 const api = useApi();
-                await api.put("/user/change-password/", passwordData);
+                await api.put("/user/change-password", passwordData);
             } catch (error) {
                 console.error('Error updating password:', error);
                 throw error;
@@ -110,7 +110,7 @@ export const useUserProfileStore = defineStore("userprofile", {
         async fetchOrders(): Promise<OrdersInfo[]> {
             try {
                 const api = useApi();
-                const response = await api.get("/user/orders/");
+                const response = await api.get("/user/orders");
                 this.ordersInfo = response.data;
                 return this.ordersInfo;
             } catch (error) {
@@ -122,7 +122,7 @@ export const useUserProfileStore = defineStore("userprofile", {
         async submitOrderRating(orderId: string, feedback: Feedback): Promise<void> {
             try {
                 const api = useApi();
-                await api.post(`/user/orders/feedback/${orderId}/`, feedback);
+                await api.post(`/user/orders/feedback/${orderId}`, feedback);
                 // Refresh orders after submitting feedback
                 await this.fetchOrders();
             } catch (error) {

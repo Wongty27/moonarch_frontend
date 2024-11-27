@@ -70,7 +70,7 @@ export const useOrderStore = defineStore('order', {
                 console.log('Order data:', orderData) // Debug log
 
                 const api = useApi()
-                const response = await api.post('/orders/create/', orderData)
+                const response = await api.post('/orders/create', orderData)
 
                 console.log('Response:', response.data) // Debug log
 
