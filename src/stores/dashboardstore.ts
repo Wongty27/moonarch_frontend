@@ -92,39 +92,39 @@ export const useDashboardStore = defineStore("dashboardstore", {
 
       // Individual fetch functions (optional, if you want to fetch separately)
       async fetchProfits() {
-        this.profits = await this.fetchData('/dashboard/profits');
+        this.profits = await this.fetchData('/dashboard/profits/');
         // this.profits = await this.fetchData<Profits>('/dashboard/profits');
       },
       async fetchOrders() {
-        this.orders = await this.fetchData('/dashboard/orders');
+        this.orders = await this.fetchData('/dashboard/orders/');
         // this.orders = await this.fetchData<Orders>('/dashboard/orders');
       },
       async fetchConversions() {
-        this.conversions = await this.fetchData('/dashboard/conversions');
+        this.conversions = await this.fetchData('/dashboard/conversions/');
         // this.conversions = await this.fetchData<Conversions>('/dashboard/conversions');
       },
       async fetchRatings() {
-        this.ratings = await this.fetchData('/dashboard/ratings');
+        this.ratings = await this.fetchData('/dashboard/ratings/');
         // this.ratings = await this.fetchData<Ratings>('/dashboard/ratings');
       },
       async fetchBrands() {
-        this.brands = await this.fetchData('/dashboard/brands');
+        this.brands = await this.fetchData('/dashboard/brands/');
         // this.brands = await this.fetchData<Brands>('/dashboard/brands');
       },
       async fetchStocks() {
-        this.stocks = await this.fetchData('/dashboard/stocks');
+        this.stocks = await this.fetchData('/dashboard/stocks/');
         // this.stocks = await this.fetchData<Stocks>('/dashboard/stocks');
       },
       async fetchTraffics() {
-        this.traffics = await this.fetchData('/dashboard/traffics');
+        this.traffics = await this.fetchData('/dashboard/traffics/');
         // this.traffics = await this.fetchData<Traffics>('/dashboard/traffics');
       },
       async fetchSources() {
-        this.sources = await this.fetchData('/dashboard/sources');
+        this.sources = await this.fetchData('/dashboard/sources/');
         // this.sources = await this.fetchData<Sources>('/dashboard/sources');
       },
       async fetchPrebuiltSales() {
-        this.prebuiltSales = await this.fetchData('/dashboard/prebuilt-sales');
+        this.prebuiltSales = await this.fetchData('/dashboard/prebuilt-sales/');
         // this.prebuiltSales = await this.fetchData<PrebuiltSales>('/dashboard/prebuilt-sales');
       },
     },

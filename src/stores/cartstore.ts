@@ -54,7 +54,7 @@ export const useCartStore = defineStore("cart", {
         async fetchCartItems() {
             const api = useApi();
             try {
-                const response = await api.get<CartResponse>("/cart");
+                const response = await api.get<CartResponse>("/cart/");
                 this.cartItems = response.data.items;
                 this.cartTotal = response.data.cart_total;
                 this.totalItems = response.data.total_items;
@@ -78,7 +78,7 @@ export const useCartStore = defineStore("cart", {
 
         async updateCartItemQuantity(cartItemId: number, quantity: number) {
             const api = useApi();
-            await api.put(`/cart/item/${cartItemId}`, null, {
+            await api.put(`/cart/item/${cartItemId}/`, null, {
                 params: { quantity }
             });
             await this.fetchCartItems(); // Refresh cart after update
@@ -86,13 +86,13 @@ export const useCartStore = defineStore("cart", {
 
         async removeCartItem(cartItemId: number) {
             const api = useApi();
-            await api.delete(`/cart/item/${cartItemId}`);
+            await api.delete(`/cart/item/${cartItemId}/`);
             await this.fetchCartItems(); // Refresh cart after removal
         },
 
         async clearCart() {
             const api = useApi();
-            await api.delete("/cart");
+            await api.delete("/cart/");
             this.cartItems = [];
         },
 
@@ -112,7 +112,7 @@ export const useCartStore = defineStore("cart", {
                     quantity: item.quantity
                 }));
         
-                await api.post('/cart/bulk', cartItems);
+                await api.post('/cart/bulk/', cartItems);
                 await this.fetchCartItems();
             } catch (error) {
                 console.error('Error saving build to cart:', error);

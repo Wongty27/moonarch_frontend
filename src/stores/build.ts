@@ -17,7 +17,7 @@ export const useBuildStore = defineStore("buildstore", {
     actions: {
         async fetchPrebuiltPCs() {
             const api = useApi();
-            const response = await api.get("/shop/prebuilt");
+            const response = await api.get("/shop/prebuilt/");
             this.prebuiltPC  = response.data as PrebuiltPCResponse[];
         },
     },

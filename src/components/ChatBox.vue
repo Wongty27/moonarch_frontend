@@ -107,7 +107,7 @@
     loading.value = true;
 
     try {
-      const { data } = await api.post('/chatbot/chat', {
+      const { data } = await api.post('/chatbot/chat/', {
         message: message.value
       });
     
