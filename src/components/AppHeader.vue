@@ -9,7 +9,7 @@
     <div class="logo-container">
       <v-img
         aspect-ratio="1"
-        src="../assets/moonarch_logo.png"
+        src="../assets/moonarch.png"
         :width="logoSize"
         class="pixel-logo"
       />
