@@ -145,7 +145,7 @@
   @import url('https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css');
 
   .login-container {
-    min-height: 92vh;
+    min-height: 97vh;
     display: flex;
     align-items: center;
     justify-content: center;

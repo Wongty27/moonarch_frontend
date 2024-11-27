@@ -1,6 +1,6 @@
 <template>
   <v-parallax src="https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif" class="dimmed-background">
-      <v-container>
+      <v-container class="mt-10">
           <!-- Add this alert at the top of your container -->
           <v-container-title class="text-h1 bpdots shop-title mb-5" :style="{ textShadow: '2px 2px 5px #FF66FF'}">
               SHOP LISTING

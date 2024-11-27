@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     class="d-flex flex-row align-center bpdots"
-    height="80"
+    height="80px"
     scroll-behavior="hide"
     scroll-threshold="100"
     :style="{ textShadow: '2px 2px 5px #FF66FF'}"

@@ -52,7 +52,7 @@
           </v-row>
         </v-card>
   
-        <div v-if="selectedPart" class="pa-4">
+        <div v-if="selectedPart" class="pa-4" :style="{ backgroundColor: '#000000' }">
           <div class="text-h6 mb-4 bitstream">{{ selectedPart.title }}</div>
           <v-img
             :src="selectedPart.image"

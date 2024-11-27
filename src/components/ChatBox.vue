@@ -45,7 +45,7 @@
           @keyup.enter="sendMessage"
           hide-details
           class="bitstream chat-input-field"
-          bg-color="white"
+          bg-color="#1b0224"
           rounded="lg"
         >
           <template v-slot:append>
