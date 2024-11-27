@@ -78,6 +78,8 @@ export const useOrderStore = defineStore('order', {
                 await cartStore.clearCart()
                 cartStore.clearBuildIData()
                 checkoutStore.clearCheckout()
+                localStorage.removeItem('chatHistory')
+                window.dispatchEvent(new Event('storage'))
                 // Return success data
                 return response.data
 
