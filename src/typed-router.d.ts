@@ -19,6 +19,7 @@ declare module 'vue-router/auto-routes' {
    */
   export interface RouteNamedMap {
     '/': RouteRecordInfo<'/', '/', Record<never, never>, Record<never, never>>,
+    '/admin': RouteRecordInfo<'/admin', '/admin', Record<never, never>, Record<never, never>>,
     '/auth': RouteRecordInfo<'/auth', '/auth', Record<never, never>, Record<never, never>>,
     '/cart': RouteRecordInfo<'/cart', '/cart', Record<never, never>, Record<never, never>>,
     '/customise': RouteRecordInfo<'/customise', '/customise', Record<never, never>, Record<never, never>>,
@@ -29,9 +30,5 @@ declare module 'vue-router/auto-routes' {
     '/profile': RouteRecordInfo<'/profile', '/profile', Record<never, never>, Record<never, never>>,
     'shop': RouteRecordInfo<'shop', '/shop', Record<never, never>, Record<never, never>>,
     'unauthorized': RouteRecordInfo<'unauthorized', '/UnauthorizedView', Record<never, never>, Record<never, never>>,
-    'build': RouteRecordInfo<'build', '/build', Record<never, never>, Record<never, never>>,
-    '/unused/profiletest': RouteRecordInfo<'/unused/profiletest', '/unused/profiletest', Record<never, never>, Record<never, never>>,
-    '/unused/signup': RouteRecordInfo<'/unused/signup', '/unused/signup', Record<never, never>, Record<never, never>>,
-    '/unused/signupv2': RouteRecordInfo<'/unused/signupv2', '/unused/signupv2', Record<never, never>, Record<never, never>>,
   }
 }

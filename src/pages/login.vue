@@ -66,7 +66,7 @@
 
   const isLogin = ref(true)
   const showPassword = ref(false)
-  const showConfirmPassword = ref(false)
+  // const showConfirmPassword = ref(false)
   const loading = ref(false)
   const error = ref('')
   const form = ref<any>(null)

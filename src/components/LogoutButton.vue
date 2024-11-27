@@ -15,7 +15,7 @@
   import { useAuthStore } from '@/stores/auth'
   import { useRouter } from 'vue-router'
   
-  const props = defineProps({
+  defineProps({
     icon: {
       type: Boolean,
       default: false

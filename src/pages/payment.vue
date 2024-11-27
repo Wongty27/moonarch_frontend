@@ -142,7 +142,7 @@
 
         // Redirect to home with success message
         router.push({
-            path: '/',
+            path: '/profile',
             query: {    
                 payment: 'success',
                 ref: paymentInfo.reference 

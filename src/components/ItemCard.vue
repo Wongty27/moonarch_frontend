@@ -35,11 +35,11 @@
               <v-list>
                 <v-list-item v-for="(part, key) in build.build_parts" 
                             :key="key"
-                            :title="formatPartType(key)"
+                            :title="formatPartType(part.part_type)"
                             :subtitle="part.name"
                             class="mb-2">
                   <template v-slot:prepend>
-                    <v-icon :icon="getPartIcon(key)"    
+                    <v-icon :icon="getPartIcon(part.part_type)"    
                            color="white"
                            class="mr-3"
                            size="large"></v-icon>
@@ -67,7 +67,7 @@
 </template>
   
 <script setup lang="ts">
-  const props = defineProps({
+  defineProps({
     build: {
       type: Object,
       required: true
