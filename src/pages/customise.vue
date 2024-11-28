@@ -5,22 +5,22 @@
       width="50"
       class="left-sidebar"
     >
-      <v-list nav> 
-        <v-list-item> 
-          <v-btn 
-            @click="drawer = !drawer" 
-            icon 
-            variant="text" 
-          > 
-            <v-tooltip 
-              activator="parent" 
-              location="right" 
-            > 
-              <span class="bitstream">Item List</span> 
-            </v-tooltip> 
-            <v-icon>{{ drawer ? 'mdi-chevron-left' : 'mdi-chevron-right' }}</v-icon> 
-          </v-btn> 
-        </v-list-item> 
+      <v-list nav>
+        <v-list-item>
+          <v-btn
+            @click="drawer = !drawer"
+            icon
+            variant="text"
+          >
+            <v-tooltip
+              activator="parent"
+              location="right"
+            >
+              <span class="bitstream">Item List</span>
+            </v-tooltip>
+            <v-icon>{{ drawer ? 'mdi-chevron-left' : 'mdi-chevron-right' }}</v-icon>
+          </v-btn>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
   
@@ -79,16 +79,8 @@
       <div v-else>
         <v-card color="#3e0054" flat class="pa-4">
           <v-row no-gutters align="center">
-            <!-- <v-col cols="2">
-              <v-btn
-                icon="mdi-arrow-left"
-                variant="text"
-                color="white"
-                @click="showProducts = false"
-              ></v-btn>
-            </v-col> -->
             <v-col cols="8">
-              <p class="text-subtitle-1 text-white text-center bitstream">Our Products</p>
+              <p class="text-subtitle-1 text-white text-center bitstream">Our Selection</p>
             </v-col>
             <v-col cols="2" class="text-right">
               <v-btn
@@ -100,48 +92,22 @@
             </v-col>
           </v-row>
         </v-card>
-
-        <div class="pa-4">
-          <div class="d-flex justify-end mb-2">
-            <v-menu>
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  variant="text"
-                  class="bitstream d-flex align-center"
-                >
-                  <span class="me-2">Sort</span>
-                  <v-icon>mdi-sort</v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item
-                  v-for="(sort, index) in productSortOptions"
-                  :key="index"
-                  @click="sortProducts(sort.value)"
-                >
-                  <v-list-item-title class="bitstream">{{ sort.text }}</v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
-        </div>
   
         <div class="pa-4">
           <v-card
-            v-for="product in sortedProducts"
-            :key="product.product_id"
+            v-for="(stock, index) in selectedPart.stockList"
+            :key="index"
             class="mb-4 "
             variant="outlined"
           >
             <v-card-text>
               <div class="d-flex justify-space-between align-center">
                 <div>
-                  <div class="text-body-1 font-weight-medium bitstream"> {{ product.product_name  }}</div>
-                  <div class="text-subtitle-4 bitstream">RM{{ product.product_price }}</div>
-                  <div class="text-caption text-grey bitstream">Stock: {{ product.product_stock }}</div>
-                  <div class="text-caption text-grey bitstream" v-if="getSavedQuantity(product)">
-                    In Cart: {{ getSavedQuantity(product) }}
+                  <div class="text-body-1 font-weight-medium bitstream">{{ stock.stockName }}</div>
+                  <div class="text-subtitle-2 bitstream">RM{{ stock.stockPrice }}</div>
+                  <div class="text-caption text-grey bitstream">Stock left: {{ stock.stockQuantity }}</div>
+                  <div class="text-caption text-grey bitstream" v-if="getSavedQuantity(stock)">
+                    In Cart: {{ getSavedQuantity(stock) }}
                   </div>
                 </div>
                 <div class="d-flex align-center">
@@ -152,10 +118,10 @@
                     icon="mdi-minus"
                     size="small"
                     class="quantity-btn"
-                    @click="decrementStockQuantity(product)"
-                    :disabled="!getStockQuantity(product)"
+                    @click="decrementStockQuantity(stock)"
+                    :disabled="!getStockQuantity(stock)"
                   ></v-btn>
-                  <span class="mx-2">{{ getStockQuantity(product) }}</span>
+                  <span class="mx-2">{{ getStockQuantity(stock) }}</span>
                   <v-btn
                     color="#FFFFFF"
                     variant="text"
@@ -163,17 +129,17 @@
                     icon="mdi-plus"
                     size="small"
                     class="quantity-btn"
-                    @click="incrementStockQuantity(product)"
+                    @click="incrementStockQuantity(stock)"
                   ></v-btn>
                 </div>
               </div>
               <v-btn
-                v-if="getStockQuantity(product) > 0"
+                v-if="getStockQuantity(stock) > 0"
                 color="#e324bd"
                 class="mt-2 bitstream"
                 size="small"
                 block
-                @click="addToCart(product)"
+                @click="addToCart(stock)"
               >
                 Add to Build
               </v-btn>
@@ -199,9 +165,7 @@
       persistent
     >
       <v-card color="#3e0054" flat class="pa-4">
-        <div class="d-flex justify-space-between align-center">
-          <p class="text-subtitle-1 text-white text-center bitstream">Your Build</p>
-        </div>
+        <p class="text-subtitle-1 text-white text-center bitstream">Your Build</p>
       </v-card>
       <v-list>
         <v-list-item
@@ -212,10 +176,10 @@
           <div class="d-flex flex-column">
             <div class="d-flex justify-space-between align-center mb-2">
               <div>
-                <div class="text-body-1 font-weight-medium bitstream">{{ item.product_name.toUpperCase() }}</div>
-                <div class="text-caption text-grey bitstream">{{ item.product_category.toUpperCase() || 'T0ASB-2S' }}</div>
+                <div class="text-body-1 font-weight-medium bitstream">{{ item.name }}</div>
+                <div class="text-caption text-grey bitstream">{{ item.model || 'T0ASB-2S' }}</div>
               </div>
-              <div class="text-body-1 bitstream">RM{{ item.product_price }}</div>
+              <div class="text-body-1 bitstream">RM{{ item.unitPrice.toFixed(2) }}</div>
             </div>
   
             <div class="d-flex align-center justify-space-between">
@@ -231,7 +195,7 @@
                 >
                 </v-btn>
                 
-                <span class="mx-4 text-body-1 bitstream">{{ item.quantity.toString().padStart(2, '0') }}</span>
+                <span class="mx-4 text-body-1">{{ item.quantity.toString().padStart(2, '0') }}</span>
                 
                 <v-btn
                   color="#FFFFFF"
@@ -244,7 +208,7 @@
                 >
                 </v-btn>
               </div>
-              <div class="bitstream text-body-1">RM{{ calculateSubtotal(item,index) }}</div>
+              <div class="text-body-1">RM{{ calculateSubtotal(item,index) }}</div>
             </div>
           </div>
           <v-divider class="mt-4"></v-divider>
@@ -254,10 +218,10 @@
           <v-row no-gutters align="center" class="mb-2">
             <v-col cols="6">
               <span class="text-subtitle-1 text-grey bitstream">Sub-Total</span>
-              <div class="text-caption text-grey bitstream">{{ items.reduce((total, item) => total + item.quantity, 0) }} items</div>
+              <div class="text-caption text-grey bitstream">{{ items.length }} items</div>
             </v-col>
             <v-col cols="6" class="text-right">
-              <span class="text-h6 bitstream">RM{{ calculateTotal() }}</span>
+              <span class="text-h5 bitstream">RM{{ calculateTotal().toFixed(2) }}</span>
             </v-col>
           </v-row>
           
@@ -274,8 +238,8 @@
           <div class="drawer-scroll-space"></div>
         </v-card>
       </v-list>
-      </v-navigation-drawer>
-    
+    </v-navigation-drawer>
+  
     <!-- Main content area -->
     <div :class="{ 
       'drawer-open': drawer,
@@ -286,238 +250,297 @@
         :items="items"
         class="fill-height"
         @point-clicked="handlePointClick"
-        @item-added="drawer = true"
+        @item-added="handleItemAdded"
       >
       </Canvas>
     </div>
-
-    <ChatBox />
-
-</template>
+  </template>
   
-<script setup lang="ts">
-  import { ref, onMounted } from 'vue';
-  import { useProductStore } from '@/stores/productstore';
-  import { useCartStore } from '@/stores/cartstore';
-  import { useRouter } from 'vue-router';
-
+  <script>
   import Canvas from '@/components/ThreeCanvas.vue';
-  import ChatBox from '@/components/ChatBox.vue';
-
-  const productStore = useProductStore();
-  const cartStore = useCartStore();
-  const router = useRouter();
-
-  const drawer = ref(false);
-  const infoDrawer = ref(false);
-  const showProducts = ref(false);
-  const selectedPart = ref<{
-      title: string;
-      image: string;
-      description: string;
-      product_list: any[];
-    } | null>(null);
-
-  const items = ref<any[]>(cartStore.loadBuildFromLocal() as any[]);
-
-   // Add these with your other refs
-   const productSortOptions = [
-    { text: 'Name (A-Z)', value: 'name-asc' },
-    { text: 'Name (Z-A)', value: 'name-desc' },
-    { text: 'Price (Low-High)', value: 'price-asc' },
-    { text: 'Price (High-Low)', value: 'price-desc' }
-  ];
-
-  const currentSort = ref('name-asc');
-
-  // Add computed property for sorted products
-  const sortedProducts = computed(() => {
-    if (!selectedPart.value?.product_list) return [];
-    
-    const products = [...selectedPart.value.product_list];
-    
-    switch (currentSort.value) {
-      case 'name-asc':
-        return products.sort((a, b) => 
-          a.product_name.localeCompare(b.product_name)
-        );
-      case 'name-desc':
-        return products.sort((a, b) => 
-          b.product_name.localeCompare(a.product_name)
-        );
-      case 'price-asc':
-        return products.sort((a, b) => 
-          Number(a.product_price) - Number(b.product_price)
-        );
-      case 'price-desc':
-        return products.sort((a, b) => 
-          Number(b.product_price) - Number(a.product_price)
-        );
-      default:
-        return products;
-    }
-  });
-
-  // Add sort method
-  const sortProducts = (sortType: string) => {
-    currentSort.value = sortType;
-  };
-
-  const getSavedQuantity = (product: any) => {
-    const buildItem = cartStore.buildItems.find(item => item.product_id === product.product_id);
-    return buildItem?.quantity || 0;
-  };
-
-  // Methods for quantity management
-  const getStockQuantity = (product: any) => {
-    return productStore.stockQuantities[product.product_id] || 0;
-  };
-
-  const incrementStockQuantity = (product: any) => {
-    const currentQty = getStockQuantity(product);
-    if (currentQty < product.product_stock) {
-      productStore.updateStockQuantities(product.product_id, currentQty + 1);
-    }
-  };
-
-  const decrementStockQuantity = (product: any) => {
-    const currentQty = getStockQuantity(product);
-    if (currentQty > 0) {
-      productStore.updateStockQuantities(product.product_id, currentQty - 1);
-    }
-  };
-
-  const incrementQuantity = (index: number) => {
-    const item = items.value[index];
-    if (item) {
-        const product = productStore.components
-            .flatMap(comp => comp.product_list)
-            .find(p => p.product_id === item.product_id);
-        
-        if (product && getSavedQuantity(item) < product.product_stock) {
-            cartStore.updateBuildQuantity({
-                ...item,
-                quantity: getSavedQuantity(item) + 1
-            });
-        }
-    }
-};  
-
-  const decrementQuantity = (index: number) => {
-    const item = items.value[index];
-    if (item) {
-        const newQuantity = getSavedQuantity(item) - 1;
-        cartStore.updateBuildQuantity({
-            ...item,
-            quantity: newQuantity
-        });
-    }
-  };
-
-  const addToCart = (product: any) => {
-    const quantity = getStockQuantity(product);
-    if (quantity > 0) {
-        cartStore.updateBuildQuantity({
-            product_id: product.product_id,
-            product_name: product.product_name,
-            product_category: product.product_category,
-            product_price: product.product_price,
-            quantity: quantity
-        });
-        productStore.updateStockQuantities(product.product_id, 0);
-        drawer.value = true;
-    }
-  };
-
-  const navigateToCart = async () => {
-    try {
-        await cartStore.saveBuildToCart(cartStore.buildItems);
-        router.push('/cart');
-    } catch (error: any) {
-        if (error.message === 'Please login to save your build to cart') {
-            alert('Please login to save your build to cart');
-            router.push({
-                path: '/login',
-                query: { 
-                    redirect: '/customise',
-                    from: 'customise',
-                    drawer: 'open'  // Add this to indicate drawer should be open
-                }
-            });
-        } else {
-            console.error('Error saving build:', error);
-        }
-    }
-};
-
-  const handlePointClick = (pointData: any) => {
-    selectedPart.value = pointData;
-    showProducts.value = false;
-    infoDrawer.value = !!pointData;
-  };
-
-  const calculateSubtotal = (item: any, index: number) => {
-    return (item.product_price * item.quantity).toFixed(2);
-  };
-
-  const calculateTotal = () => {
-    const total = items.value.reduce((total, item) => {
-      const price = Number(item.product_price) || 0;
-      return total + (price * item.quantity);
-  }, 0);
-    return total.toFixed(2);
-  };
-
-  // Add a storage event listener
-  const handleStorageChange = () => {
-    items.value = cartStore.loadBuildFromLocal() as any[];
-  };
-
-  // Add watchers for drawer states
-  watch(drawer, (newVal) => {
-    requestAnimationFrame(() => {
-      window.dispatchEvent(new Event('resize'));
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 100);
-    });
-  });
-
-  watch(infoDrawer, (newVal) => {
-    requestAnimationFrame(() => {
-      window.dispatchEvent(new Event('resize'));
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 100);
-    });
-  });
-
-  // Watch items for localStorage persistence
-  watch(items, (newItems) => {
-    localStorage.setItem('customBuildItems', JSON.stringify(newItems));
-  }, { deep: true });
-
-  // Add a watcher for cartStore's buildItems
-  watch(() => cartStore.buildItems, (newItems) => {
-    items.value = newItems;
-  }, { deep: true });
-
-
-    // Load saved build from localStorage on mount
-  onMounted(async () => {
-    await productStore.fetchAllComponents();
-    window.addEventListener('storage', handleStorageChange);
-    items.value = cartStore.loadBuildFromLocal() as any[];
-  });
-</script>
+  import { ref, reactive, watch } from 'vue'
+  import { useCart } from '@/composables/useCart';
+  import { useRouter } from 'vue-router';
   
-<style >
-  @import url('@/assets/BitStreamFont/stylesheet.css');
-  @import url('@/assets/BPdotsFont/stylesheet.css');
+  export default {
+  name: 'Customise',
+  components: {
+    Canvas
+  },
+
+  setup() {
+    const router = useRouter();
+    return { router };
+  },
+  data() {
+    return {
+      drawer: false,
+      infoDrawer: false,
+      selectedPart: null,
+      items: [],
+      hasError: false,
+      errorMessages: [],
+      showProducts: false,
+      stockQuantities: reactive({}),
+      savedQuantities: reactive({}),
+    };
+  },
+  created() {
+    // Load saved items when component is created
+    const savedItems = localStorage.getItem('customBuildItems');
+    if (savedItems) {
+      this.items = JSON.parse(savedItems);
+      // Sync savedQuantities with items
+      this.items.forEach(item => {
+        const key = `${item.name}-${item.model}`;
+        this.savedQuantities[key] = item.quantity;
+      });
+    }
+  },
+
+  methods: {
+    calculateTotal() {
+      let total = 0;
+      for (let i = 0; i < this.items.length; i++) {
+        if (this.items[i].quantity > 0 && this.items[i].quantity < 100) {
+          total += this.items[i].quantity * this.items[i].unitPrice;
+        }
+      }
+      return total;
+    },
+    calculateSubtotal(item) {
+      let subTotal = 0;
+      if (item.quantity > 0 && item.quantity <= 99) {
+        subTotal = (item.unitPrice * item.quantity).toFixed(2);
+        return subTotal;
+      }
+    },
+    updateError(message) {
+      this.hasError = true;
+      this.errorMessages = [message];
+      return message;
+    },
+    addItem() {
+      const newItem = { 
+        name: "New Item vdvasvdafvvfdsvdfvdvsdvdf", 
+        quantity: 1, 
+        unitPrice: 20.20 
+      };
+      this.items.push(newItem);
+    },
+    incrementQuantity(index) {
+      if (this.items[index].quantity >= 99) {
+        this.items[index].quantity = 99;
+      } else {
+        this.items[index].quantity++;
+        // Update savedQuantities when main drawer quantity changes
+        const key = `${this.items[index].name}-${this.items[index].model}`;
+        this.savedQuantities[key] = this.items[index].quantity;
+      }
+    },
+    decrementQuantity(index) {
+      if (this.items[index].quantity > 1) {
+        this.items[index].quantity--;
+        // Update savedQuantities when main drawer quantity changes
+        const key = `${this.items[index].name}-${this.items[index].model}`;
+        this.savedQuantities[key] = this.items[index].quantity;
+      } else {
+        // Remove item and its saved quantity
+        const key = `${this.items[index].name}-${this.items[index].model}`;
+        delete this.savedQuantities[key];
+        this.items.splice(index, 1);
+        
+        // Update localStorage
+        localStorage.setItem('customBuildItems', JSON.stringify(this.items));
+      }
+    },
+    updateQuantity(index) {
+      if (this.items[index].quantity < 1) {
+        this.items[index].quantity = 1;
+      }
+      else if (this.items[index].quantity > 99) {
+        this.items[index].quantity = 99;
+      }
+      // Update savedQuantities after quantity validation
+      const key = `${this.items[index].name}-${this.items[index].model}`;
+      this.savedQuantities[key] = this.items[index].quantity;
+    },
+    navigateToCart() {
+    // Convert items to the format expected by the cart
+      this.items.forEach(item => {
+        const cartItem = {
+          id: `${item.name}-${item.model}`, // Use existing item properties
+          name: `${item.name} - ${item.model}`,
+          price: item.unitPrice,
+          quantity: item.quantity,
+          imageUrl: item.image || 'default-image-url.jpg', // Use item's image directly
+          description: item.description || '' // Use item's description directly
+        };
+        
+        // Add to cart using the useCart composable
+        const { addToCart } = useCart();
+        addToCart(cartItem);
+      });
+
+      // Save current build to localStorage before navigation
+      localStorage.setItem('customBuildItems', JSON.stringify(this.items));
+
+      // Navigate to cart page
+      this.router.push('/cart');
+    },
+
+    addToCart(stock) {
+      if (!this.selectedPart) return; // Guard clause for when selectedPart is null
+      
+      const key = `${this.selectedPart.title}-${stock.stockName}`;
+      const quantity = this.stockQuantities[key];
+      
+      if (quantity > 0 && stock.stockQuantity >= quantity) {
+        const existingItemIndex = this.items.findIndex(item => 
+          item.name === this.selectedPart.title && 
+          item.model === stock.stockName
+        );
+
+        if (existingItemIndex !== -1) {
+          // Update quantity instead of adding
+          this.items[existingItemIndex].quantity = quantity;
+          this.savedQuantities[key] = quantity;
+        } else {
+          this.items.push({
+            name: this.selectedPart.title,
+            model: stock.stockName,
+            unitPrice: parseFloat(stock.stockPrice),
+            quantity: quantity,
+            image: this.selectedPart.image,
+            description: this.selectedPart.description // Save description with item
+          });
+          this.savedQuantities[key] = quantity;
+        }
+        
+        this.drawer = true;
+        stock.stockQuantity -= quantity;
+        this.stockQuantities[key] = 0;
+      }
+      
+      localStorage.setItem('customBuildItems', JSON.stringify(this.items));
+    },
+
+    handlePointClick(pointData) {
+      this.selectedPart = pointData;
+      this.showProducts = false;
+      this.infoDrawer = !!pointData;
+    },
+    incrementStockQuantity(stock) {
+      const key = `${this.selectedPart.title}-${stock.stockName}`;
+      if (!this.stockQuantities[key]) {
+        this.stockQuantities[key] = 0;
+      }
+      if (this.stockQuantities[key] < stock.stockQuantity) {
+        this.stockQuantities[key]++;
+      }
+    },
+    decrementStockQuantity(stock) {
+      const key = `${this.selectedPart.title}-${stock.stockName}`;
+      if (this.stockQuantities[key] > 0) {
+        this.stockQuantities[key]--;
+      }
+    },
+    getStockQuantity(stock) {
+      const key = `${this.selectedPart.title}-${stock.stockName}`;
+      return this.stockQuantities[key] || 0;
+    },
+    getSavedQuantity(stock) {
+      const key = `${this.selectedPart.title}-${stock.stockName}`;
+      return this.savedQuantities[key] || 0;
+    },
+    addToCart(stock) {
+      const key = `${this.selectedPart.title}-${stock.stockName}`;
+      const quantity = this.stockQuantities[key];
+      
+      if (quantity > 0 && stock.stockQuantity >= quantity) {
+        const existingItemIndex = this.items.findIndex(item => 
+          item.name === this.selectedPart.title && 
+          item.model === stock.stockName
+        );
+  
+        if (existingItemIndex !== -1) {
+          this.items[existingItemIndex].quantity += quantity;
+          this.savedQuantities[key] = this.items[existingItemIndex].quantity;
+        } else {
+          this.items.push({
+            name: this.selectedPart.title,
+            model: stock.stockName,
+            unitPrice: parseFloat(stock.stockPrice),
+            quantity: quantity,
+            image: this.selectedPart.image
+          });
+          this.savedQuantities[key] = quantity;
+        }
+        
+        // Open left drawer when item is added
+        this.drawer = true;
+        
+        // Deduct from stock quantity
+        stock.stockQuantity -= quantity;
+        this.stockQuantities[key] = 0;
+      }
+      
+      // After adding/updating items, save to localStorage
+      localStorage.setItem('customBuildItems', JSON.stringify(this.items));
+    },
+    // Add method to handle direct quantity input in main drawer
+    handleQuantityInput(index, event) {
+      const value = parseInt(event.target.value);
+      if (!isNaN(value)) {
+        this.items[index].quantity = value;
+        this.updateQuantity(index);
+      }
+    },
+    handleItemAdded() {
+      this.drawer = true;
+    },
+    // Add method to clear saved items (optional)
+    clearSavedBuild() {
+      localStorage.removeItem('customBuildItems');
+      this.items = [];
+    }
+  },
+  watch: {
+    drawer(newVal) {
+      // Queue multiple resize events to ensure proper updating
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event('resize'));
+        // Queue additional resize checks
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 100);
+      });
+    },
+    infoDrawer(newVal) {
+      requestAnimationFrame(() => {
+        window.dispatchEvent(new Event('resize'));
+        // Queue additional resize checks
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 100);
+      });
+    },
+    items: {
+      handler(newItems) {
+        localStorage.setItem('customBuildItems', JSON.stringify(newItems));
+      },
+      deep: true
+    }
+  }
+  };
+  </script>
+  
+  <style >
+  @import url('../assets/BitStreamFont/stylesheet.css');
+  @import url('../assets/BPdotsFont/stylesheet.css');
 
   .left-sidebar {
-    background-color: #001655!important; /* Add your original dark color */
-
+  background-color: #f5f5f5;
   z-index: 3;
   position: fixed !important;
   left: 0 !important;
@@ -531,7 +554,7 @@
   
   .main-drawer {
   z-index: 4 !important;
-  background-color: #001655 !important;
+  background-color: white;
   position: fixed !important;
   top: 0 !important;
   height: 100vh !important;
@@ -539,17 +562,6 @@
   box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1) !important;
   border-left: none !important;
   }
-
-  .info-drawer {
-  z-index: 4 !important;
-  background-color: #001655!important; /* Add your original dark color */
-  position: fixed !important;
-  top: 0 !important;
-  height: 100vh !important;
-  padding-top: 85px;
-  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1) !important;
-  border-left: none !important;
-}
   
   .fill-height {
   height: 100vh;
@@ -811,12 +823,4 @@
   .v-navigation-drawer__content {
     scroll-behavior: smooth;
   }
-
-  .clear-btn:hover {
-    color: #ff4444 !important;
-  }
-
-  .clear-btn {
-    transition: color 0.2s ease;
-  } 
-</style>
+  </style>
