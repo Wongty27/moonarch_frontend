@@ -34,7 +34,7 @@
         <!-- User Information Tab -->
         <v-window-item value="info">
           <div class="account-info">
-            <h1 class="white--text mb-6 text-center">User Information</h1>
+            <h1 class="page-title">User Information</h1>
             <ProfileForm 
               :isProfilePage="true"
               v-model:showSuccessAlert="showSuccessAlert"
@@ -56,7 +56,7 @@
             Rating submitted successfully!
           </v-alert>
 
-          <h1 class="white--text mb-6 text-center">Order History</h1>
+          <h1 class="page-title">Order History</h1>
           <v-card flat>
             <v-card-text style="background-color: #3e0054;">
               <div v-if="ordersInfo.length">
@@ -269,29 +269,34 @@
   @import url('@/assets/BPdotsFont/stylesheet.css');
 
   .profile-container {
-    min-height: 92vh;
+    min-height: 100vh;
     padding: 2rem;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), 
                 url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
+    display: flex;
+    flex-direction: column;
   }
 
   .profile-content {
     display: flex;
     gap: 2rem;
     max-width: 1800px;
-    margin: 0 auto;
+    margin: 1rem auto;
     background: #3e0054;
     padding: 2rem;
     border-radius: 30px;
     box-shadow: 0px 0px 15px #E324BD;
     backdrop-filter: blur(5px);
+    flex: 1;
+    height: calc(100vh - 4rem);
+    overflow: hidden;
   }
 
   .tabs {
-    width: 300px;
+    width: 250px;
     font-family: 'bitstream';
     background: transparent !important;
   }
@@ -313,6 +318,18 @@
     flex: 1;
     padding: 0 1rem;
     font-family: 'bitstream';
+    overflow-y: auto;
+  }
+
+  .page-title {
+    color: white;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background: #3e0054;
+    padding: 1rem 0;
+    z-index: 1;
   }
 
   /* Custom styling for ProfileForm component */
@@ -399,5 +416,47 @@
   }
 
   
+}
+
+/* Ensure the expansion panels don't overflow */
+.custom-panels {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+/* Add smooth scrolling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E324BD;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b81d96;
+}
+
+@media (max-width: 960px) {
+  .profile-content {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .tabs {
+    width: 100%;
+    height: auto;
+  }
+
+  .tab-content {
+    padding: 0;
+  }
 }
 </style>
