@@ -250,7 +250,7 @@
         <v-divider class="mt-4"></v-divider>
       </v-list-item>
 
-      <v-card color="#001655" class="pa-4">
+      <v-card color="#16001c" class="pa-4">
         <v-row no-gutters align="center" class="mb-2">
           <v-col cols="6">
             <span class="text-subtitle-1 text-grey bitstream">Sub-Total</span>
@@ -516,114 +516,113 @@ onMounted(async () => {
 @import url('@/assets/BPdotsFont/stylesheet.css');
 
 .left-sidebar {
-  background-color: #001655!important; /* Add your original dark color */
-
-z-index: 3;
-position: fixed !important;
-left: 0 !important;
-top: 0 !important;
-height: 100vh !important;
-border-right: 0px solid rgba(0, 0, 0, 0.12);
-padding-top: 85px;
-box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1) !important;
-border-right: none !important;
+  background-color: black !important;
+  z-index: 3;
+  position: fixed !important;
+  left: 0 !important;
+  top: 0 !important;
+  height: 100vh !important;
+  border-right: 0px solid rgba(0, 0, 0, 0.12);
+  padding-top: 85px;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1) !important;
+  border-right: none !important;
 }
 
 .main-drawer {
-z-index: 4 !important;
-background-color: #001655 !important;
-position: fixed !important;
-top: 0 !important;
-height: 100vh !important;
-padding-top: 85px;
-box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1) !important;
-border-left: none !important;
+  background-color: black !important;
+  z-index: 4 !important;
+  position: fixed !important;
+  top: 0 !important;
+  height: 100vh !important;
+  padding-top: 85px;
+  box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1) !important;
+  border-left: none !important;
 }
 
 .info-drawer {
-z-index: 4 !important;
-background-color: #001655!important; /* Add your original dark color */
-position: fixed !important;
-top: 0 !important;
-height: 100vh !important;
-padding-top: 85px;
-box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1) !important;
-border-left: none !important;
+  background-color: black !important;
+  z-index: 4 !important;
+  position: fixed !important;
+  top: 0 !important;
+  height: 100vh !important;
+  padding-top: 85px;
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1) !important;
+  border-left: none !important;
 }
 
 .fill-height {
-height: 100vh;
-width: calc(100vw - 50px);
-position: relative;
-overflow: visible;
-padding-top: 85px;
-min-height: 100vh;
-margin-left: 50px;
-transition: none; /* Remove transition */
-z-index: 1;
-background-color: #f8f9fa;
-transition: width 0.2s ease-in-out, margin 0.2s ease-in-out !important;
+  height: 100vh;
+  width: calc(100vw - 50px);
+  position: relative;
+  overflow: visible;
+  padding-top: 85px;
+  min-height: 100vh;
+  margin-left: 50px;
+  transition: none; /* Remove transition */
+  z-index: 1;
+  background-color: #f8f9fa;
+  transition: width 0.2s ease-in-out, margin 0.2s ease-in-out !important;
 }
 
 .drawer-open .fill-height,
 .info-drawer-open .fill-height,
 .drawer-open.info-drawer-open .fill-height {
-transition: width 0.2s ease-in-out, margin 0.2s ease-in-out !important;
+  transition: width 0.2s ease-in-out, margin 0.2s ease-in-out !important;
 }
 
 .v-navigation-drawer {
-transition: none !important;
+  transition: none !important;
 }
 
 .v-text-field input {
-font-size: 0.8em;
+  font-size: 0.8em;
 }
 
 .v-list-item {
-padding: 12px;
+  padding: 12px;
 }
 
 .row {
-margin: 0;
+  margin: 0;
 }
 
 .quantity-btn {
-border: 1px solid rgba(0, 0, 0, 0.12) !important;
-height: 32px !important;
-width: 32px !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  height: 32px !important;
+  width: 32px !important;
 }
 
 canvas {
-position: absolute;
-top: 0;
-left: 0;
-width: 100% !important;
-height: 100% !important;
-display: block;
-margin: 0 !important;
-z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  margin: 0 !important;
+  z-index: 1;
 }
 
 .info-drawer {
-z-index: 4 !important;
-background-color: white;
-position: fixed !important;
-top: 0 !important;
-height: 100vh !important;
-padding-top: 85px;
-box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1) !important;
-border-left: none !important;
+  z-index: 4 !important;
+  background-color: white;
+  position: fixed !important;
+  top: 0 !important;
+  height: 100vh !important;
+  padding-top: 85px;
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1) !important;
+  border-left: none !important;
 }
 
 .drawer-open.info-drawer-open .fill-height {
-width: calc(100vw - 650px);
-margin-left: 350px;
-margin-right: 300px;
+  width: calc(100vw - 650px);
+  margin-left: 350px;
+  margin-right: 300px;
 }
 
 .info-drawer-open .fill-height {
-width: calc(100vw - 350px);
-margin-right: 300px;
+  width: calc(100vw - 350px);
+  margin-right: 300px;
 }
 
 /* Keep all existing styles and add/modify these */

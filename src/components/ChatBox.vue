@@ -27,8 +27,8 @@
         <div v-for="msg in chatHistory" :key="msg.timestamp" 
             :class="['message', msg.type === 'user' ? 'user-message' : 'bot-message']">
           <div class="message-content">
-            <p class="bitstream mb-2 text-black">{{ msg.content }}</p>
-            <p v-if="msg.totalPrice" class="bitstream text-subtitle-2 text-black"> Total: RM{{ msg.totalPrice.toFixed(2) }} </p>
+            <p class="bitstream mb-2 text-white">{{ msg.content }}</p>
+            <p v-if="msg.totalPrice" class="bitstream text-subtitle-2 text-white"> Total: RM{{ msg.totalPrice.toFixed(2) }} </p>
           </div>
         </div>
     
@@ -45,7 +45,8 @@
           @keyup.enter="sendMessage"
           hide-details
           class="bitstream chat-input-field"
-          bg-color="white"
+          bg-color="black"
+          color="white"
           rounded="lg"
         >
           <template v-slot:append>
@@ -189,12 +190,12 @@
     flex-grow: 1;
     overflow-y: auto;
     padding: 16px;
-    background: #f5f5f5;
+    background: black;
   }
   
   .chat-input {
     padding: 12px;
-    background: white;
+    background: black;
   }
   
   .loading-indicator {
@@ -204,11 +205,11 @@
   }
   
   .response-message {
-    background: white;
+    background: black;
     padding: 12px;
     border-radius: 8px;
     margin-bottom: 8px;
-    color: black; /* Fallback color */
+    color: white;
   }
 
   .message {
@@ -218,14 +219,14 @@
 
 .user-message {
   margin-left: auto;
-  background-color: #e3f2fd;
+  background-color: #3e0054;
   border-radius: 12px 12px 0 12px;
   padding: 8px 12px;
 }
 
 .bot-message {
   margin-right: auto;
-  background-color: white;
+  background-color: #1a1a1a;
   border-radius: 12px 12px 12px 0;
   padding: 8px 12px;
 }
@@ -238,7 +239,7 @@
   display: flex;
   flex-direction: column;
   padding: 16px;
-  background: #f5f5f5;
+  background: black;
   overflow-y: auto;
   max-height: calc(450px - 120px); /* Adjust based on your chat window height */
 }
