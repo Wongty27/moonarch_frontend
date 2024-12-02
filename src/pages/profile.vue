@@ -270,7 +270,7 @@
 
   .profile-container {
     min-height: 100vh;
-    padding: 2rem;
+    padding: 6rem 2rem 2rem 2rem;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.6)), 
                 url("https://mir-s3-cdn-cf.behance.net/project_modules/fs/223e6792880429.5e569ff84ebef.gif");
     background-attachment: fixed;
@@ -284,14 +284,14 @@
     display: flex;
     gap: 2rem;
     max-width: 1800px;
-    margin: 1rem auto;
+    margin: 0 auto;
     background: #3e0054;
     padding: 2rem;
     border-radius: 30px;
     box-shadow: 0px 0px 15px #E324BD;
     backdrop-filter: blur(5px);
     flex: 1;
-    height: calc(100vh - 20rem);
+    height: calc(100vh - 8rem);
     overflow: hidden;
   }
 
@@ -444,19 +444,12 @@
 }
 
 @media (max-width: 960px) {
+  .profile-container {
+    padding-top: 5rem;
+  }
+  
   .profile-content {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .tabs {
-    width: 100%;
-    height: auto;
-  }
-
-  .tab-content {
-    padding: 0;
+    height: calc(100vh - 7rem);
   }
 }
 </style>
