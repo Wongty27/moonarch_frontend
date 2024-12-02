@@ -132,8 +132,7 @@ const cartSize = computed(() => {
 
 .v-app-bar {
   padding: 0 5px;
-  height: auto !important;
-  min-height: 60px !important;
+  min-height: 80px;
 }
 
 .nav-button {
