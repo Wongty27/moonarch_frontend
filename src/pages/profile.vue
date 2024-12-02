@@ -291,7 +291,7 @@
     box-shadow: 0px 0px 15px #E324BD;
     backdrop-filter: blur(5px);
     flex: 1;
-    height: calc(100vh - 4rem);
+    height: calc(100vh - 20rem);
     overflow: hidden;
   }
 
